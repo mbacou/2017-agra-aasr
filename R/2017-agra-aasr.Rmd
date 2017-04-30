@@ -313,7 +313,7 @@ IFPRI holds cross-country harmonized variables from the latest DHS. Complete met
 
 (as needed, used in the typology below)
 
-# Typology of Farm Smallholdings
+# Typology of Farm Holdings
 
 This section is an exploration of smallholdings and smallholder farmers (definition and characteristics) in Nigeria and Ethiopia.
 
@@ -614,7 +614,8 @@ Below are the 2012 estimated distributions of cultivated area ($croparea$) and c
 ```{r}
 
 plot_grid(p1, p2)
-p3; p4
+p3
+p4
 pander(t1, digits=2, caption="Deciles of Farm Households (weighted)")
 
 ```
