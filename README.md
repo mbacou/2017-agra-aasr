@@ -1,2 +1,2 @@
 # 2017-agra-aasr
-Book chapter
+Code snippets and draft results for book chapter.

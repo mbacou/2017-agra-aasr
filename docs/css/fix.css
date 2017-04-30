@@ -1,0 +1,35 @@
+/* Title:  A few custom fixes to Tufte HTML styles */
+/* Author: BACOU, Melanie                          */
+/* Date:   2017.04.04                              */
+
+body {
+  font-size: 16px;
+  font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
+}
+
+.marginnote {
+   word-wrap: break-word;
+ }
+
+pre {
+  width: auto;
+  word-wrap: break-word;
+}
+
+.math {
+  font-size: 14px;
+}
+
+.table-condensed {
+  font-size: 14px;
+}
+
+.table-condensed caption {
+  font-size: 16px;
+}
+
+/*
+div.rhandsontable {
+  max-width: 90%;
+}
+*/

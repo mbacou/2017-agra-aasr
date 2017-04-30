@@ -4,6 +4,8 @@
 
 # Session Data files
 .RData
+Rplots.png
+Rplots.pdf
 
 # Example code in package build process
 *-Ex.R
