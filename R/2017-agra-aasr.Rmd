@@ -615,7 +615,7 @@ Below are the 2012 estimated distributions of cultivated area ($croparea$) and c
 
 plot_grid(p1, p2)
 p3; p4
-pander(t1, digits=2, caption="Quantiles of Farm Households (weighted)")
+pander(t1, digits=2, caption="Deciles of Farm Households (weighted)")
 
 ```
 
