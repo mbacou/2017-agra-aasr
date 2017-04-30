@@ -611,9 +611,15 @@ tmp <- ppp12[, lapply(.SD, weightedMean, weight, na.rm=T), .SDcols=vars,
 
 Below are the 2012 estimated distributions of cultivated area ($croparea$) and crop commercialization rate ($cropsold\_sh$) across all Nigerian *farm* households.
 
-```{r}
+```{r, fig.show="hold"}
 
-plot_grid(p1, p2); plot_grid(p3); plot_grid(p4)
+plot_grid(p1, p2)
+p3
+p4
+
+```
+
+```{r}
 pander(t1, digits=2, caption="Deciles of Farm Households (weighted)")
 
 ```
