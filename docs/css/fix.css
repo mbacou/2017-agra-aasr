@@ -28,6 +28,10 @@ pre {
   font-size: 15px;
 }
 
+.caption {
+  color: #777;
+}
+
 /*
 div.rhandsontable {
   max-width: 90%;
