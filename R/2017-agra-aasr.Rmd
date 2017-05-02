@@ -742,7 +742,7 @@ svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(
 
 # aggross_sh
 svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
-  xlab="Share of Farm (percent)")
+  xlab="Share of Farm Income (percent)")
 
 ```
 
