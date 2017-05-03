@@ -21,7 +21,7 @@ bibliography: biblio.bib
 
 --------------------------------------------------------------------------------------
 
-```{r setup, echo=FALSE}
+```{r setup, include=FALSE}
 
 knitr::opts_chunk$set(comment=NA, warning=F, message=F, base.url="../docs",
   fig.width=6, fig.height=3, fig.path="../docs/fig/", dpi=300, out.height="340px",
