@@ -1,8 +1,9 @@
 ---
-title: Business-oriented Typology and Characterization of Agriculture in SSA
-author: "[Melanie Bacou](http://github.com/mbacou) for BMGF"
+title: "Business-oriented Typology and Characterization of Agriculture in SSA"
+author: '[Melanie Bacou](http://github.com/mbacou) for BMGF'
 date: "Last updated on `r Sys.Date()`. DRAFT, DO NOT USE OR CITE."
 output:
+  word_document: 
   html_document:
     code_folding: hide
     fig_caption: yes
@@ -10,6 +11,7 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: yes
+always_allow_html: yes
 csl: apa.csl
 link-citations: yes
 nocite: |
@@ -27,7 +29,7 @@ knitr::opts_chunk$set(comment=NA, warning=F, message=F, base.url="../docs",
   fig.width=6, fig.height=3, fig.path="../docs/fig/", dpi=300, out.height="340px",
   dev.args=list(pointsize=10))
 
-par(family="Roboto Condensed")
+par(family="Roboto Condensed", font.main=1)
 
 library(data.table)
 library(rhandsontable)
@@ -330,11 +332,18 @@ This section is an exploration of smallholdings and smallholder farmers (definit
 
 #####################################################################################
 # Helper - Combine and format results from survey::svyby()
-svyCrossTab <- function(var, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
+svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
+  
+  # Pass a list of formulas (list(~var1, ~var2, ...))
+  # Then use tables::tabular() to format nested tables
+  
+  require(survey)
+  require(data.table)
+  require(stringr)
   
   # Reshape means
-  x <- lapply(var, function(x) {
-    m <- svyby(reformulate(x), reformulate(by), design, svymean, na.rm=TRUE)
+  x <- lapply(formula, function(x) {
+    m <- svyby(x, by, design, svymean, na.rm=TRUE)
     m <- as.data.table(ftable(m))
     return(m)
   })
@@ -344,10 +353,10 @@ svyCrossTab <- function(var, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
   x[stat=="SE", stat := "std. err."]
   
   # Reshape quantiles
-  y <- lapply(var, function(x) {
-    m <- svyby(reformulate(x), reformulate(by), design, svyquantile, quantiles, ci=TRUE, na.rm=TRUE)
+  y <- lapply(formula, function(x) {
+    m <- svyby(x, by, design, svyquantile, quantiles, ci=TRUE, na.rm=TRUE)
     m <- as.data.table(ftable(m))
-    m[, var := x]
+    m[, var := as.character(x)[2]]
     return(m)
   })
   y <- rbindlist(y)  
@@ -360,27 +369,29 @@ svyCrossTab <- function(var, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
   setkey(x, var, by, stat)
   setkey(y, var, by, stat)
   x <- x[y]
-  x[, stat := as.character(stat)]
-  x[, var := as.character(var)]
-  #x[-seq(1, nrow(x), uniqueN(by)*2), var := NA]
-  #x[-seq(1, nrow(x), 2), by := NA]
+ 
+  # Add optional labels
+  if(!missing(labels)) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2],
+    var := labels[i]]
+  
+  x[, var := factor(str_replace(var, fixed("I("), fixed("(")), ordered=T)]
+  x[, stat := factor(as.character(stat), ordered=T)]
   setcolorder(x, c(3,1,2,4:ncol(x)))
   setnames(x, 1:3, c("Variable", "By", "Stat"))
-  
-  # Add optional labels
-  if(!missing(labels)) for (i in seq_along(var)) x[Variable==var[i], Variable := labels[i]]
-  
   return(x)
 }
 
 #####################################################################################
 # Helper - Combine plots svyhist(), svysmooth, and svycdf()
-svyCrossPlot <- function(formula, breaks="Sturges", design, bandwidth=NULL, ...) {
-  par(mfrow=c(3,2))
-  for (i in levels(ghs$cropsales_clas)) {
+svyCrossPlot <- function(formula, design, breaks="Sturges", bandwidth=NULL, ...) {
+  require(survey)
+  n <- levels(ghs$cropsales_clas)
+  par(mfrow=c(length(n), 2))
+  for (i in n) {
     svyhist(formula, subset(design, cropsales_clas==i), breaks=breaks,
       ylab="Density", main=i, ...)
-    lines(svysmooth(formula, subset(design, cropsales_clas==i), bandwidth=bandwidth), lwd=1, col="red")
+    lines(svysmooth(formula, subset(design, cropsales_clas==i), bandwidth=bandwidth), 
+      lwd=1, col="red")
     plot(svycdf(formula, subset(design, cropsales_clas==i)), 
       ylab="Est. CDF", main=i, ...)
     abline(h=0.5, lty=2, col="red")
@@ -655,9 +666,9 @@ Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
 
 par(mfrow=c(1,3))
 svyhist(~croparea, ghs.svy.farm, main="Cultivated Area (ha)", xlim=c(0,10))
-lines(svysmooth(~farmarea, ghs.svy.farm, bandwidth=1), lwd=1, col="red")
-svyhist(~cropsales_sh, ghs.svy.farm, main="Crop Commercialization (percent)")
-lines(svysmooth(~cropsales_sh, ghs.svy.farm, bandwidth=.1), lwd=1, col="red")
+lines(svysmooth(~croparea, ghs.svy.farm, bandwidth=1), lwd=1, col="red")
+svyhist(~I(cropsales_sh*100), ghs.svy.farm, main="Crop Commercialization (percent)", xlab="cropsales_sh*100")
+lines(svysmooth(~I(cropsales_sh*100), ghs.svy.farm, bandwidth=1), lwd=1, col="red")
 svyboxplot(I(cropsales/1000)~croparea_4ha, ghs.svy.farm, main="Crop Sales ('000 LCU)", ylim=c(0,5E2))
 
 ```
@@ -665,13 +676,11 @@ svyboxplot(I(cropsales/1000)~croparea_4ha, ghs.svy.farm, main="Crop Sales ('000 
 ```{r tab2}
 
 # Estimated quintiles of `cropsales_sh` for smallholders
-tmp <- svyCrossTab(c("cropsales_sh", "cropsales"), "croparea_4ha", 
+tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(cropsales/1000)), ~croparea_4ha, 
   ghs.svy.farm, quantiles=c(.25,.5,.75))
-tmp[Variable=="cropsales_sh", names(tmp)[4:7] := lapply(.SD, "*", 100), .SDcols=4:7]
-tmp[Variable=="cropsales", names(tmp)[4:7] := lapply(.SD, "/", 1000), .SDcols=4:7]
 
 pander(tabular(
-  Factor(Variable)*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Factor(Stat)*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity,
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity,
   data=tmp),
   emphasize.italics.cols=c(4,6), 
   caption="Tab. Crop Commercialization for Farms below/above 4 ha (percent, '000 LCU)")
@@ -714,7 +723,7 @@ pander(tabular(
 
 The 3 categories of subsistence (SSHF), transition (TSHF), and commercial (CSHF) small farm holdings are characterized in the following graphs and summary tables.
 
-```{r fig3, fig.cap="Fig. Distribution of Farm Area (ha)", fig.height=6, out.height="300px"}
+```{r fig3, fig.cap="Fig. Distribution of Farm Sizes across Categories of Small Farm Holdings (ha)", fig.height=6, out.height="300px"}
 
 # farmarea
 svyCrossPlot(~farmarea, ghs.svy.shf, breaks=20, bandwidth=.5, xlim=c(0,4),
@@ -722,7 +731,7 @@ svyCrossPlot(~farmarea, ghs.svy.shf, breaks=20, bandwidth=.5, xlim=c(0,4),
 
 ```
 
-```{r fig4, fig.cap="Fig. Distribution of Livestock Holdings (TLU)", fig.height=6, out.height="300px"}
+```{r fig4, fig.cap="Fig. Distribution of Livestock Assets across Categories of Small Farm Holdings (TLU)", fig.height=6, out.height="300px"}
 
 # TLU_total
 svyCrossPlot(~TLU_total, ghs.svy.shf, breaks=20, bandwidth=1, xlim=c(0,30),
@@ -730,15 +739,15 @@ svyCrossPlot(~TLU_total, ghs.svy.shf, breaks=20, bandwidth=1, xlim=c(0,30),
 
 ```
 
-```{r fig5, fig.cap="Fig. Distribution of Livestock Sales ('000 LCU)", fig.height=6, out.height="300px"}
+```{r fig5, fig.cap="Fig. Distribution of Livestock Sales across Categories of Small Farm Holdings ('000 LCU)", fig.height=6, out.height="300px"}
 
 # lstocksold
-svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(0,3000),
+svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(0,1500),
   xlab="Livestock Sales ('000 LCU)")
 
 ```
 
-```{r fig6, fig.cap="Fig. Share of Farm Income (percent)", fig.height=6, out.height="300px"}
+```{r fig6, fig.cap="Fig. Share of Farm Income across Categories of Small Farm Holdings (percent)", fig.height=6, out.height="300px"}
 
 # aggross_sh
 svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
@@ -750,26 +759,25 @@ svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
 ```{r tab3}
 
 # Estimated quintiles of other variables for smallholders
-tmp <- svyCrossTab(c("cropvalue",
-  "cropsales", "lstocksold", "agsales", "agsalespc", "aggross"),
-  "cropsales_clas", ghs.svy.shf, quantiles=c(.25,.5,.75))
-tmp[, names(tmp)[4:7] := lapply(.SD, "/", 1000), .SDcols=4:7]
+tmp <- svyCrossTab(list(~I(cropvalue/1000), ~I(cropsales/1000), ~I(lstocksold/1000), 
+  ~I(agsales/1000), ~agsalespc, ~I(aggross/1000)),
+  ~cropsales_clas, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
 pander(tabular(
-  Factor(Variable)*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Factor(Stat)*Heading()*Format(digits=0, big.mark=",")*identity,
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(nsmall=2, digits=0, big.mark=",")*identity,
   data=tmp),
   emphasize.italics.cols=c(4,6,8), 
-  caption="Tab. Farm Household Characteristics across Categories ('000 LCU)")
+  caption="Tab. Characteristics of Small Farm Households across Categories ('000 LCU)")
 
-tmp <- svyCrossTab(c("farmarea", "croparea", "TLU_total", "cropsales_sh", "aggross_sh"),
-  "cropsales_clas", ghs.svy.shf, quantiles=c(.25,.5,.75))
-tmp[Variable %in% c("cropsales_sh", "aggross_sh"), names(tmp)[4:7] := lapply(.SD, "*", 100), .SDcols=4:7]
+tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total, 
+  ~I(cropsales_sh*100), ~I(aggross_sh*100)),
+  ~cropsales_clas, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
 pander(tabular(
-  Factor(Variable)*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Factor(Stat)*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp),
   emphasize.italics.cols=c(4,6,8), 
-  caption="Tab. Farm Household Characteristics across Categories (ha, TLU, percent)")
+  caption="Tab. Characteristics of Small Farm Households across Categories (ha, TLU, percent)")
 
 
 ```
