@@ -3,7 +3,6 @@ title: "Business-oriented Typology and Characterization of Agriculture in SSA"
 author: '[Melanie Bacou](http://github.com/mbacou) for BMGF'
 date: "Last updated on `r Sys.Date()`. DRAFT, DO NOT USE OR CITE."
 output:
-  word_document: 
   html_document:
     code_folding: hide
     fig_caption: yes
