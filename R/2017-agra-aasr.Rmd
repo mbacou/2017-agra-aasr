@@ -452,7 +452,7 @@ ghs[, cropsales_sh := cropsales/cropvalue]
 # - has any ag revenue `aggross`
 ghs[, boxplot(TLU_total)]
 ghs[, farm_hh := FALSE]
-ghs[farmarea>0 | croparea>0 | cropvalue>0 | lstocksold>0 | fishsold>0 | TLU_total>0 | aggross>0,
+ghs[farmarea>0 | croparea>0 | cropvalue>0 | lstocksold>0 | fishsold>0 | TLU_total>0 | aggross>0, 
   farm_hh := TRUE]
 ghs[, summary(farm_hh)]
 #    Mode   FALSE    TRUE    NA's 
@@ -756,7 +756,7 @@ tmp <- svyCrossTab(list(~I(cropvalue/1000), ~I(cropsales/1000), ~I(lstocksold/10
 pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Format(big.mark=",")*Heading()*as.integer,
   data=tmp), 
-  justify="clrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
+  justify="ccrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
   caption="Tab. Characteristics of Small Farm Households across Categories ('000 LCU)")
 
 tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total, 
@@ -766,7 +766,7 @@ tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total,
 pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp),
-  justify="clrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
+  justify="ccrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
   caption="Tab. Characteristics of Small Farm Households across Categories (ha, TLU, percent)")
 
 
