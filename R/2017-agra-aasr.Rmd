@@ -10,7 +10,6 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: yes
-always_allow_html: yes
 csl: apa.csl
 link-citations: yes
 nocite: |
@@ -28,37 +27,31 @@ knitr::opts_chunk$set(comment=NA, warning=F, message=F, base.url="../docs",
   fig.width=6, fig.height=3, fig.path="../docs/fig/", dpi=300, out.height="340px",
   dev.args=list(pointsize=10))
 
-par(family="Roboto Condensed", font.main=1)
-
 library(data.table)
 library(rhandsontable)
 library(jsonlite)
 library(survey)
 library(pander)
 library(tables)
-library(ggplot2)
-library(scales)
-library(cowplot)
 
 load("../tmp/2017-agra-aasr.RData")
 
 ```
 
 
-```{r, eval=FALSE}
+```{r inventory, eval=FALSE}
 
 library(data.table)
 library(foreign)
 library(stringr)
 library(rhandsontable)
 library(survey)
-library(ggthemes)
 
 setwd("~/Projects/2017-agra-aasr")
 load("./tmp/2017-agra-aasr.RData")
 
 #####################################################################################
-# Helper - Construct variable summary
+# Helper - Construct data codebook
 summaryTable <- function(dt) {
   
   dt.lbl <- data.table(
@@ -79,7 +72,6 @@ summaryTable <- function(dt) {
   dt.lbl[, `Hist.` := sapply(dt, function(x) ifelse(class(x)=="numeric", toJSON(list(values=hist(x, plot=FALSE)$counts)), toJSON(NA)))]
   
   setcolorder(dt.lbl, c(1,9,10,2:8))
-  
   return(dt.lbl)
 }
 
@@ -713,9 +705,8 @@ tmp <- data.table(cbind(
   keep.rownames=T)
 
 pander(tabular(
-  ((`Farm Size`=Factor(rn))~Heading()*identity*(Heading("Crop Sales")*(sales+`no sales`)+Heading("Category")*(SSHF+TSHF+CSHF))),
-  data=tmp),
-  digits=2, big.mark=",", missing=".",
+  (`Farm Size`=Factor(rn))+1~Heading("Crop Sales")*sum*(sales+`no sales`)+Heading("Category")*sum*(SSHF+TSHF+CSHF),
+  data=tmp), justify="crrrrr", digits=2,
   caption="Tab. Proportions of Farm Holdings across Categories (percent)")
 
 ```
@@ -763,9 +754,9 @@ tmp <- svyCrossTab(list(~I(cropvalue/1000), ~I(cropsales/1000), ~I(lstocksold/10
   ~cropsales_clas, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
 pander(tabular(
-  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(nsmall=2, digits=0, big.mark=",")*identity,
-  data=tmp),
-  emphasize.italics.cols=c(4,6,8), split.table=Inf,
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Format(big.mark=",")*Heading()*as.integer,
+  data=tmp), 
+  justify="clrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
   caption="Tab. Characteristics of Small Farm Households across Categories ('000 LCU)")
 
 tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total, 
@@ -775,7 +766,7 @@ tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total,
 pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp),
-  emphasize.italics.cols=c(4,6,8), split.table=Inf,
+  justify="clrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
   caption="Tab. Characteristics of Small Farm Households across Categories (ha, TLU, percent)")
 
 
