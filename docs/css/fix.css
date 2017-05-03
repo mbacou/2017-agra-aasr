@@ -40,6 +40,12 @@ pre {
   color: #777;
 }
 
+.references p {
+  text-indent: -2em;
+  margin-left: 2em;
+
+}
+
 /*
 div.rhandsontable {
   max-width: 90%;
