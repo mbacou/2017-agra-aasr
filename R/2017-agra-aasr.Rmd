@@ -809,7 +809,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Tab. Characteristics of Small Farm Households across Categories (ha, TLU, percent)")
+  caption="Tab. Sources of Agricultural Income of Small Farm Households across Categories (ha, TLU, percent)")
 
 
 ```
@@ -825,7 +825,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Tab. Demographics of Small Farm Households across Categories (ha, TLU, percent)")
+  caption="Tab. Demographics of Small Farm Households across Categories")
 
 ```
 
@@ -841,7 +841,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Tab. Parcels and Input Uses for Small Farm Households across Categories (ha, TLU, percent)")
+  caption="Tab. Parcels and Input Uses for Small Farm Households across Categories (percent)")
 
 ```
 
@@ -849,7 +849,7 @@ pander(tabular(
 
 # Poverty
 tmp <- svyCrossTab(list(~pcexp_ppp_m, ~foodexp_ppp_m, ~nfoodexp_ppp_m,
-  ~I(poor_ppp1*100), ~I(poor_ppp2*100), ~I(povgap_ppp1), ~I(povgap_ppp2*100),
+  ~I(poor_ppp1*100), ~I(poor_ppp2*100), ~I(povgap_ppp1*100), ~I(povgap_ppp2*100),
   ~I(sevpov_ppp1*100), ~I(sevpov_ppp2*100)),
   ~cropsales_clas, ghs.ppp.svy.shf, quantiles=c(.25,.5,.75))
 
@@ -857,7 +857,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Tab. Poverty Incidence in Small Farm Households across Categories (ha, TLU, percent)")
+  caption="Tab. Poverty Incidence in Small Farm Households across Categories (PPP, percent)")
 
 ```
 
