@@ -796,20 +796,28 @@ tmp <- svyCrossTab(list(~I(cropvalue/1000), ~I(cropsales/1000), ~I(lstocksold/10
   ~cropsales_clas, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
 pander(tabular(
-  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Format(big.mark=",")*Heading()*as.integer,
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*as.integer*Format(big.mark=","),
   data=tmp), 
   justify="ccrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Tab. Characteristics of Small Farm Households across Categories ('000 LCU)")
+  caption="Tab. Sources of Agricultural Income for Small Farm Households across Categories ('000 LCU)")
 
-tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total, 
-  ~I(cropsales_sh*100), ~I(aggross_sh*100)),
+tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(aggross_sh*100)),
+  ~cropsales_clas, ghs.svy.shf, quantiles=c(.25,.5,.75))
+
+pander(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=2),
+  data=tmp), 
+  justify="ccrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
+  caption="Tab. Sources of Agricultural Income for Small Farm Households across Categories (percent)")
+
+tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total),
   ~cropsales_clas, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
 pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Tab. Sources of Agricultural Income of Small Farm Households across Categories (ha, TLU, percent)")
+  caption="Tab. Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)")
 
 
 ```
