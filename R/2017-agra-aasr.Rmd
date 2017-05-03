@@ -207,7 +207,7 @@ We propose then focusing on around half a dozen countries for which we have rece
 1. Apply some typology to distinguish between say “predominantly-subsistence” focused and “transitioning-commercial” smallholders  
 2. Report on hh level variables that can provide insight into the scale of potential business development challenges and opportunities in each country. 
 
-![draft approach](fig/method-stan_2017.05.02.png)
+![Fig. Suggested Approach](fig/method-stan_2017.05.02.png)
 
 Key farm and household-level variables to look at may include:
 
