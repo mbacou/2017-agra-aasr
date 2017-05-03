@@ -495,23 +495,24 @@ summary(ghs$cropsales_clas)
 
 ##########################################
 # Define 2-stage stratified survey design (use most recent GHS wave only)
-ghs.svy <- svydesign(~hhid, strata=~zone+rural, weights=~wt_wave2, 
-  data=ghs[!is.na(wt_wave2)])
-ghs.farm.svy <- svydesign(~hhid, strata=~zone+sector, weights=~wt_wave2,
-  data=ghs.farm[!is.na(wt_wave2)])
+ghs.svy <- svydesign(~ea+hhid, strata=~zone+rural, weights=~wt_wave2, 
+  data=ghs[!is.na(wt_wave2)], nest=T)
+ghs.farm.svy <- svydesign(~ea+hhid, strata=~zone+sector, weights=~wt_wave2,
+  data=ghs.farm[!is.na(wt_wave2)], nest=T)
 
 summary(ghs.svy)
-# Stratified Independent Sampling design (with replacement)
-# svydesign(~hhid, strata = ~zone + rural, weights = ~wt_wave2, 
-#     data = ghs[!is.na(wt_wave2)])
+# Stratified 2 - level Cluster Sampling design (with replacement)
+# With (481, 4867) clusters.
+# svydesign(~ea + hhid, strata = ~zone + rural, weights = ~wt_wave2, 
+#     data = ghs[!is.na(wt_wave2)], nest = T)
 # Probabilities:
 #      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 # 0.0000239 0.0001235 0.0001892 0.0002150 0.0002699 0.0014700 
-# Stratum Sizes: 
+# First-level Stratum Sizes: 
 #            north central north east north west south east south south south west
 # obs                  798        754        890        791         786        848
-# design.PSU           798        754        890        791         786        848
-# actual.PSU           798        754        890        791         786        848
+# design.PSU            79         74         85         77          79         87
+# actual.PSU            79         74         85         77          79         87
 
 # Subset survey sample to farm and SH farms
 ghs.svy.farm <- subset(ghs.svy, farm_hh==T)
@@ -521,17 +522,17 @@ ghs.svy.shf <- subset(ghs.svy, croparea_4ha=="<= 4 ha")
 # Verify sampling design (e.g. total population)
 (svytotal(~hhsize, ghs.svy, na.rm=T))/1E6
 #         total      SE
-# hhsize 187.88 2248776
+# hhsize 187.88 7601475
 
 svytotal(~farm_hh, ghs.svy, na.rm=T)/1E6
-#               total     SE
-# farm_hhFALSE 13.480 325524
-# farm_hhTRUE  19.256 270388
+#               total      SE
+# farm_hhFALSE 13.480 1259455
+# farm_hhTRUE  19.256  712970
 
 svymean(~farm_hh, ghs.svy, na.rm=T)
 #                 mean     SE
-# farm_hhFALSE 0.41177 0.0082
-# farm_hhTRUE  0.58823 0.0082
+# farm_hhFALSE 0.41177 0.0249
+# farm_hhTRUE  0.58823 0.0249
 
 svymean(~croparea_4ha, ghs.svy.farm, na.rm=T)
 #                         mean     SE
@@ -540,7 +541,7 @@ svymean(~croparea_4ha, ghs.svy.farm, na.rm=T)
 
 svytotal(~hhsize, ghs.svy.shf, na.rm=T)
 #            total      SE
-# hhsize 106640203 1923843
+# hhsize 106349144 4497228
 
 svymean(~cropsales_sh, ghs.svy.farm, na.rm=T)
 #                mean     SE
