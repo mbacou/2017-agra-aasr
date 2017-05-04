@@ -810,6 +810,7 @@ plot(svytable(~noaggross_clas+croparea_4ha, ghs.svy.shf), main=NA, las=2,
   ylab=list("Cultivated Area", cex=.8), 
   xlab=list("Off-Farm Income", cex=.8))
 
+par(mfrow=c(1,1))
 plot(svytable(~class9+croparea_4ha, ghs.svy.shf), main=NA, las=3,
   ylab=list("Cultivated Area", cex=.8), 
   xlab=list("Categories", cex=.8))
