@@ -855,7 +855,7 @@ Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
 
 ```{r fig1b, fig.cap="Fig. Cultivated Area, Crop Commercialization, and Income Diversification"}
 
-par(mfrow=c(1,3))
+par(mfrow=c(1,3), mar=c(5.1,4.1,4.1,2.1))
 svyhist(~croparea, ghs.svy.farm, main="Cultivated Area", xlab="croparea (ha)", xlim=c(0,10))
 lines(svysmooth(~croparea, ghs.svy.farm, bandwidth=1), lwd=1, col=40)
 svyhist(~I(cropsales_sh*100), ghs.svy.farm, main="Crop Commercialization", xlab="cropsales_sh (percent)")
