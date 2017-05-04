@@ -767,10 +767,9 @@ The resulting classes of farm households are labelled as follows:
 
 ```{r tabclas}
 
-tmp <- factor(c("low", "medium", "high"), ordered=T)
+tmp <- factor(c("low", "medium", "high"), levels=c("low", "medium", "high"))
 tmp <- data.frame(clas=class9, C=rep(tmp, each=3), D=rep(tmp, 3))
 
-panderOptions("keep.line.breaks", TRUE)
 pander(tabular((`Income\nDiversification`=D)~(`Crop\nCommercialization`=C)*Heading()*identity*Heading()*(as.character(clas)), data=tmp), 
   split.table=Inf, emphasize.strong.cols=1, emphasize.italics.cols=2:4, emphasize.rownames=F,
   caption="Tab. Household Classification")
@@ -802,15 +801,15 @@ Estimated proportions of farm households across classes and categories are shown
 
 ```{r fig2, fig.cap="Fig. Proportions of Farm Holdings across Categories", out.height="240px"}
 
-par(mfrow=c(1,2))
-plot(svytable(~cropsales_clas+croparea_4ha, ghs.svy.shf), main=NA, las=2,
+par(mfrow=c(1,2), mar=c(5,1,4,2))
+plot(svytable(~cropsales_clas+croparea_4ha, ghs.svy.shf), main=NA,
   ylab=list("Cultivated Area", cex=.8), 
   xlab=list("Crop Commercialization", cex=.8))
-plot(svytable(~noaggross_clas+croparea_4ha, ghs.svy.shf), main=NA, las=2,
+plot(svytable(~noaggross_clas+croparea_4ha, ghs.svy.shf), main=NA,
   ylab=list("Cultivated Area", cex=.8), 
   xlab=list("Off-Farm Income", cex=.8))
 
-par(mfrow=c(1,1))
+par(mfrow=c(1,1), mar=c(5,2,1,2))
 plot(svytable(~class9+croparea_4ha, ghs.svy.shf), main=NA, las=3,
   ylab=list("Cultivated Area", cex=.8), 
   xlab=list("Categories", cex=.8))
