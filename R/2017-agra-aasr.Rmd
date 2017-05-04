@@ -873,11 +873,7 @@ legend("topright", lty=c(1,1), col=c(4, 41), legend=c("Off farm income","Crop sa
 lines(svysmooth(I(cropsales/1000)~croparea, ghs.svy.farm, bandwidth=.5), col=41)
 lines(svysmooth(I(noaggross/1000)~croparea, ghs.svy.farm, bandwidth=.5), col=4)
 
-```
-
-```{r fig1d, fig.cap="Fig. Crop Commercialization and Income Diversification Boxplots"}
-
-par(mfrow=c(1,2), cex=.8)
+par(mfrow=c(1,2), cex=.7)
 svyboxplot(I(cropsales_sh*100)~croparea_4ha, ghs.svy.farm, 
   xlab="Cultivated Area", ylab="Crop Commercialization (percent)", legend=2, ylim=c(0,20))
 svyboxplot(I(noaggross_sh*100)~croparea_4ha, ghs.svy.farm, 
