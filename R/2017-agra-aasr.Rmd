@@ -715,6 +715,9 @@ vars <- c("weight", names(ppp12)[names(ppp12) %like% "ppp"])
 tmp <- ppp12[, lapply(.SD, weightedMean, weight, na.rm=T), .SDcols=vars,
   keyby=croparea <= 4][, weight := NULL]
 
+# The role of hhld head AGE
+
+
 ``` 
 
 ### Definitions
@@ -884,14 +887,15 @@ svyboxplot(I(noaggross_sh*100)~croparea_4ha, ghs.svy.farm,
 
 ```{r fig1e, fig.cap="Fig. Est. Mean Crop Commercialization by Age, Gender, and Zone"}
 
-par(mfrow=c(1,2), cex=.6)
-plot(c(15,100), c(0,90), type="n", xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
-legend("topright", lty=c(1,1), col=c(4, 41), legend=c("Male","Female"), bty="n")
-lines(svysmooth(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==1), banwidth=10), col=41)
-lines(svysmooth(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==0), banwidth=10), col=4)
+par(mfrow=c(1,2), cex=.8)
+svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(4), legend=c("Male"), bty="n")
+svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="transparent", basecol=41, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
 
+par(mfrow=c(1,1), cex=.8)
 l <- levels(ghs$zone)
-plot(c(15,90), c(0,350), type="n", xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
+plot(c(15,80), c(0,350), type="n", xlab="Age of Hhld Head", ylab="Est. Mean Crop Sales ('000 LCU)")
 legend("topright", lty=c(1,1), col=seq_along(l)*5, legend=l, bty="n")
 for (i in seq_along(l)) lines(
   svysmooth(I(cropsales/1000)~agehead, subset(ghs.svy.farm, zone==levels(ghs$zone)[i]), banwidth=10), 
