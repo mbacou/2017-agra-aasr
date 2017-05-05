@@ -1,7 +1,7 @@
 ---
 title: "Business-oriented Typology and Characterization of Agriculture in SSA"
 author: '[Melanie Bacou](http://github.com/mbacou) for BMGF'
-date: "Last updated on `r Sys.Date()`. DRAFT, DO NOT USE OR CITE."
+date: "Last updated on `r Sys.Date()`"
 output:
   html_document:
     code_folding: hide
@@ -13,12 +13,13 @@ output:
 csl: apa.csl
 link-citations: yes
 nocite: |
-  @aasr_2016, @alvarez2014typology, @jayne2015agdev, @hazell2013urban, @douillet2014developing, @jordan2005eth, @omamo2006strategic, @bacou2015ethseg, @omamo2006strategic, @benin2016agricultural, @willy2015adaptation, @jayne2015africafarmland, @diao2017ghana, @roberts2014eth, @schnitzer2014tza, @heady2013ethland, @maxwell2014foodinsec, @minot2013agataeth, @girei2017fadama
+  @aasr_2016, @alvarez2014typology, @jayne2015agdev, @hazell2013urban, @douillet2014developing, @jordan2005eth, @omamo2006strategic, @bacou2015ethseg, @omamo2006strategic, @benin2016agricultural, @willy2015adaptation, @jayne2015africafarmland, @diao2017ghana, @roberts2014eth, @schnitzer2014tza, @heady2013ethland, @maxwell2014foodinsec, @minot2013agataeth, @girei2017fadama, @christen2013segmenting
 css: css/fix.css
 subtitle: A multi-scale and cross-time framework
 bibliography: biblio.bib
 ---
 
+<p class="bg-warning">DRAFT, DO NOT USE OR CITE.</p>
 --------------------------------------------------------------------------------------
 
 ```{r setup, include=FALSE}
@@ -66,10 +67,6 @@ summaryTable <- function(dt) {
   setcolorder(dt.lbl, c(1,9,10,2:8))
   return(dt.lbl)
 }
-
-#####################################################################################
-# Helper - NA to Zero
-nona <- function(x) ifelse(is.na(x), 0, x)
 
 #####################################################################################
 # Helper - Combine and format results from survey::svyby()
@@ -716,8 +713,19 @@ vars <- c("weight", names(ppp12)[names(ppp12) %like% "ppp"])
 tmp <- ppp12[, lapply(.SD, weightedMean, weight, na.rm=T), .SDcols=vars,
   keyby=croparea <= 4][, weight := NULL]
 
-# The role of hhld head AGE
+# CROP SALES
 
+
+# FOOD EXPENDITURES
+m <- svymean(~I(100*foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm=T)), ghs.ppp.svy, na.rm=T)
+#                                                                                   mean     SE
+# I(100 * foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm = T)) 73.394 0.2999
+
+plot(m)
+
+svyquantile(~I(100*foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm=T)), ghs.ppp.svy, .5, ci=T, na.rm=T)
+#                                                                                      0.5
+# I(100 * foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm = T)) 76.27067
 
 ``` 
 
@@ -774,7 +782,7 @@ The resulting classes of farm households are labelled as follows:
 tmp <- factor(c("low", "medium", "high"), levels=c("low", "medium", "high"))
 tmp <- data.frame(clas=class9, C=rep(tmp, each=3), D=rep(tmp, 3))
 
-pander(tabular((`Income\nDiversification`=D)~(`Crop\nCommercialization`=C)*Heading()*identity*Heading()*(as.character(clas)), data=tmp), 
+pander(tabular((`Income Diversification`=D)~(`Crop Commercialization`=C)*Heading()*identity*Heading()*(as.character(clas)), data=tmp),
   split.table=Inf, emphasize.strong.cols=1, emphasize.italics.cols=2:4, emphasize.rownames=F,
   caption="Tab. Household Classification")
 
@@ -782,28 +790,30 @@ pander(tabular((`Income\nDiversification`=D)~(`Crop\nCommercialization`=C)*Headi
 
 The following 3 tables show the count of observations in each class for farm households with cultivated area <= 2ha, between 2 and 4ha, and <= 4ha.
 
-```{r tabcrossclas}
+```{r counts}
 
-pander(tabular((`Cultivated Area`=croparea_clas)*(`Income\n Diversification`=noaggross_clas)~Format(big.mark=",")*(`Crop\nCommercialization`=cropsales_clas),
-  data=ghs), justify="ccrrr", emphasize.strong.cols=2, emphasize.italics.cols=1, emphasize.rownames=F,
+pander(tabular(Heading()*noaggross_clas~Format(big.mark=",")*Heading()*croparea_clas*Heading()*cropsales_clas,
+  data=ghs), split.table=Inf, justify="rrrrrrrrrr",
+  emphasize.strong.cols=1, emphasize.rownames=F,
   caption="Tab. Count of Observations across Classes of Farm Households")
 
-pander(tabular((`Cultivated Area`=croparea_2ha)*(`Income\nDiversification`=noaggross_clas)~Format(big.mark=",")*(`Crop\nCommercialization`=cropsales_clas),
-  data=ghs), justify="ccrrr", emphasize.strong.cols=2, emphasize.italics.cols=1, emphasize.rownames=F,
-  caption="Tab. Count of Observations across Classes of Farm Households (below/above 2ha)")
+pander(tabular(Heading()*noaggross_clas~Format(big.mark=",")*Heading()*croparea_2ha*Heading()*cropsales_clas,
+  data=ghs), split.table=Inf, justify="rrrrrrr", 
+  emphasize.strong.cols=1, emphasize.rownames=F,
+  caption="Tab. Count of Observations across Classes of Farm Households (below/above 2 ha)")
 
-pander(tabular((`Cultivated Area`=croparea_4ha)*(`Income\nDiversification`=noaggross_clas)~Format(big.mark=",")*(`Crop\nCommercialization`=cropsales_clas),
-  data=ghs), justify="ccrrr", split.table=Inf,
-  emphasize.strong.cols=2, emphasize.italics.cols=1, emphasize.rownames=F,
-  caption="Tab. Count of Observations across Classes of Farm Households (below/above 4ha)")
+pander(tabular(Heading()*noaggross_clas~Format(big.mark=",")*Heading()*croparea_4ha*Heading()*cropsales_clas,
+  data=ghs), split.table=Inf, justify="rrrrrrr", 
+  emphasize.strong.cols=1, emphasize.rownames=F,
+  caption="Tab. Count of Observations across Classes of Farm Households (below/above 4 ha)")
 
 ```
 
-In the tables of estimates below we choose to only distinguish between households **below/above 4ha** (as this approach produces classes with a larger count of observations). Using data from the 2012 Nigeria General Household Survey (GHS) we estimate the proportions of farm households across all categories and the distributions of other key household characteristics (household structure, assets, farm input uses, etc.). 
+In the next tables we limit categories to farm households **below/above 4ha** (as this approach produces classes with a larger count of observations). Using data from the 2012 Nigeria General Household Survey (GHS) we estimate the proportions of farm households across all categories and the distributions of other key household characteristics (household structure, assets, farm input uses, etc.). 
 
 Estimated proportions of farm households across classes and categories are shown in the next graph and table.
 
-```{r fig2a, fig.cap="Fig. Proportions of Farm Holdings across Categories"}
+```{r fig2a, fig.cap="Fig. Est. Proportions of Farm Holdings across Categories"}
 
 par(mfrow=c(1,3), mar=c(5,1,0,2))
 plot(svytable(~croparea_4ha+cropsales_clas, ghs.svy.shf), main=NA, las=2,
@@ -822,21 +832,12 @@ plot(svytable(~croparea_4ha+class9, ghs.svy.shf), main=NA, las=2,
 
 ```{r tab1}
 
-tmp <- data.table(cbind(
-  svytable(~croparea_4ha+cropsales_clas, ghs.svy.farm, Ntotal=100),
-  svytable(~croparea_4ha+noaggross_clas, ghs.svy.farm, Ntotal=100),
-  svytable(~croparea_4ha+class9, ghs.svy.farm, Ntotal=100)),
-  keep.rownames=T)
-
-t <- tmp[, .SD, .SDcols=1:7]
-pander(tabular((`Cult. Area`=Factor(rn))+1~Heading("Income Div.")*sum*(LoD+MeD+HiD)+Heading("Crop Sales")*sum*(LoC+MeC+HiC), data=t), 
-  justify="crrrrrr", digits=2, split.table=Inf, emphasize.strong.cols=1,
-  caption="Tab. Proportions of Farm Holdings across Categories (percent)")
-
-t <- tmp[, .SD, .SDcols=c(1,8:16)]
-pander(tabular((`Cult. Area`=Factor(rn))+1~Heading()*Format(digits=1)*sum*All(t), data=t), 
-  justify="crrrrrrrrr", split.table=Inf, emphasize.strong.cols=1,
-  caption="Tab. Proportions of Farm Holdings across Categories (percent)")
+pander(ftable(svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_clas)), ghs.svy.farm, na.rm=T), rownames=list(
+  levels(ghs$croparea_4ha), 
+  levels(ghs$cropsales_clas), 
+  levels(ghs$noaggross_clas)))*100, round=2,
+  emphasize.italics.rows=c(1,5,7,9), emphasize.strong.cols=1, emphasize.strong.rows=2,
+  caption="Est. Proportions of Farm Holdings across Categories")
 
 ```
 
