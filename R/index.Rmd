@@ -25,8 +25,8 @@ nocite: |
 
 ```{r setup, include=FALSE}
 
-knitr::opts_chunk$set(comment=NA, warning=F, message=F, base.url="../docs",
-  fig.width=6, fig.height=3, fig.path="fig/", dpi=300, out.height="340px",
+knitr::opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
+  dev="svg", fig.width=6, fig.height=3, fig.path="fig/", dpi=300, out.height="340px",
   dev.args=list(pointsize=10))
 
 library(data.table)

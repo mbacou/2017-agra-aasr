@@ -56,43 +56,6 @@
 <script src="libs/rhandsontable-binding-0.3.4.3/rhandsontable.js"></script>
 
 
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-</style>
 
 <link rel="stylesheet" href="css/book.css" type="text/css" />
 </head>
@@ -162,335 +125,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>DfID’s sponsored agricultural survey (1,300 hhlds) (contact Abt Associates)</li>
 <li>Fadama III 2009 Baseline and 2012 Midline Surveys and FADAMA’s Agricultural Production Surveys (APS) (still not publicly available, see e.g. <span class="citation">(Girei, Saingbe, Bitrus, &amp; Bassey, <a href="#ref-girei2017fadama">2017</a>)</span>)</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####################################################################################
-
-<span class="co"># Load and copy constructed vars from the 2016 NGA Segmentation (GHS)</span>
-e1 &lt;-<span class="st"> </span><span class="kw">new.env</span>()
-<span class="kw">setwd</span>(<span class="st">&quot;~/Google Drive/2016-BMGF-Segmentation/NGA&quot;</span>)
-<span class="kw">load</span>(<span class="st">&quot;./temp/nga_bmgf_seg_1.RData&quot;</span>, <span class="dt">envir=</span>e1)
-<span class="kw">setwd</span>(<span class="st">&quot;~/Projects/2017-agra-aasr&quot;</span>)
-
-ghs &lt;-<span class="st"> </span>e1$ghs
-ghs.farm &lt;-<span class="st"> </span>e1$farm
-ghs.geo &lt;-<span class="st"> </span>e1$geo12
-ghs.inc &lt;-<span class="st"> </span>e1$inc12
-ghs.ppp &lt;-<span class="st"> </span>e1$ppp12
-<span class="kw">rm</span>(e1)
-
-<span class="co"># Verify all income aggregates in `ghs.inc` (received from Cleo/IFPRI)</span>
-<span class="co"># Cleo suggested using crop/fish/livestock and by-products sold/gift/lost/reimbursed</span>
-<span class="co"># `cropsold`, `agbyprodincimp`, `reimbursmt_n`, `gift_n` in `Income2.dta`</span>
-<span class="co"># Note that last 3 vars have negative sign, need to correct</span>
-<span class="kw">summary</span>(ghs.inc$hh)
-<span class="co">#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.</span>
-<span class="co"># 10000   90040  190000  183200  280000  370000</span>
-<span class="kw">summary</span>(ghs$hhid)
-<span class="kw">summary</span>(ghs.ppp$hhid)
-<span class="co"># =&gt; `hh` match `hhid`</span>
-
-vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cropsold&quot;</span>, <span class="st">&quot;croplost&quot;</span>, <span class="st">&quot;cropownimp&quot;</span>,
-  <span class="st">&quot;reimbursmt_n&quot;</span>, <span class="st">&quot;lost_n&quot;</span>, <span class="st">&quot;gift_n&quot;</span>, <span class="st">&quot;self&quot;</span>,
-  <span class="st">&quot;fishincimp&quot;</span>, <span class="st">&quot;agr_wge&quot;</span>, <span class="st">&quot;nonagr_wge&quot;</span>, <span class="st">&quot;other&quot;</span>,
-  <span class="st">&quot;farmrntimp&quot;</span>, <span class="st">&quot;agrentimp&quot;</span>, <span class="st">&quot;privtransfer&quot;</span>, <span class="st">&quot;pubtransfer&quot;</span>)
-ghs.inc[, <span class="kw">lapply</span>(<span class="kw">names</span>(.SD), function(x) <span class="kw">boxplot</span>(.SD[[x]], <span class="dt">main=</span>x)), .SDcols=vars]
-
-<span class="co"># Reconstruct all value vars in `ghs`</span>
-<span class="co"># `livstrevimp`, `livstbyprod`, `fishincimp` have been corrected in separate files</span>
-<span class="co"># Use `ghs$lstocksold` instead of `ghs.inc$livstrevimp`</span>
-<span class="co"># Use `ghs$fishsold` instead of `ghs.inc$fishincimp`</span>
-vars.val &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cropsales&quot;</span>, <span class="st">&quot;cropvalue&quot;</span>, <span class="st">&quot;agsales&quot;</span>, <span class="st">&quot;agsalespc&quot;</span>, <span class="st">&quot;aggross&quot;</span>, <span class="st">&quot;totgross&quot;</span>, <span class="st">&quot;cropsales_sh&quot;</span>, <span class="st">&quot;aggross_sh&quot;</span>)
-ghs[, (<span class="kw">unique</span>(<span class="kw">c</span>(vars, vars.val))) :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-
-<span class="kw">setkey</span>(ghs, hhid)
-<span class="kw">setkey</span>(ghs.inc, hh)
-<span class="kw">setkey</span>(ghs.farm, hhid)
-ghs[ghs.farm, croparea :<span class="er">=</span><span class="st"> </span>croparea]
-
-ghs[ghs.inc, cropsales :<span class="er">=</span><span class="st"> </span><span class="kw">rowSums</span>(.SD[, .(cropsold, agbyprodincimp, -reimbursmt_n, -gift_n)], <span class="dt">na.rm=</span>T)]
-<span class="kw">summary</span>(ghs$cropsales)
-<span class="co"># Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s</span>
-<span class="co">#    0       0       0   37910   18500 3068000      19</span>
-
-ghs[ghs.inc, cropvalue :<span class="er">=</span><span class="st"> </span><span class="kw">rowSums</span>(.SD[, .(cropsales, croplost, cropownimp, -lost_n)], <span class="dt">na.rm=</span>T)]
-<span class="kw">summary</span>(ghs$cropvalue)
-<span class="co"># Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA&#39;s</span>
-<span class="co">#    0         0     68370  14990000  23400000 161000000        19</span>
-
-ghs[, agsales :<span class="er">=</span><span class="st"> </span><span class="kw">rowSums</span>(.SD[, .(cropsales, lstocksold, fishsold)], <span class="dt">na.rm=</span>T)]
-<span class="kw">summary</span>(ghs$agsales)
-<span class="co"># Min.  1st Qu.   Median     Mean  3rd Qu.     Max.</span>
-<span class="co">#    0        0        0   240900    63420 90620000</span>
-
-ghs[, agsalespc :<span class="er">=</span><span class="st"> </span>agsales/equiv]
-ghs[ghs.inc, aggross :<span class="er">=</span><span class="st"> </span><span class="kw">rowSums</span>(.SD[, .(agsales, agr_wge, farmrntimp, agrentimp, cropownimp)], <span class="dt">na.rm=</span>T)]
-<span class="kw">summary</span>(ghs$aggross)
-<span class="co"># Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA&#39;s</span>
-<span class="co">#    0         0    150900  15200000  23450000 163100000        19</span>
-
-ghs[ghs.inc, totgross :<span class="er">=</span><span class="st"> </span><span class="kw">rowSums</span>(.SD[, .(aggross, nonagr_wge, other, privtransfer, pubtransfer, self)], <span class="dt">na.rm=</span>T)]
-<span class="kw">summary</span>(ghs$totgross)
-<span class="co"># Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA&#39;s</span>
-<span class="co">#    0    287500   1525000  15630000  23620000 163100000        19</span>
-
-ghs[, noaggross :<span class="er">=</span><span class="st"> </span><span class="kw">rowSums</span>(.SD[, .(totgross, -aggross)], <span class="dt">na.rm=</span>T)]
-<span class="kw">summary</span>(ghs$noaggross)
-<span class="co"># Min.  1st Qu.   Median     Mean  3rd Qu.     Max.</span>
-<span class="co">#    0     2075   172700   419800   499400 10150000</span>
-
-ghs[, aggross_sh :<span class="er">=</span><span class="st"> </span>aggross/totgross]
-ghs[, noaggross_sh :<span class="er">=</span><span class="st"> </span><span class="dv">1</span> -<span class="st"> </span>aggross_sh]
-ghs[, cropsales_sh :<span class="er">=</span><span class="st"> </span>cropsales/cropvalue]
-
-<span class="co"># Fix Inf values</span>
-ghs[agsalespc==<span class="ot">Inf</span>, agsalespc :<span class="er">=</span><span class="st"> </span><span class="ot">NA</span>]
-
-<span class="co"># Define a farm holding as a household matching any of these conditions:</span>
-<span class="co"># - has any `farmarea` or `croparea`</span>
-<span class="co"># - has any `cropvalue` or `lstocksold` or `fishsold`</span>
-<span class="co"># - has any `TLU_total`</span>
-<span class="co"># - has any ag revenue `aggross`</span>
-ghs[, <span class="kw">boxplot</span>(TLU_total)]
-ghs[, farm_hh :<span class="er">=</span><span class="st"> </span><span class="ot">FALSE</span>]
-ghs[farmarea&gt;<span class="dv">0</span> |<span class="st"> </span>croparea&gt;<span class="dv">0</span> |<span class="st"> </span>cropvalue&gt;<span class="dv">0</span> |<span class="st"> </span>lstocksold&gt;<span class="dv">0</span> |<span class="st"> </span>fishsold&gt;<span class="dv">0</span> |<span class="st"> </span>TLU_total&gt;<span class="dv">0</span> |<span class="st"> </span>aggross&gt;<span class="dv">0</span>,
-  farm_hh :<span class="er">=</span><span class="st"> </span><span class="ot">TRUE</span>]
-ghs[, <span class="kw">summary</span>(farm_hh)]
-<span class="co">#    Mode   FALSE    TRUE    NA&#39;s</span>
-<span class="co"># logical    1537    3343       0</span>
-
-<span class="co"># Which farms in `ghs` are not accounted for in `ghs.farm`?</span>
-ghs.farm[!ghs[farm_hh==T], .N]
-<span class="co"># [1] 116</span>
-ghs[farm_hh==T][!ghs.farm, .N]
-<span class="co"># [1] 278</span>
-ghs.farm[!ghs[farm_hh==T], croparea]
-<span class="co"># =&gt; all 0 or NA</span>
-ghs[farm_hh==T][!ghs.farm, cropsales]
-<span class="co"># =&gt; some crop sales</span>
-
-<span class="co"># SHF 4ha dummy `croparea_4ha` (2-class)</span>
-<span class="co"># Merge `croparea` into `ghs` (`hhid` are unique)</span>
-ghs[, croparea_4ha :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-ghs[farm_hh==T, croparea_4ha :<span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(croparea &lt;=<span class="st"> </span><span class="dv">4</span>, <span class="dt">levels=</span><span class="kw">c</span>(T, F), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;&lt;= 4 ha&quot;</span>, <span class="st">&quot;&gt; 4 ha&quot;</span>))]
-<span class="kw">summary</span>(ghs$croparea_4ha)
-<span class="co"># &lt;= 4 ha  &gt; 4 ha    NA&#39;s</span>
-<span class="co">#    2840      94    1946</span>
-
-ghs[croparea==<span class="dv">0</span>, <span class="kw">summary</span>(croparea_4ha)]
-<span class="co"># &lt;= 4 ha  &gt; 4 ha    NA&#39;s</span>
-<span class="co">#     240       0       7</span>
-<span class="co"># =&gt; need to re-run results without these 240</span>
-ghs[croparea==<span class="dv">0</span>, <span class="kw">summary</span>(cropsales)]
-ghs[croparea==<span class="dv">0</span>, <span class="kw">summary</span>(TLU_total)]
-
-<span class="co"># SHF 4ha dummy `croparea_2ha` (2-class)</span>
-ghs[, croparea_2ha :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-ghs[farm_hh==T, croparea_2ha :<span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(croparea &lt;=<span class="st"> </span><span class="dv">2</span>, <span class="dt">levels=</span><span class="kw">c</span>(T, F), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;&lt;= 2 ha&quot;</span>, <span class="st">&quot;&gt; 2 ha&quot;</span>))]
-<span class="kw">summary</span>(ghs$croparea_2ha)
-<span class="co"># &lt;= 2 ha  &gt; 2 ha    NA&#39;s</span>
-<span class="co">#    2616     318    1946</span>
-
-<span class="co"># SHF 4ha dummy `croparea_clas` (3-class)</span>
-ghs[, croparea_clas :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-ghs[farm_hh==T, croparea_clas :<span class="er">=</span><span class="st"> </span><span class="kw">cut</span>(croparea, <span class="kw">c</span>(-<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">25</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;&lt;= 2 ha&quot;</span>, <span class="st">&quot;2-4 ha&quot;</span>, <span class="st">&quot;&gt; 4 ha&quot;</span>), <span class="dt">ordered=</span>T, <span class="dt">right=</span>F)]
-<span class="kw">summary</span>(ghs$croparea_clas)
-<span class="co"># &lt;= 2 ha  2-4 ha  &gt; 4 ha    NA&#39;s</span>
-<span class="co">#    2616     224      94    1946</span>
-
-<span class="co"># Crop commercialization dummy `cropsales_any` (2-class)</span>
-ghs[, cropsales_any :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-ghs[farm_hh==T, cropsales_any :<span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(cropsales_sh &gt;<span class="st"> </span><span class="dv">0</span>, <span class="dt">levels=</span><span class="kw">c</span>(T, F), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;sales&quot;</span>, <span class="st">&quot;no sales&quot;</span>))]
-<span class="kw">summary</span>(ghs$cropsales_any)
-<span class="co"># sales no sales     NA&#39;s</span>
-<span class="co">#  1868     1234     1778</span>
-
-<span class="co"># Crop commercialization dummy `cropsales_clas` (3-class)</span>
-ghs[, cropsales_clas :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-ghs[farm_hh==T, cropsales_clas :<span class="er">=</span><span class="st"> </span><span class="kw">cut</span>(cropsales_sh, <span class="kw">c</span>(-<span class="dv">1</span>,.<span class="dv">05</span>,.<span class="dv">5</span>,<span class="fl">1.1</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;LoC&quot;</span>, <span class="st">&quot;MeC&quot;</span>, <span class="st">&quot;HiC&quot;</span>), <span class="dt">ordered=</span>T, <span class="dt">right=</span>F)]
-<span class="kw">summary</span>(ghs$cropsales_clas)
-<span class="co">#  LoC  MeC  HiC NA&#39;s</span>
-<span class="co"># 2559  239  304 1778</span>
-
-<span class="co"># Income diversification dummy `noaggross_clas` (3-class)</span>
-ghs[, noaggross_clas :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-ghs[farm_hh==T, noaggross_clas :<span class="er">=</span><span class="st"> </span><span class="kw">cut</span>(noaggross_sh, <span class="kw">c</span>(-<span class="dv">1</span>,<span class="dv">1</span>/<span class="dv">3</span>,<span class="dv">2</span>/<span class="dv">3</span>,<span class="fl">1.1</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;LoD&quot;</span>, <span class="st">&quot;MeD&quot;</span>, <span class="st">&quot;HiD&quot;</span>), <span class="dt">ordered=</span>T, <span class="dt">right=</span>F)]
-<span class="kw">summary</span>(ghs$noaggross_clas)
-<span class="co">#  LoD  MeD  HiD NA&#39;s</span>
-<span class="co"># 2528  172  608 1572</span>
-
-class9 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;LoCLoD&quot;</span>, <span class="st">&quot;LoCMeD&quot;</span>, <span class="st">&quot;LoCHiD&quot;</span>,
-  <span class="st">&quot;MeCLoD&quot;</span>, <span class="st">&quot;MeCMeD&quot;</span>, <span class="st">&quot;MeCHiD&quot;</span>, <span class="st">&quot;HiCLoD&quot;</span>, <span class="st">&quot;HiCMeD&quot;</span>, <span class="st">&quot;HiCHiD&quot;</span>)
-
-<span class="co"># Classification dummy `` (9-class)</span>
-ghs[, class9 :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-ghs[, class9 :<span class="er">=</span><span class="st"> </span><span class="kw">factor</span>(<span class="kw">paste0</span>(cropsales_clas, noaggross_clas), <span class="dt">levels=</span>class9)]
-<span class="kw">summary</span>(ghs$class9)
-<span class="co"># LoCLoD LoCMeD LoCHiD MeCLoD MeCMeD MeCHiD HiCLoD HiCMeD HiCHiD   NA&#39;s</span>
-<span class="co">#   2220     54    285    121     34     84    125     70    109   1778</span>
-
-<span class="co"># Merge new dummay vars into `ghs.farm` and `ghs.ppp`</span>
-<span class="kw">setkey</span>(ghs, hhid)
-<span class="kw">setkey</span>(ghs.farm, hhid)
-<span class="kw">setkey</span>(ghs.ppp, hhid)
-
-ghs.farm[ghs, <span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(
-  <span class="dt">croparea_2ha =</span> croparea_2ha,
-  <span class="dt">croparea_4ha =</span> croparea_4ha,
-  <span class="dt">cropsales_sh =</span> cropsales_sh,
-  <span class="dt">cropsales_clas =</span> cropsales_clas,
-  <span class="dt">noaggross_clas =</span> noaggross_clas,
-  <span class="dt">class9 =</span> class9
-)]
-
-ghs.ppp[ghs, <span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(
-  <span class="dt">zone =</span> zone,
-  <span class="dt">croparea_2ha =</span> croparea_2ha,
-  <span class="dt">croparea_4ha =</span> croparea_4ha,
-  <span class="dt">cropsales_sh =</span> cropsales_sh,
-  <span class="dt">cropsales_clas =</span> cropsales_clas,
-  <span class="dt">noaggross_clas =</span> noaggross_clas,
-  <span class="dt">class9 =</span> class9
-)]
-
-##########################################
-<span class="co"># Define 2-stage stratified survey design (use most recent GHS wave only)</span>
-ghs.svy &lt;-<span class="st"> </span><span class="kw">svydesign</span>(~ea+hhid, <span class="dt">strata=</span>~zone+rural, <span class="dt">weights=</span>~wt_wave2,
-  <span class="dt">data=</span>ghs[!<span class="kw">is.na</span>(wt_wave2)], <span class="dt">nest=</span>T)
-ghs.farm.svy &lt;-<span class="st"> </span><span class="kw">svydesign</span>(~ea+hhid, <span class="dt">strata=</span>~zone+sector, <span class="dt">weights=</span>~wt_wave2,
-  <span class="dt">data=</span>ghs.farm[!<span class="kw">is.na</span>(wt_wave2)], <span class="dt">nest=</span>T)
-ghs.ppp.svy &lt;-<span class="st"> </span><span class="kw">svydesign</span>(~hhid, <span class="dt">strata=</span>~zone+rural, <span class="dt">weights=</span>~weight,
-  <span class="dt">data=</span>ghs.ppp[!<span class="kw">is.na</span>(weight)], <span class="dt">nest=</span>T)
-
-<span class="kw">summary</span>(ghs.svy)
-<span class="co"># Stratified 2 - level Cluster Sampling design (with replacement)</span>
-<span class="co"># With (481, 4867) clusters.</span>
-<span class="co"># svydesign(~ea + hhid, strata = ~zone + rural, weights = ~wt_wave2,</span>
-<span class="co">#     data = ghs[!is.na(wt_wave2)], nest = T)</span>
-<span class="co"># Probabilities:</span>
-<span class="co">#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.</span>
-<span class="co"># 0.0000239 0.0001235 0.0001892 0.0002150 0.0002699 0.0014700</span>
-<span class="co"># First-level Stratum Sizes:</span>
-<span class="co">#            north central north east north west south east south south south west</span>
-<span class="co"># obs                  798        754        890        791         786        848</span>
-<span class="co"># design.PSU            79         74         85         77          79         87</span>
-<span class="co"># actual.PSU            79         74         85         77          79         87</span>
-
-<span class="co"># Subset survey sample to farms</span>
-ghs.svy.farm &lt;-<span class="st"> </span><span class="kw">subset</span>(ghs.svy, farm_hh==T)
-<span class="co"># Subset survey sample to only SHF</span>
-ghs.svy.shf &lt;-<span class="st"> </span><span class="kw">subset</span>(ghs.svy, croparea_4ha==<span class="st">&quot;&lt;= 4 ha&quot;</span>)
-ghs.farm.svy.shf &lt;-<span class="st"> </span><span class="kw">subset</span>(ghs.farm.svy, croparea_4ha==<span class="st">&quot;&lt;= 4 ha&quot;</span>)
-ghs.ppp.svy.shf &lt;-<span class="st"> </span><span class="kw">subset</span>(ghs.ppp.svy, croparea_4ha==<span class="st">&quot;&lt;= 4 ha&quot;</span>)
-
-<span class="co"># Verify sampling design (e.g. total population)</span>
-(<span class="kw">svytotal</span>(~hhsize, ghs.svy, <span class="dt">na.rm=</span>T))/<span class="fl">1E6</span>
-<span class="co">#         total      SE</span>
-<span class="co"># hhsize 187.88 7601475</span>
-
-<span class="kw">svytotal</span>(~farm_hh, ghs.svy, <span class="dt">na.rm=</span>T)/<span class="fl">1E6</span>
-<span class="co">#               total      SE</span>
-<span class="co"># farm_hhFALSE 13.480 1259455</span>
-<span class="co"># farm_hhTRUE  19.256  712970</span>
-
-<span class="kw">svymean</span>(~farm_hh, ghs.svy, <span class="dt">na.rm=</span>T)
-<span class="co">#                 mean     SE</span>
-<span class="co"># farm_hhFALSE 0.41177 0.0249</span>
-<span class="co"># farm_hhTRUE  0.58823 0.0249</span>
-
-<span class="kw">svymean</span>(~croparea_4ha, ghs.svy.farm, <span class="dt">na.rm=</span>T)
-<span class="co">#                         mean     SE</span>
-<span class="co"># croparea_4ha&lt;= 4 ha 0.971845 0.0034</span>
-<span class="co"># croparea_4ha&gt; 4 ha  0.028155 0.0034</span>
-
-<span class="kw">svytotal</span>(~hhsize, ghs.svy.shf, <span class="dt">na.rm=</span>T)
-<span class="co">#            total      SE</span>
-<span class="co"># hhsize 106349144 4497228</span>
-
-<span class="kw">svymean</span>(~cropsales_sh, ghs.svy.farm, <span class="dt">na.rm=</span>T)
-<span class="co">#                mean     SE</span>
-<span class="co"># cropsales_sh 0.1141 0.0087</span>
-
-<span class="kw">svyby</span>(~cropsales_sh, ~croparea_4ha, ghs.svy.farm, svymean, <span class="dt">na.rm=</span>T)
-<span class="co">#         croparea_4ha cropsales_sh         se</span>
-<span class="co"># &lt;= 4 ha      &lt;= 4 ha    0.1220143 0.00648625</span>
-<span class="co"># &gt; 4 ha        &gt; 4 ha    0.1768049 0.04914111</span>
-
-<span class="kw">svyby</span>(~cropsales_sh, ~croparea_4ha, ghs.svy.farm, svyquantile, <span class="dt">quantiles=</span>.<span class="dv">5</span>, <span class="dt">ci=</span>T, <span class="dt">na.rm=</span>T)*<span class="dv">100</span>
-<span class="co">#         croparea_4ha cropsales_sh          se</span>
-<span class="co"># &lt;= 4 ha           NA    0.0771759 0.009096591</span>
-<span class="co"># &gt; 4 ha            NA    0.2983541 0.297538378</span>
-
-<span class="kw">svyby</span>(~agsalespc, ~croparea_4ha, ghs.svy.farm, svymean, <span class="dt">na.rm=</span>T)
-<span class="co">#         croparea_4ha agsalespc       se</span>
-<span class="co"># &lt;= 4 ha      &lt;= 4 ha   87756.2 13964.07</span>
-<span class="co"># &gt; 4 ha        &gt; 4 ha  140465.3 44667.0</span>
-
-<span class="kw">svymean</span>(~<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>), <span class="kw">subset</span>(ghs.svy.farm, !<span class="kw">is.na</span>(croparea)), <span class="dt">na.rm=</span>T)
-<span class="co">#                         mean     SE</span>
-<span class="co"># I(noaggross_sh * 100) 22.044 0.0127</span>
-<span class="co"># I(noaggross_sh * 100) 17.446 1.1725</span>
-
-<span class="kw">svyquantile</span>(~<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>), ghs.svy.farm, .<span class="dv">5</span>, <span class="dt">na.rm=</span>T)
-<span class="co">#                             0.5</span>
-<span class="co"># I(noaggross_sh * 100) 0.8265929</span>
-
-<span class="kw">svyby</span>(~<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>), ~croparea_4ha, ghs.svy.farm, svymean, <span class="dt">na.rm=</span>T)
-<span class="co">#         croparea_4ha I(noaggross_sh * 100)       se</span>
-<span class="co"># &lt;= 4 ha      &lt;= 4 ha              17.58628 1.190880</span>
-<span class="co"># &gt; 4 ha        &gt; 4 ha              12.53712 3.285989</span>
-
-<span class="kw">svyby</span>(~<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>), ~croparea_4ha, ghs.svy.farm, svyquantile, .<span class="dv">5</span>, <span class="dt">ci=</span>T, <span class="dt">na.rm=</span>T)
-<span class="co">#         croparea_4ha I(noaggross_sh * 100)         se</span>
-<span class="co"># &lt;= 4 ha      &lt;= 4 ha             0.6300151 0.08870994</span>
-<span class="co"># &gt; 4 ha        &gt; 4 ha             0.3270542 0.12108961</span>
-
-<span class="co"># Other farms statistics</span>
-tmp &lt;-<span class="st"> </span>ghs[!<span class="kw">is.na</span>(wt_wave2) &amp;<span class="st"> </span>farm_hh==T, .(
-  <span class="dt">f2malehh_tot=</span><span class="kw">sum</span>(femhead*wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">malehh_tot=</span><span class="kw">sum</span>(-(femhead<span class="dv">-1</span>)*wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">femalehh=</span><span class="kw">weightedMean</span>(femhead, wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">hasland=</span><span class="kw">weighted.mean</span>(farmarea&gt;<span class="dv">0</span>, wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">farmarea=</span><span class="kw">weightedMean</span>(hectares_1_hh_farmer, wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">farmarea_med=</span><span class="kw">weightedMedian</span>(hectares_1_hh_farmer, wt_wave2, <span class="dt">na.rm=</span>T)
-), keyby=croparea &lt;=<span class="st"> </span><span class="dv">4</span>]
-
-tmp &lt;-<span class="st"> </span>farm[, .(
-  <span class="dt">farmslive_tot=</span><span class="kw">sum</span>(farmslive*wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">farmslive=</span><span class="kw">weightedMean</span>(farmslive, wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">intens_idx2=</span><span class="kw">weightedMean</span>(intens_idx2, wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">intens_idx2_med=</span><span class="kw">weightedMedian</span>(intens_idx2, wt_wave2, <span class="dt">na.rm=</span>T)
-), keyby=croparea &lt;=<span class="st"> </span><span class="dv">4</span>]
-
-<span class="co"># Livestock</span>
-tmp &lt;-<span class="st"> </span>ghs[!<span class="kw">is.na</span>(wt_wave2) &amp;<span class="st"> </span>totgross &gt;<span class="st"> </span><span class="dv">0</span>, .(
-  <span class="dt">TLU_total=</span><span class="kw">sum</span>(TLU_total, wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">TLU_hh=</span><span class="kw">weightedMean</span>(TLU_total, wt_wave2, <span class="dt">na.rm=</span>T),
-  <span class="dt">TLU_hh_imp=</span><span class="kw">weightedMean</span>(TLU_total_imp, wt_wave2, <span class="dt">na.rm=</span>T)
-), keyby=croparea &lt;=<span class="st"> </span><span class="dv">4</span>][, wt_wave2 :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-
-<span class="co"># Input uses</span>
-tmp &lt;-<span class="st"> </span>farm[, <span class="kw">lapply</span>(.SD, weightedMean, wt_wave2, <span class="dt">na.rm=</span>T),
-  .SDcols=<span class="kw">c</span>(<span class="st">&quot;wt_wave2&quot;</span>, <span class="st">&quot;parcels&quot;</span>, <span class="st">&quot;sh_chempest&quot;</span>, <span class="st">&quot;sh_chemherb&quot;</span>, <span class="st">&quot;sh_fertorg&quot;</span>,
-    <span class="st">&quot;sh_fertinorg&quot;</span>, <span class="st">&quot;sh_seedp&quot;</span>, <span class="st">&quot;tractorown_farms&quot;</span>),
-  keyby=croparea &lt;=<span class="st"> </span><span class="dv">4</span>][, wt_wave2 :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-
-<span class="co"># Poverty</span>
-vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;weight&quot;</span>, <span class="kw">names</span>(ppp12)[<span class="kw">names</span>(ppp12) %like%<span class="st"> &quot;ppp&quot;</span>])
-tmp &lt;-<span class="st"> </span>ppp12[, <span class="kw">lapply</span>(.SD, weightedMean, weight, <span class="dt">na.rm=</span>T), .SDcols=vars,
-  keyby=croparea &lt;=<span class="st"> </span><span class="dv">4</span>][, weight :<span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]
-
-<span class="co"># CROP SALES</span>
-
-
-<span class="co"># FOOD EXPENDITURES</span>
-m &lt;-<span class="st"> </span><span class="kw">svymean</span>(~<span class="kw">I</span>(<span class="dv">100</span>*foodexp_ppp_m/<span class="kw">rowSums</span>(<span class="kw">cbind</span>(foodexp_ppp_m, nfoodexp_ppp_m), <span class="dt">na.rm=</span>T)), ghs.ppp.svy, <span class="dt">na.rm=</span>T)
-<span class="co">#                                                                                   mean     SE</span>
-<span class="co"># I(100 * foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm = T)) 73.394 0.2999</span>
-
-<span class="kw">plot</span>(m)
-
-<span class="kw">svyquantile</span>(~<span class="kw">I</span>(<span class="dv">100</span>*foodexp_ppp_m/<span class="kw">rowSums</span>(<span class="kw">cbind</span>(foodexp_ppp_m, nfoodexp_ppp_m), <span class="dt">na.rm=</span>T)), ghs.ppp.svy, .<span class="dv">5</span>, <span class="dt">ci=</span>T, <span class="dt">na.rm=</span>T)
-<span class="co">#                                                                                      0.5</span>
-<span class="co"># I(100 * foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm = T)) 76.27067</span></code></pre></div>
 <div id="definitions" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> Definitions</h3>
 <p>(more vars to be added as needed)</p>
@@ -530,12 +164,6 @@ m &lt;-<span class="st"> </span><span class="kw">svymean</span>(~<span class="kw
 <li>Share of off-farm income in total hhld income <span class="math inline">\(naggross\_sh\)</span> (using breaks at <strong>1/3</strong> and <strong>2/3</strong> of total income)</li>
 </ul>
 <p>The resulting classes of farm households are labelled as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;low&quot;</span>, <span class="st">&quot;medium&quot;</span>, <span class="st">&quot;high&quot;</span>), <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;low&quot;</span>, <span class="st">&quot;medium&quot;</span>, <span class="st">&quot;high&quot;</span>))
-tmp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">clas=</span>class9, <span class="dt">C=</span><span class="kw">rep</span>(tmp, <span class="dt">each=</span><span class="dv">3</span>), <span class="dt">D=</span><span class="kw">rep</span>(tmp, <span class="dv">3</span>))
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>((<span class="st">`</span><span class="dt">Income Diversification</span><span class="st">`</span>=D)~(<span class="st">`</span><span class="dt">Crop Commercialization</span><span class="st">`</span>=C)*<span class="kw">Heading</span>()*identity*<span class="kw">Heading</span>()*(<span class="kw">as.character</span>(clas)), <span class="dt">data=</span>tmp),
-  <span class="dt">split.table=</span><span class="ot">Inf</span>, <span class="dt">emphasize.strong.cols=</span><span class="dv">1</span>, <span class="dt">emphasize.italics.cols=</span><span class="dv">2</span>:<span class="dv">4</span>, <span class="dt">emphasize.rownames=</span>F,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Household Classification&quot;</span>)</code></pre></div>
 <table>
 <caption>Tab. Household Classification</caption>
 <colgroup>
@@ -578,10 +206,6 @@ high</th>
 </tbody>
 </table>
 <p>The following 3 tables show the count of observations in each class for farm households with cultivated area &lt;= 2ha, between 2 and 4ha, and &lt;= 4ha.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">tabular</span>(<span class="kw">Heading</span>()*noaggross_clas~<span class="kw">Format</span>(<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>)*<span class="kw">Heading</span>()*croparea_clas*<span class="kw">Heading</span>()*cropsales_clas,
-  <span class="dt">data=</span>ghs), <span class="dt">split.table=</span><span class="ot">Inf</span>, <span class="dt">justify=</span><span class="st">&quot;rrrrrrrrrr&quot;</span>,
-  <span class="dt">emphasize.strong.cols=</span><span class="dv">1</span>, <span class="dt">emphasize.rownames=</span>F,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Count of Observations across Classes of Farm Households&quot;</span>)</code></pre></div>
 <table>
 <caption>Tab. Count of Observations across Classes of Farm Households</caption>
 <colgroup>
@@ -658,10 +282,6 @@ HiC</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">tabular</span>(<span class="kw">Heading</span>()*noaggross_clas~<span class="kw">Format</span>(<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>)*<span class="kw">Heading</span>()*croparea_2ha*<span class="kw">Heading</span>()*cropsales_clas,
-  <span class="dt">data=</span>ghs), <span class="dt">split.table=</span><span class="ot">Inf</span>, <span class="dt">justify=</span><span class="st">&quot;rrrrrrr&quot;</span>,
-  <span class="dt">emphasize.strong.cols=</span><span class="dv">1</span>, <span class="dt">emphasize.rownames=</span>F,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Count of Observations across Classes of Farm Households (below/above 2 ha)&quot;</span>)</code></pre></div>
 <table style="width:88%;">
 <caption>Tab. Count of Observations across Classes of Farm Households (below/above 2 ha)</caption>
 <colgroup>
@@ -720,10 +340,6 @@ HiC</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">tabular</span>(<span class="kw">Heading</span>()*noaggross_clas~<span class="kw">Format</span>(<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>)*<span class="kw">Heading</span>()*croparea_4ha*<span class="kw">Heading</span>()*cropsales_clas,
-  <span class="dt">data=</span>ghs), <span class="dt">split.table=</span><span class="ot">Inf</span>, <span class="dt">justify=</span><span class="st">&quot;rrrrrrr&quot;</span>,
-  <span class="dt">emphasize.strong.cols=</span><span class="dv">1</span>, <span class="dt">emphasize.rownames=</span>F,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Count of Observations across Classes of Farm Households (below/above 4 ha)&quot;</span>)</code></pre></div>
 <table style="width:88%;">
 <caption>Tab. Count of Observations across Classes of Farm Households (below/above 4 ha)</caption>
 <colgroup>
@@ -784,29 +400,12 @@ HiC</th>
 </table>
 <p>In the next tables we limit categories to farm households <strong>below/above 4ha</strong> (as this approach produces classes with a larger count of observations). Using data from the 2012 Nigeria General Household Survey (GHS) we estimate the proportions of farm households across all categories and the distributions of other key household characteristics (household structure, assets, farm input uses, etc.).</p>
 <p>Estimated proportions of farm households across classes and categories are shown in the next graph and table.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">2</span>))
-<span class="kw">plot</span>(<span class="kw">svytable</span>(~croparea_4ha+cropsales_clas, ghs.svy.shf), <span class="dt">main=</span><span class="ot">NA</span>, <span class="dt">las=</span><span class="dv">2</span>,
-  <span class="dt">ylab=</span><span class="kw">list</span>(<span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>),
-  <span class="dt">xlab=</span><span class="kw">list</span>(<span class="st">&quot;Crop Commercialization 3-class&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>))
-<span class="kw">plot</span>(<span class="kw">svytable</span>(~croparea_4ha+noaggross_clas, ghs.svy.shf), <span class="dt">main=</span><span class="ot">NA</span>, <span class="dt">las=</span><span class="dv">2</span>,
-  <span class="dt">ylab=</span><span class="kw">list</span>(<span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>),
-  <span class="dt">xlab=</span><span class="kw">list</span>(<span class="st">&quot;Off-Farm Income 3-class&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>))
-
-<span class="kw">plot</span>(<span class="kw">svytable</span>(~croparea_4ha+class9, ghs.svy.shf), <span class="dt">main=</span><span class="ot">NA</span>, <span class="dt">las=</span><span class="dv">2</span>,
-  <span class="dt">ylab=</span><span class="kw">list</span>(<span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>),
-  <span class="dt">xlab=</span><span class="kw">list</span>(<span class="st">&quot;Categories 9-class&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
 <div class="figure"><span id="fig:fig2a"></span>
-<img src="fig/fig2a-1.png" alt="Est. Proportions of Farm Holdings across Categories" width="1800" height="340px" />
+<img src="fig/fig2a-1.svg" alt="Est. Proportions of Farm Holdings across Categories" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.1: Est. Proportions of Farm Holdings across Categories
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">ftable</span>(<span class="kw">svymean</span>(~<span class="kw">I</span>(<span class="kw">interaction</span>(croparea_4ha, cropsales_clas, noaggross_clas)), ghs.svy.farm, <span class="dt">na.rm=</span>T), <span class="dt">rownames=</span><span class="kw">list</span>(
-  <span class="kw">levels</span>(ghs$croparea_4ha),
-  <span class="kw">levels</span>(ghs$cropsales_clas),
-  <span class="kw">levels</span>(ghs$noaggross_clas)))*<span class="dv">100</span>, <span class="dt">round=</span><span class="dv">2</span>,
-  <span class="dt">emphasize.italics.rows=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">9</span>), <span class="dt">emphasize.strong.cols=</span><span class="dv">1</span>, <span class="dt">emphasize.strong.rows=</span><span class="dv">2</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Est. Proportions of Farm Holdings across Categories&quot;</span>)</code></pre></div>
 <table>
 <caption>Est. Proportions of Farm Holdings across Categories</caption>
 <colgroup>
@@ -915,88 +514,30 @@ Fig. 3.1: Est. Proportions of Farm Holdings across Categories
 </div>
 <div id="key-results" class="section level3">
 <h3><span class="header-section-number">3.1.2</span> Key Results</h3>
-
-<div class="remark">
-<p><span class="remark"><em>Remark. </em></span>  Using the <strong>&lt;= 4 ha</strong> smallholding definition above, we estimate as of 2012:</p>
-<ul>
-<li>there are <strong>33M</strong> households in Nigeria</li>
-<li><strong>58.8%</strong> (<strong>19.2M</strong>) generate a revenue from farming (wages, rents, crops, livestock, and/or fish)</li>
-<li><strong>97%</strong> (<strong>16M</strong>) of farm holdings are <em>small</em></li>
-<li>corresponding to a beneficiary population of <strong>107M</strong></li>
-<li>crop commercialization is low at <strong>12.2%</strong> for smallholdings (below 4 ha) and <strong>17.7%</strong> for larger holdings (over 4 ha) on average. Median rates are much smaller however with <strong>0.07%</strong> for smallholdings and <strong>0.30%</strong> for larger holdings.</li>
-<li>income diversification in farm households is <strong>17%</strong> on average (<strong>18%</strong> for smallholdings and <strong>13%</strong> for larger holdings) (i.e. off-farm income is 17% on average), but medians off-farm incomes are negligible at <strong>0.83%</strong> (<strong>0.63%</strong> for smallholdings and <strong>0.33%</strong> for larger holdings).</li>
-</ul>
-<p><u>Notes</u>: for LCU conversions <strong>1 int$ = 108.23 Naira</strong> (2015)</p>
-</div>
-<p></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="dt">font.main=</span><span class="dv">1</span>)
-<span class="kw">svyhist</span>(~croparea, ghs.svy.farm, <span class="dt">main=</span><span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;croparea (ha)&quot;</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">10</span>))
-<span class="kw">lines</span>(<span class="kw">svysmooth</span>(~croparea, ghs.svy.farm, <span class="dt">bandwidth=</span><span class="dv">1</span>), <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="dv">40</span>)
-<span class="kw">svyhist</span>(~<span class="kw">I</span>(cropsales_sh*<span class="dv">100</span>), ghs.svy.farm, <span class="dt">main=</span><span class="st">&quot;Crop Commercialization&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;cropsales_sh (percent)&quot;</span>)
-<span class="kw">lines</span>(<span class="kw">svysmooth</span>(~<span class="kw">I</span>(cropsales_sh*<span class="dv">100</span>), ghs.svy.farm, <span class="dt">bandwidth=</span><span class="dv">1</span>), <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="dv">40</span>)
-<span class="kw">svyhist</span>(~<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>), ghs.svy.farm, <span class="dt">main=</span><span class="st">&quot;Income Diversification&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;noaggross_sh (percent)&quot;</span>)
-<span class="kw">lines</span>(<span class="kw">svysmooth</span>(~<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>), ghs.svy.farm, <span class="dt">bandwidth=</span><span class="dv">1</span>), <span class="dt">lwd=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="dv">40</span>)</code></pre></div>
 <div class="figure"><span id="fig:fig1b"></span>
-<img src="fig/fig1b-1.png" alt="Cultivated Area, Crop Commercialization, and Income Diversification" width="1800" height="340px" />
+<img src="fig/fig1b-1.svg" alt="Cultivated Area, Crop Commercialization, and Income Diversification" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.2: Cultivated Area, Crop Commercialization, and Income Diversification
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">cex=</span>.<span class="dv">7</span>)
-<span class="kw">svyboxplot</span>(<span class="kw">I</span>(cropsales_sh*<span class="dv">100</span>)~croparea_4ha, ghs.svy.farm,
-  <span class="dt">xlab=</span><span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Crop Commercialization (percent)&quot;</span>, <span class="dt">legend=</span><span class="dv">2</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">20</span>))
-<span class="kw">svyboxplot</span>(<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>)~croparea_4ha, ghs.svy.farm,
-  <span class="dt">xlab=</span><span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Off-Farm Incomen (percent)&quot;</span>, <span class="dt">legend=</span><span class="dv">2</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">20</span>))</code></pre></div>
 <div class="figure"><span id="fig:fig1c"></span>
-<img src="fig/fig1c-1.png" alt="Crop Commercialization and Income Diversification along Cultivated Area" width="1800" height="340px" />
+<img src="fig/fig1c-1.svg" alt="Crop Commercialization and Income Diversification along Cultivated Area" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.3: Crop Commercialization and Income Diversification along Cultivated Area
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">cex=</span>.<span class="dv">7</span>)
-<span class="kw">svyplot</span>(<span class="kw">I</span>(cropsales/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, femhead==<span class="dv">0</span>), <span class="dt">style=</span><span class="st">&quot;transparent&quot;</span>, <span class="dt">basecol=</span><span class="dv">4</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Crop Sales (&#39;000 LCU)&quot;</span>)
-<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">4</span>), <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>), <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)
-<span class="kw">svyplot</span>(<span class="kw">I</span>(cropsales/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, femhead==<span class="dv">1</span>), <span class="dt">style=</span><span class="st">&quot;transparent&quot;</span>, <span class="dt">basecol=</span><span class="dv">41</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Crop Sales (&#39;000 LCU)&quot;</span>)
-<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">41</span>), <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>), <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:fig1e"></span>
-<img src="fig/fig1e-1.png" alt="Crop Commercialization by Age and Gender" width="1800" height="340px" />
+<img src="fig/fig1e-1.svg" alt="Crop Commercialization by Age and Gender" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.4: Crop Commercialization by Age and Gender
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">cex=</span>.<span class="dv">7</span>)
-l &lt;-<span class="st"> </span><span class="kw">levels</span>(ghs$zone)
-<span class="kw">plot</span>(<span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">80</span>), <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">350</span>), <span class="dt">type=</span><span class="st">&quot;n&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Est. Mean Crop Sales (&#39;000 LCU)&quot;</span>)
-<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">seq_along</span>(l)*<span class="dv">5</span>, <span class="dt">legend=</span>l, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)
-for (i in <span class="kw">seq_along</span>(l)) <span class="kw">lines</span>(
-  <span class="kw">svysmooth</span>(<span class="kw">I</span>(cropsales/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, zone==<span class="kw">levels</span>(ghs$zone)[i]), <span class="dt">banwidth=</span><span class="dv">10</span>),
-  <span class="dt">col=</span>i*<span class="dv">5</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">cex=</span>.<span class="dv">7</span>)
-<span class="kw">svyplot</span>(<span class="kw">I</span>(noaggross/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, femhead==<span class="dv">0</span>), <span class="dt">style=</span><span class="st">&quot;transparent&quot;</span>, <span class="dt">basecol=</span><span class="dv">4</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Off-Farm Income (&#39;000 LCU)&quot;</span>)
-<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">4</span>), <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>), <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)
-<span class="kw">svyplot</span>(<span class="kw">I</span>(noaggross/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, femhead==<span class="dv">1</span>), <span class="dt">style=</span><span class="st">&quot;transparent&quot;</span>, <span class="dt">basecol=</span><span class="dv">41</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Off-Farm Income (&#39;000 LCU)&quot;</span>)
-<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">41</span>), <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>), <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:fig1g"></span>
-<img src="fig/fig1g-1.png" alt="Income Diversification by Age and Gender" width="1800" height="340px" />
+<img src="fig/fig1g-1.svg" alt="Income Diversification by Age and Gender" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.5: Income Diversification by Age and Gender
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">l &lt;-<span class="st"> </span><span class="kw">levels</span>(ghs$zone)
-<span class="kw">plot</span>(<span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">100</span>), <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">800</span>), <span class="dt">type=</span><span class="st">&quot;n&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Off-Farm Income (&#39;000 LCU)&quot;</span>)
-<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">seq_along</span>(l)*<span class="dv">5</span>, <span class="dt">legend=</span>l, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)
-for (i in <span class="kw">seq_along</span>(l)) <span class="kw">lines</span>(
-  <span class="kw">svysmooth</span>(<span class="kw">I</span>(noaggross/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, zone==<span class="kw">levels</span>(ghs$zone)[i]), <span class="dt">banwidth=</span><span class="dv">10</span>),
-  <span class="dt">col=</span>i*<span class="dv">5</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimated quintiles of `cropsales_sh` for smallholders</span>
-tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~<span class="kw">I</span>(cropsales_sh*<span class="dv">100</span>), ~<span class="kw">I</span>(cropsales/<span class="dv">1000</span>)), ~croparea_4ha,
-  ghs.svy.farm, <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*By*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*<span class="kw">Format</span>(<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nsmall=</span><span class="dv">2</span>, <span class="dt">digits=</span><span class="dv">0</span>)*identity,
-  <span class="dt">data=</span>tmp),
-  <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Crop Commercialization for Farms below/above 4 ha (percent, &#39;000 LCU)&quot;</span>)</code></pre></div>
 <table>
 <caption>Tab. Crop Commercialization for Farms below/above 4 ha (percent, ’000 LCU)</caption>
 <colgroup>
@@ -1089,15 +630,6 @@ std. err.</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimated quintiles of `noaggross_sh` for smallholders</span>
-tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>), ~<span class="kw">I</span>(noaggross/<span class="dv">1000</span>)), ~croparea_4ha,
-  ghs.svy.farm, <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*By*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*<span class="kw">Format</span>(<span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nsmall=</span><span class="dv">2</span>, <span class="dt">digits=</span><span class="dv">0</span>)*identity,
-  <span class="dt">data=</span>tmp),
-  <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Off-Farm Income for Farms below/above 4 ha (percent, &#39;000 LCU)&quot;</span>)</code></pre></div>
 <table>
 <caption>Tab. Off-Farm Income for Farms below/above 4 ha (percent, ’000 LCU)</caption>
 <colgroup>
@@ -1191,32 +723,7 @@ std. err.</th>
 </tbody>
 </table>
 <p>The 9 categories of small farm holdings are further characterized in the next graphs and summary tables.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># farmarea</span>
-<span class="kw">svyCrossPlot</span>(~farmarea, ghs.svy.shf, <span class="dt">breaks=</span><span class="dv">20</span>, <span class="dt">bandwidth=</span>.<span class="dv">5</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">4</span>),
-  <span class="dt">xlab=</span><span class="st">&quot;Farm Area (ha)&quot;</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># TLU_total</span>
-<span class="kw">svyCrossPlot</span>(~TLU_total, ghs.svy.shf, <span class="dt">breaks=</span><span class="dv">20</span>, <span class="dt">bandwidth=</span><span class="dv">1</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">30</span>),
-  <span class="dt">xlab=</span><span class="st">&quot;Livestock Holdings (TLU)&quot;</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lstocksold</span>
-<span class="kw">svyCrossPlot</span>(~<span class="kw">I</span>(lstocksold/<span class="dv">1000</span>), ghs.svy.shf, <span class="dt">breaks=</span><span class="dv">20</span>, <span class="dt">bandwidth=</span><span class="dv">100</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1500</span>),
-  <span class="dt">xlab=</span><span class="st">&quot;Livestock Sales (&#39;000 LCU)&quot;</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># aggross_sh</span>
-<span class="kw">svyCrossPlot</span>(~<span class="kw">I</span>(aggross_sh*<span class="dv">100</span>), ghs.svy.shf, <span class="dt">breaks=</span><span class="dv">20</span>, <span class="dt">bandwidth=</span><span class="dv">1</span>,
-  <span class="dt">xlab=</span><span class="st">&quot;Share of Farm Income (percent)&quot;</span>)</code></pre></div>
 <p>Note the tables below omit the last 3 classes to save space.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimated quintiles of other variables for smallholders</span>
-tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~<span class="kw">I</span>(cropvalue/<span class="dv">1000</span>), ~<span class="kw">I</span>(cropsales/<span class="dv">1000</span>), ~<span class="kw">I</span>(lstocksold/<span class="dv">1000</span>),
-  ~<span class="kw">I</span>(agsales/<span class="dv">1000</span>), ~agsalespc, ~<span class="kw">I</span>(aggross/<span class="dv">1000</span>)),
-  ~class9, ghs.svy.shf, <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-tmp &lt;-<span class="st"> </span>tmp[!By %like%<span class="st"> &quot;HiC&quot;</span>]
-tmp[, By :<span class="er">=</span><span class="st"> </span><span class="kw">as.character</span>(By)]
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*<span class="kw">Factor</span>(By)*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*identity*<span class="kw">Format</span>(<span class="dt">digits=</span><span class="dv">0</span>, <span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>, <span class="dt">scientific=</span>F),
-  <span class="dt">data=</span>tmp),
-  <span class="dt">justify=</span><span class="st">&quot;ccrrrrrrrrrrrr&quot;</span>, <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Sources of Agricultural Income for Small Farm Households across Categories (&#39;000 LCU)&quot;</span>)</code></pre></div>
 <table style="width:100%;">
 <caption>Tab. Sources of Agricultural Income for Small Farm Households across Categories (’000 LCU)</caption>
 <colgroup>
@@ -1653,17 +1160,6 @@ std. err.</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~<span class="kw">I</span>(cropsales_sh*<span class="dv">100</span>), ~<span class="kw">I</span>(aggross_sh*<span class="dv">100</span>)),
-  ~class9, <span class="kw">subset</span>(ghs.svy.shf, !class9 %like%<span class="st"> &quot;HiC&quot;</span>), <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-tmp &lt;-<span class="st"> </span>tmp[!By %like%<span class="st"> &quot;HiC&quot;</span>]
-tmp[, By :<span class="er">=</span><span class="st"> </span><span class="kw">as.character</span>(By)]
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*<span class="kw">Factor</span>(By)*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*identity*<span class="kw">Format</span>(<span class="dt">digits=</span><span class="dv">0</span>, <span class="dt">nsmall=</span><span class="dv">2</span>),
-  <span class="dt">data=</span>tmp), <span class="dt">justify=</span><span class="st">&quot;ccrrrrrrrrrrrr&quot;</span>,
-  <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Sources of Agricultural Income for Small Farm Households across Categories (percent)&quot;</span>)</code></pre></div>
 <table style="width:100%;">
 <caption>Tab. Sources of Agricultural Income for Small Farm Households across Categories (percent)</caption>
 <colgroup>
@@ -1844,17 +1340,6 @@ std. err.</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~farmarea, ~croparea, ~TLU_total),
-  ~class9, <span class="kw">subset</span>(ghs.svy.shf, !class9 %like%<span class="st"> &quot;HiC&quot;</span>), <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-tmp &lt;-<span class="st"> </span>tmp[!By %like%<span class="st"> &quot;HiC&quot;</span>]
-tmp[, By :<span class="er">=</span><span class="st"> </span><span class="kw">as.character</span>(By)]
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*<span class="kw">Factor</span>(By)*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*<span class="kw">Format</span>(<span class="dt">digits=</span><span class="dv">0</span>, <span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nsmall=</span><span class="dv">2</span>)*identity,
-  <span class="dt">data=</span>tmp), <span class="dt">justify=</span><span class="st">&quot;ccrrrrrrrrrrrr&quot;</span>,
-  <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)&quot;</span>)</code></pre></div>
 <table style="width:100%;">
 <caption>Tab. Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)</caption>
 <colgroup>
@@ -2099,19 +1584,6 @@ std. err.</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Demographics</span>
-tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~hhsize, ~<span class="kw">I</span>(femhead*<span class="dv">100</span>), ~agehead, ~<span class="kw">I</span>(lithead*<span class="dv">100</span>),
-  ~eduyears, ~numchildren, ~equiv, ~females, ~males, ~sh_ed_none, ~sh_ed_prim),
-  ~class9, <span class="kw">subset</span>(ghs.svy.shf, !class9 %like%<span class="st"> &quot;HiC&quot;</span>), <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-tmp &lt;-<span class="st"> </span>tmp[!By %like%<span class="st"> &quot;HiC&quot;</span>]
-tmp[, By :<span class="er">=</span><span class="st"> </span><span class="kw">as.character</span>(By)]
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*<span class="kw">Factor</span>(By)*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*<span class="kw">Format</span>(<span class="dt">digits=</span><span class="dv">0</span>, <span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nsmall=</span><span class="dv">2</span>)*identity,
-  <span class="dt">data=</span>tmp), <span class="dt">justify=</span><span class="st">&quot;ccrrrrrrrrrrrr&quot;</span>,
-  <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Demographics of Small Farm Households across Categories&quot;</span>)</code></pre></div>
 <table style="width:100%;">
 <caption>Tab. Demographics of Small Farm Households across Categories</caption>
 <colgroup>
@@ -2868,19 +2340,6 @@ std. err.</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Input uses</span>
-tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~parcels, ~<span class="kw">I</span>(chempest_farms*<span class="dv">100</span>), ~<span class="kw">I</span>(chemherb_farms*<span class="dv">100</span>),
-  ~<span class="kw">I</span>(fertorg_farms*<span class="dv">100</span>), ~<span class="kw">I</span>(fertinorg_farms*<span class="dv">100</span>), ~<span class="kw">I</span>(seedp_farms*<span class="dv">100</span>), ~<span class="kw">I</span>(tractorown_farms*<span class="dv">100</span>), ~intens_idx2),
-  ~class9, <span class="kw">subset</span>(ghs.farm.svy.shf, !class9 %like%<span class="st"> &quot;HiC&quot;</span>), <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-tmp &lt;-<span class="st"> </span>tmp[!By %like%<span class="st"> &quot;HiC&quot;</span>]
-tmp[, By :<span class="er">=</span><span class="st"> </span><span class="kw">as.character</span>(By)]
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*<span class="kw">Factor</span>(By)*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*<span class="kw">Format</span>(<span class="dt">digits=</span><span class="dv">0</span>, <span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nsmall=</span><span class="dv">2</span>)*identity,
-  <span class="dt">data=</span>tmp), <span class="dt">justify=</span><span class="st">&quot;ccrrrrrrrrrrrr&quot;</span>,
-  <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Parcels and Input Uses for Small Farm Households across Categories (percent)&quot;</span>)</code></pre></div>
 <table>
 <caption>Tab. Parcels and Input Uses for Small Farm Households across Categories (percent)</caption>
 <colgroup>
@@ -3445,20 +2904,6 @@ std. err.</th>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Poverty</span>
-tmp &lt;-<span class="st"> </span><span class="kw">svyCrossTab</span>(<span class="kw">list</span>(~pcexp_ppp_m, ~foodexp_ppp_m, ~nfoodexp_ppp_m,
-  ~<span class="kw">I</span>(poor_ppp1*<span class="dv">100</span>), ~<span class="kw">I</span>(poor_ppp2*<span class="dv">100</span>), ~<span class="kw">I</span>(povgap_ppp1*<span class="dv">100</span>), ~<span class="kw">I</span>(povgap_ppp2*<span class="dv">100</span>),
-  ~<span class="kw">I</span>(sevpov_ppp1*<span class="dv">100</span>), ~<span class="kw">I</span>(sevpov_ppp2*<span class="dv">100</span>)),
-  ~class9, <span class="kw">subset</span>(ghs.ppp.svy.shf, !class9 %like%<span class="st"> &quot;HiC&quot;</span>), <span class="dt">quantiles=</span><span class="kw">c</span>(.<span class="dv">25</span>,.<span class="dv">5</span>,.<span class="dv">75</span>))
-
-tmp &lt;-<span class="st"> </span>tmp[!By %like%<span class="st"> &quot;HiC&quot;</span>]
-tmp[, By :<span class="er">=</span><span class="st"> </span><span class="kw">as.character</span>(By)]
-
-<span class="kw">pander</span>(<span class="kw">tabular</span>(
-  Variable*(Mean+Q25+Q50+Q75)~<span class="kw">Heading</span>()*<span class="kw">Factor</span>(By)*<span class="kw">Heading</span>()*Stat*<span class="kw">Heading</span>()*<span class="kw">Format</span>(<span class="dt">digits=</span><span class="dv">0</span>, <span class="dt">big.mark=</span><span class="st">&quot;,&quot;</span>, <span class="dt">nsmall=</span><span class="dv">2</span>)*identity,
-  <span class="dt">data=</span>tmp), <span class="dt">justify=</span><span class="st">&quot;ccrrrrrrrrrrrr&quot;</span>,
-  <span class="dt">emphasize.italics.cols=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>), <span class="dt">split.table=</span><span class="ot">Inf</span>,
-  <span class="dt">caption=</span><span class="st">&quot;Tab. Poverty Incidence in Small Farm Households across Categories (PPP, percent)&quot;</span>)</code></pre></div>
 <table style="width:100%;">
 <caption>Tab. Poverty Incidence in Small Farm Households across Categories (PPP, percent)</caption>
 <colgroup>
@@ -4098,35 +3543,6 @@ std. err.</th>
 <li>2012/13 Ethiopia’s Agricultural Sample Survey (AgSS) – but it’s difficult to cross-tabulate results from the AgSS (crop production and input uses) with the ERSS’ income data</li>
 <li>2012 ATA Baseline Survey (3,000 hhlds), see <span class="citation">(Minot &amp; Sawyer, <a href="#ref-minot2013agataeth">2013</a>)</span>.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load and copy constructed vars from the 2015 ETH Segmentation</span>
-<span class="kw">setwd</span>(<span class="st">&quot;~/Google Drive/2016-BMGF-Segmentation/ETH&quot;</span>)
-e1 &lt;-<span class="st"> </span><span class="kw">new.env</span>()
-<span class="kw">load</span>(<span class="st">&quot;./temp/eth-erss-11_bmgf_seg.RData&quot;</span>, <span class="dt">envir=</span>e1)
-<span class="kw">names</span>(e1)
-erss &lt;-<span class="st"> </span>e1$hh
-erss.lbl &lt;-<span class="st"> </span>e1$hh.lb
-
-e1 &lt;-<span class="st"> </span><span class="kw">new.env</span>()
-<span class="co"># Seems more recent</span>
-<span class="kw">load</span>(<span class="st">&quot;./temp/eth_bmgf_seg.RData&quot;</span>, <span class="dt">envir=</span>e1)
-<span class="kw">names</span>(e1)
-erss2 &lt;-<span class="st"> </span>e1$hh
-erss2.lbl &lt;-<span class="st"> </span>e1$hh.lb
-
-<span class="kw">rm</span>(e1)
-<span class="kw">setwd</span>(<span class="st">&quot;~/Projects/2017-agra-aasr&quot;</span>)
-
-<span class="co"># Differences between the 2 set of ERSS vars?</span>
-<span class="kw">names</span>(erss2)[!<span class="kw">names</span>(erss2) %in%<span class="st"> </span><span class="kw">names</span>(erss)]
-<span class="co"># =&gt; merged in all seg vars, poverty, expendc, real_totcons, livestock, eff</span>
-<span class="kw">names</span>(erss)[!<span class="kw">names</span>(erss) %in%<span class="st"> </span><span class="kw">names</span>(erss2)]
-<span class="co"># [1] &quot;hhid&quot;     &quot;input_12&quot;</span>
-
-<span class="co"># Merge in `input_12` and keep `erss2` only</span>
-<span class="kw">setkey</span>(erss, household_id)
-<span class="kw">setkey</span>(erss2, household_id)
-erss[!erss2][, .(household_id, hhid)]
-erss2[erss][, .(household_id, hhid)]</code></pre></div>
 
 </div>
 </div>
