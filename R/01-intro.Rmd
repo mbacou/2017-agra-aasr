@@ -1,0 +1,210 @@
+# Supporting Datasets
+
+Many (unpublished and mostly country-level) studies have attempted to derive farmer characteristics and farm typologies across geospatial dimensions (see e.g. refs below). IFPRI in particular generated cross-country comparable household variables (derived from World Bank LSMS-ISA panels, Demographic and Health Surveys, and/or other large-scale household surveys and agricultural census).
+
+```{r inventory, eval=FALSE}
+
+library(data.table)
+library(survey)
+library(pander)
+library(tables)
+library(stringr)
+
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr.RData")
+
+# Load dataset #1 (variables extracted for the Poverty, Land, Climate paper)
+hh1 <- read.dta("./tmp/Final_SSA_hhPOV_ 6 Apr 2016.12.dta")
+hh.dim <- list(hh1=dim(hh1))
+
+# Show summaries
+hh1.lbl <- summaryTable(hh1)
+hh1 <- data.table(hh1)
+
+# List surveys/years included in this set
+dt1.sum <- hh1[, .(
+  Regions=uniqueN(svyL1Cd), 
+  Districts=uniqueN(paste(svyL1Cd, svyL2Cd)), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year))]
+dt1sum <- rhandsontable(dt1.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh1)
+
+# Describe variables
+dt1var <- rhandsontable(hh1.lbl, rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+# Load dataset #2 (HarvestChoice Ag Snapshots)
+hh2 <- read.dta("./tmp/Combined_Regdemovars13.12.dta")
+hh.dim$hh2 <- dim(hh2)
+
+# Summarize
+hh2.lbl <- summaryTable(hh2)
+hh2 <- data.table(hh2)
+
+# List surveys/years included in this set
+dt2.sum <- hh2[, .(
+  Regions=uniqueN(svyL1Cd), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year))]
+dt2sum <- rhandsontable(dt2.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh2)
+
+# Describe variables
+dt2var <- rhandsontable(hh2.lbl, rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+# Load dataset #3 (Beliyou's Resilience Study)
+hh3 <- read.dta("./tmp/Combined_4_Mel.12.dta")
+hh.dim$hh3 <- dim(hh3)
+
+# Summarize
+hh3.lbl <- summaryTable(hh3)
+hh3 <- data.table(hh3)
+
+# List surveys/years included in this set
+dt3.sum <- hh3[, .(
+  Regions=uniqueN(region), 
+  Districts=uniqueN(paste(region, district)), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year), round)]
+dt3sum <- rhandsontable(dt3.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh3)
+
+# Describe variables
+dt3var <- rhandsontable(hh3.lbl[1:150], rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+# Load dataset #4 (SSA Poverty)
+hh4 <- read.dta("./tmp/SSApoverty_Dist_forGWR.12.dta")
+hh.dim$hh4 <- dim(hh4)
+
+# Keep labels
+hh4.lbl <- data.table(varCode=names(hh4), varLabel=attr(hh4, "var.labels"))
+
+# Remove dummy vars
+hh4 <- hh4[, !names(hh4) %like% "ctry"]
+hh4 <- hh4[, !names(hh4) %like% "yr"]
+hh4 <- hh4[, !names(hh4) %like% "fs"]
+setkey(hh4.lbl, varCode)
+hh4.lbl <- hh4.lbl[names(hh4)]
+attr(hh4, "var.labels") <- hh4.lbl$varLabel
+
+# Correct types
+for (i in names(hh4)) if (class(hh4[[i]])=="numeric") hist(hh4[[i]], plot=F)
+hh4[[i]] <- as.character(hh4[[i]])
+
+# Summarize
+hh4.lbl <- summaryTable(hh4)
+hh4 <- data.table(hh4)
+
+# List surveys/years included in this set
+dt4.sum <- hh4[, .(
+  Regions=uniqueN(svyL1Cd), 
+  Districts=uniqueN(paste(svyL1Cd, svyL2Cd)), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year))]
+dt4sum <- rhandsontable(dt4.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh4)
+
+# Describe variables
+dt4var <- rhandsontable(hh4.lbl, rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+
+# Load GHA GLSS rounds (Eduardo)
+
+
+```
+
+
+
+## Cross-Country Harmonized Variables
+
+Inventory and summarize the latest versions of IFPRI's harmonized variables. Some of these variables are also available (summarized) across districts and/or regions and/or gender.
+
+### Dataset #1 (Poverty, Land, Climate paper)
+
+This dataset contains `r hh.dim$hh1[2]` variables and `r hh.dim$hh1[1]` observations. The breakdown across countries and survey years is as follows, and variables are further described in the next table. Many of these variables are also documented in @azzarri2016poverty.
+
+```{r}
+
+dt1sum
+
+```
+
+
+```{r}
+
+dt1var
+
+```
+
+### Dataset #2 (HarvestChoice Agricultural Snapshots)
+
+My copy of the household-level file is corrupt (would need to contact IFPRI directly) but the variables are similar in the region-level file.
+
+This dataset contains `r hh.dim$hh2[2]` variables. The breakdown across countries and survey years is as follows, and variables are further described in the next table.
+
+```{r}
+
+dt2sum
+
+```
+
+
+```{r}
+
+dt2var
+
+```
+
+
+### Dataset #3 (Panels for Resilience Study)
+
+This dataset contains `r hh.dim$hh3[2]` variables and `r hh.dim$hh3[1]`  observations. The breakdown across countries and survey years is as follows, and variables are further described in the next table.
+
+```{r}
+
+dt3sum
+
+```
+
+This dataset also includes over 2,000 constructed climatic variables (monthly SPEI, temperature, rainfall, PDSI, etc.). To save space they are not shown in the variable summary below.
+
+```{r}
+
+dt3var
+
+```
+
+### Dataset #4 (SSA Poverty Regressions)
+
+This dataset contains `r hh.dim$hh4[2]` variables and `r hh.dim$hh4[1]` observations. The breakdown across countries and survey years is as follows, and variables are further described in the next table. This is a district-level dataset (IFPRI holds the hh-level variables).
+
+```{r}
+
+dt4sum
+
+```
+
+```{r}
+
+dt4var
+
+```
+
+## Demographic and Health Surveys (harmonized)
+
+IFPRI holds cross-country harmonized variables from the latest DHS. Complete metadata is in a [DHS Google Sheet](https://docs.google.com/spreadsheets/d/1v8DDLgi9lQbS4uKnxYPM83PYC90rijJvjKN4xAntKlE/edit#gid=916658631). We would need to request access to the CHILD and WOMAN recodes, I only have the STRATA summaries.
+
+
+## Other Country-Level Panel Variables
+
+### Ghana GLSS Rounds
+
+(as needed). IFPRI/DSG holds 3 rounds (2005, 2008, 2012) of harmonized variables focused on wages and productivity trends.
+
+### Nigeria Farm Segmentation Study
+
+(as needed, used in the typology below)

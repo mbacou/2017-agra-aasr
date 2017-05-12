@@ -1,0 +1,10 @@
+new_session: no
+edit: https://github.com/mbacou/2017-agra-aasr/master/R/%s
+output_dir: "../docs"
+language:
+  label:
+    fig:    "Fig. "
+    tab:    "Tab. "
+    eq:     "Eq. "
+    ex:     "Ex. "
+    remark: "Remark. "

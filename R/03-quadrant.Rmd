@@ -1,0 +1,249 @@
+# Quadrant Classification
+
+## Nigeria
+
+[TBD]
+
+For documentation purposes below are code snippets from the 2016 Farmer Segmentation for Nigeria (definitions and characterization of quadrants and livelihood zones).
+
+
+```{r, eval=FALSE}
+
+#####################################################################################
+# 2016.05.03 Quadrant Definitions across Livelihood Zones (from Diemuth 2016.04.06)
+#####################################################################################
+# We need to add a new segment vars to all key micro datasets, starting with GHS.
+# Diemuth provided latest quadrant definitions.
+#
+#  - [country]_agpotallclass_1km.tif – Agricultural potential raster with 1km cell
+# resolution and same extent as ethtt_1km100khr. Created from clipping sub-Saharan Africa
+# Agricultural Potential 5 minute grid vector layer from FAO & IIASA, 2007. For the
+# 2x2 segmented data, 5-6 values were considered high, 1-4 low and -809-0 were
+# unsuitable and -997 were water.
+# -997 = Water
+# -809 = Protected Areas
+# -807 = Urban Areas
+# -805 = Irrigated Areas
+# -801 = Forest
+# 0 = Land not suited for agriculture
+# 1 = Land very poorly suited for pasture and at best poorly suited for rainfed crops
+# 2 = Land poorly suited for pasture and at best poorly suited for rainfed crops
+# 3 = Lands suited for pasture and at best poorly suited for rainfed crops
+# 4 = Land suited for rainfed crops and pasture possible
+# 5 = Land well suited for rainfed crops and pasture possible
+# 6 = Prime land suited for rainfed crops and pasture possible
+#
+# - [country]_tt1km100khr_4hr.tif – Classified travel time raster with a 4 hr threshold,
+# HarvestChoice, 2015
+# 100 – travel time greater than 4 hours, lo access
+# 200 – travel time less than or equal to 4 hours, high access
+
+# Load the 2 rasters and classify LGAs
+qd.agpot <- raster("./maps/quadrant/nga_agpotallclass_1km.tif")
+qd.tt100k <- raster("./maps/quadrant/nga_tt1km100khr_4hr.tif")
+proj4string(qd.agpot)
+proj4string(qd.tt100k)
+proj4string(geo12.pts)
+unique(qd.agpot)
+#  [1] -997 -809 -807 -805 -801    0    1    2    3    4    5    6
+summary(qd.tt100k)
+#         nga_tt1km100khr_4hr
+# Min.                    100
+# 1st Qu.                 100
+# Median                  200
+# 3rd Qu.                 200
+# Max.                    200
+# NA's                      0
+# Note that raster tt100k is already classified.
+
+qd.agpot.lbl <- c(
+  "water",
+  "protected area",
+  "urban area",
+  "irrigated area",
+  "forest",
+  "land not suited for agriculture",
+  "land very poorly suited for pasture and at best poorly suited for rainfed crops",
+  "land poorly suited for pasture and at best poorly suited for rainfed crops",
+  "land suited for pasture and at best poorly suited for rainfed crops",
+  "land suited for rainfed crops and pasture possible ",
+  "land well suited for rainfed crops and pasture possible",
+  "prime land suited for rainfed crops and pasture possible")
+
+qd.agpot.lbl <- data.table(varCode=unique(qd.agpot), varLabel=qd.agpot.lbl)
+
+# Intersect with GHS coords
+tmp <- extract(qd.agpot, geo12.pts)
+tmp <- data.table(hhid=geo12.pts$hhid, qd.agpot=tmp)
+tmp[, qd.agpot := factor(qd.agpot, levels=qd.agpot.lbl$varCode, labels=qd.agpot.lbl$varLabel)]
+tmp1 <- extract(qd.tt100k, geo12.pts)
+tmp[, qd.tt100k := tmp1]
+tmp[, qd.tt100k := factor(qd.tt100k, levels=c(100, 200), labels=c("ML", "MH"))]
+setkey(tmp, hhid)
+setkey(geo12, hhid)
+geo12 <- tmp[geo12]
+rm(tmp, tmp1)
+
+# Classify hhlds across quadrants
+# Rename old segment var to avoid confusion
+setnames(geo12, c("qd.agpot", "qd.tt100k"), c("qd_agpot", "qd_tt100k"))
+setnames(geo12, "seg_quad", "seg_quad_old")
+setnames(ghs, "seg_quad", "seg_quad_old")
+setnames(ppp12, "seg_quad", "seg_quad_old")
+setnames(inc12, "seg_quad", "seg_quad_old")
+setnames(farm, "seg_quad", "seg_quad_old")
+
+geo12[qd_agpot %in% qd.agpot.lbl$varLabel[1:6], qd_agpot_clas := "AU"]
+geo12[qd_agpot %in% qd.agpot.lbl$varLabel[7:10], qd_agpot_clas := "AL"]
+geo12[qd_agpot %in% qd.agpot.lbl$varLabel[11:12], qd_agpot_clas := "AH"]
+summary(factor(geo12$qd_agpot_clas))
+#   AH   AL   AU NA's
+# 1968 1490 1323  117
+
+summary(factor(geo12$qd_tt100k))
+#   ML   MH NA's
+#  750 4051   97
+
+# Impute missing hhld coords with LGA means
+# Compute LGA means from `g2` map (using dominant class)
+geo12[is.na(qd_agpot_clas), .N, by=.(adm1_nm, adm2_nm)]
+# => missing records in 58 LGAs
+
+tmp <- geo12[!is.na(qd_agpot_clas), .(
+  qd_agpot_clas=modal(qd_agpot_clas, na.rm=T),
+  qd_tt100k=modal(qd_tt100k, na.rm=T)
+), keyby=.(adm1_nm, adm2_nm)]
+
+setnames(tmp, 3:4, c("qd_agpot_clas_imp", "qd_tt100k_imp"))
+setkey(geo12, adm1_nm, adm2_nm)
+geo12 <- tmp[geo12]
+
+geo12[is.na(qd_agpot_clas), qd_agpot_clas := qd_agpot_clas_imp]
+geo12[is.na(qd_tt100k), qd_tt100k := qd_tt100k_imp]
+
+geo12[is.na(qd_agpot_clas), .N, by=.(adm1_nm, adm2_nm)]
+#    adm1_nm adm2_nm  N
+# 1:  Rivers   Bonny 10
+geo12[is.na(qd_tt100k), .N, by=.(adm1_nm, adm2_nm)]
+# Empty data.table (0 rows) of 3 cols: adm1_nm,adm2_nm,N
+# => only 10 missing records in Bonny
+
+# What is the dominant agpot in Bonny? Extract all LGAs for re-use.
+tmp <- extract(qd.agpot, g2, fun=modal, na.rm=T)
+g2$qd_agpot <- tmp
+# Note that we already have median 100k travel time across LGAs in `g2$mkt100k`
+# though I'm not sure it's the same source as Diemuth/Stan
+
+# load Joe's latest travel times
+tt100k <- dt[, .SD, .SDcols=c("CELL5M", "X", "Y", "tt10_100k")]
+rm(dt)
+tt100k <- SpatialPixelsDataFrame(tt100k[, .(X,Y)], data.frame(tt100k))
+proj4string(tt100k) <- CRS("+init=epsg:4326")
+tt100k <- raster(tt100k, layer="tt10_100k")
+tmp <- extract(tt100k, g2, fun=median, na.rm=T)
+g2$qd_tt100k <- tmp
+# Export for mapping
+tt100k <- crop(tt100k, g2)
+tt100k <- mask(tt100k, g2)
+writeRaster(tt100k, "./maps/markets/tt100k.tif")
+rm(tmp)
+
+# What is Bonny?
+g2[g2$adm2_nm=="Bonny", "qd_agpot"]
+# => -997, so AU
+geo12[is.na(qd_agpot_clas), qd_agpot_clas := "AU"]
+summary(factor(geo12$qd_agpot_clas))
+#   AH   AL   AU
+# 1997 1530 1371
+
+# Make final quadrant classification for GHS
+geo12[, seg_quad := paste0(qd_tt100k, qd_agpot_clas)]
+geo12[, unique(seg_quad)]
+# [1] "MHAU" "MHAL" "MHAH" "MLAH" "MLAL" "MLAU"
+geo12[, seg_quad := ordered(seg_quad, levels=c("MLAU", "MLAL", "MLAH", "MHAU", "MHAL", "MHAH"))]
+
+# Merge quadrants into `ghs`, `farm` and `ppp12`
+setkey(geo12, hhid)
+setkey(ghs, hhid)
+setkey(farm, hhid)
+setkey(ppp12, hhid)
+ghs$seg_quad <- geo12[ghs][, seg_quad]
+farm$seg_quad <- geo12[farm][, seg_quad]
+ppp12$seg_quad <- geo12[ppp12][, seg_quad]
+
+# Re-run summary tables
+# => done
+
+#####################################################################################
+# Crop preferences across quadrants/zones - GHS
+#####################################################################################
+
+# Note that Cleo generated the hh-level vars and Eduardo estimated state-level vars
+ghs.plot <- read.dta("./data/NGA-GHS/NGA_GHS_Indicator_plot_2012.dta")
+ghs.plot <- data.table(ghs.plot)
+
+# Merge in segmentation vars
+setkey(geo12, hhid)
+setkey(ghs.crop, hhid)
+setkey(ghs.plot, hhid)
+ghs.crop$seg_quad <- geo12[ghs.crop][, seg_quad]
+ghs.plot$seg_quad <- geo12[ghs.plot][, seg_quad]
+ghs.crop$seg_lvl_6 <- geo12[ghs.crop][, seg_lvl_6]
+ghs.plot$seg_lvl_6 <- geo12[ghs.plot][, seg_lvl_6]
+
+# Share of female plot managers
+tmp <- ghs.plot[, .N, by=.(hhid, wt_w2v1, manager, state, gender)]
+
+tmp <- ghs.crop[, .(
+  num_fem_mgr=sum(num_fem_mgr*wt_wave2, na.rm=T)/sum(num_hh_mgr*wt_wave2, na.rm=T),
+  fem_mgr=weighted.mean(num_fem_mgr>0, wt_wave2, na.rm=T),
+  fem_earn=weighted.mean(fem_earn, wt_wave2, na.rm=T)
+), keyby=seg_lvl_6]
+tmp <- ghs.crop[, .(
+  num_fem_mgr=sum(num_fem_mgr*wt_wave2, na.rm=T)/sum(num_hh_mgr*wt_wave2, na.rm=T),
+  fem_mgr=weighted.mean(num_fem_mgr>0, wt_wave2, na.rm=T),
+  fem_earn=weighted.mean(fem_earn, wt_wave2, na.rm=T)
+), keyby=seg_quad]
+tmp <- ghs.crop[, .(
+  num_fem_mgr=sum(num_fem_mgr*wt_wave2, na.rm=T)/sum(num_hh_mgr*wt_wave2, na.rm=T),
+  fem_mgr=weighted.mean(num_fem_mgr>0, wt_wave2, na.rm=T),
+  fem_earn=weighted.mean(fem_earn, wt_wave2, na.rm=T))]
+
+
+# Share of female-managed plots
+tmp <- ghs.plot[, .(femplotmgr=weighted.mean(gender=="female", wt_w2v1, na.rm=T)),
+  keyby=seg_lvl_6]
+tmp <- ghs.plot[, .(femplotmgr=weighted.mean(gender=="female", wt_w2v1, na.rm=T)),
+  keyby=seg_quad]
+tmp <- ghs.plot[, .(femplotmgr=weighted.mean(gender=="female", wt_w2v1, na.rm=T))]
+
+
+# TODO Area of female-managed plots under each crop
+tmp <- ghs.plot[, lapply(.SD, sum, na.rm=T),
+  keyby=.(hhid, wt_w2v1, state, gender), .SDcols=96:147]
+tmp <- tmp[, lapply(.SD, function(x) sum(x*wt_w2v1, na.rm=T)),
+  keyby=.(state, gender), .SDcols=c(2, 5:56)]
+tmp[, wt_w2v1 := NULL]
+tmp <- melt(tmp, id.vars=1:2)
+tmp[, variable := str_replace(variable, "area_", "")]
+tmp <- tmp[!is.na(gender)]
+
+# Proportion of female-managed plots by crop
+tmp <- melt(ghs.plot,
+  id.vars=c("seg_quad", "seg_lvl_6", "gender", "wt_w2v1"),
+  measure.vars=11:147)
+tmp[value=="yes", value := "1"]
+tmp[value=="no", value := "0"]
+tmp[, value := as.numeric(value)]
+tmp <- tmp[, lapply(.SD, weighted.mean, wt_w2v1), keyby=.(seg_lvl_6, gender, variable)]
+
+# TODO Additional production stats
+# TODO Also check on Sara's harmonized farm management stats
+
+```
+
+
+
+## Ethiopia
+
+[TBD]

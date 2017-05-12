@@ -1,0 +1,180 @@
+---
+title: "Business-oriented Typology and Characterization of Agriculture in SSA"
+author: "[Melanie Bacou](http://github.com/mbacou) for BMGF"
+date: "Last updated on `r Sys.Date()` -- DRAFT, DO NOT USE OR CITE"
+description: "A multi-scale and cross-time framework"
+site: bookdown::bookdown_site
+output:
+  bookdown::github_book:
+    code_folding: hide
+    css: css/book.css
+  bookdown::pdf_book: default
+documentclass: book
+bibliography: biblio.bib
+csl: apa.csl
+link-citations: yes
+nocite: |
+  @aasr_2016, @alvarez2014typology, @jayne2015agdev, @hazell2013urban, @douillet2014developing, @jordan2005eth, @omamo2006strategic, @bacou2015ethseg, @omamo2006strategic, @benin2016agricultural, @willy2015adaptation, @jayne2015africafarmland, @diao2017ghana, @roberts2014eth, @schnitzer2014tza, @heady2013ethland, @maxwell2014foodinsec, @minot2013agataeth, @girei2017fadama, @christen2013segmenting
+---
+
+# Background {-}
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(comment=NA, warning=F, message=F, base.url="../docs",
+  fig.width=6, fig.height=3, fig.path="../docs/fig/", dpi=300, out.height="340px",
+  dev.args=list(pointsize=10))
+
+library(data.table)
+library(rhandsontable)
+library(jsonlite)
+library(survey)
+library(pander)
+library(tables)
+
+load("../tmp/2017-agra-aasr.RData")
+
+```
+
+```{r helpers, eval=FALSE, collapse=TRUE}
+
+#####################################################################################
+# Helper - Construct data codebook
+summaryTable <- function(dt) {
+  
+  dt.lbl <- data.table(
+    varCode=names(dt),
+    varLabel=attr(dt, "var.labels")
+  )  
+  tmp <- as.data.table(summary(dt))
+  tmp[, V1 := 1:7]
+  tmp <- dcast(tmp, V2~V1)
+  setnames(tmp, c("varCode", "Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.", "NA's"))
+  tmp[, varCode := str_trim(varCode)]
+  
+  setkey(tmp, varCode)
+  setkey(dt.lbl, varCode)
+  dt.lbl <- tmp[dt.lbl]
+  dt.lbl <- dt.lbl[names(dt)]
+  
+  dt.lbl[, `Hist.` := sapply(dt, function(x) ifelse(class(x)=="numeric", toJSON(list(values=hist(x, plot=FALSE)$counts)), toJSON(NA)))]
+  
+  setcolorder(dt.lbl, c(1,9,10,2:8))
+  return(dt.lbl)
+}
+
+#####################################################################################
+# Helper - Combine and format results from survey::svyby()
+svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
+  
+  # Pass a list of formulas (list(~var1, ~var2, ...))
+  # Then use tables::tabular() to format nested tables
+  
+  require(survey)
+  require(data.table)
+  require(stringr)
+  
+  # Reshape means
+  x <- lapply(formula, function(x) {
+    m <- svyby(x, by, design, svymean, na.rm=TRUE)
+    m <- as.data.table(ftable(m))
+    return(m)
+  })
+  x <- rbindlist(x)
+  setnames(x, c("by", "stat", "var", "Mean"))
+  x[stat=="svymean", stat := "est."]
+  x[stat=="SE", stat := "std. err."]
+  
+  # Reshape quantiles
+  y <- lapply(formula, function(x) {
+    m <- svyby(x, by, design, svyquantile, quantiles, ci=TRUE, na.rm=TRUE)
+    m <- as.data.table(ftable(m))
+    m[, var := as.character(x)[2]]
+    return(m)
+  })
+  y <- rbindlist(y)  
+  setnames(y, c("by", "stat", "qtl", "value", "var"))
+  y[stat=="svyquantile", stat := "est."]
+  y[stat=="SE", stat := "std. err."]
+  y[, qtl := paste0("Q", as.numeric(as.character(qtl))*100)]
+  y <- dcast(var+by+stat~qtl, data=y)
+  
+  setkey(x, var, by, stat)
+  setkey(y, var, by, stat)
+  x <- x[y]
+ 
+  # Add optional labels
+  if(!missing(labels)) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2],
+    var := labels[i]]
+  
+  var.levels <- sapply(formula, function(x) as.character(x)[2])
+  var.levels <- str_replace(var.levels, fixed("I("), fixed("("))
+  x[, var := factor(str_replace(var, fixed("I("), fixed("(")), levels=var.levels)]
+  x[, stat := factor(as.character(stat), ordered=T)]
+  setcolorder(x, c(3,1,2,4:ncol(x)))
+  setnames(x, 1:3, c("Variable", "By", "Stat"))
+  return(x)
+}
+
+#####################################################################################
+# Helper - Combine multiple svyhist(), svysmooth(), and svycdf() plots
+svyCrossPlot <- function(formula, design, breaks="Sturges", bandwidth=NULL, ...) {
+  
+  require(survey)
+  
+  n <- levels(ghs$class9)
+  par(mfrow=c(length(n), 2))
+  for (i in n) {
+    svyhist(formula, subset(design, class9==i), breaks=breaks,
+      ylab="Density", main=i, ...)
+    lines(svysmooth(formula, subset(design, class9==i), bandwidth=bandwidth), 
+      lwd=1, col=40)
+    plot(svycdf(formula, subset(design, class9==i)), 
+      ylab="Est. CDF", main=i, ...)
+    abline(h=0.5, lty=2, col=40)
+    abline(h=0, lty=2, col="grey70")
+    abline(h=1, lty=2, col="grey70")
+  }
+}
+
+```
+
+
+This study is a prospective chapter in *AGRA Africa Agriculture Status Report (AASR) 2017*.
+
+The overall objective of the AASR report is to [@aasr_cn_2017]:  
+ 
+1. provide an overview of the smallholder farmers and how they have adapted to the challenges they face as economic actors; 
+2. explore innovative strategies that can substantially raise the productivity and incomes of smallholder farmers; 
+3. identify policies and programs that can support the movement of Africa’s farming systems from subsistence-oriented to market-oriented thriving businesses; 
+4. identify the necessary conditions, appropriate technologies, and institutions that can propel and support smallholder agriculture businesses; 
+5. examine the past and the present role of public and private sector investment in agriculture and the success factors that can be scaled up to accelerate transformation. 
+
+
+# Method
+
+The study should provide a context-setting chapter that attempts to characterize, scale, locate, point to prioritization of high-level smallholder commercialization strategies, opportunities and challenges. A proposed approach is to chracterize SHFs and frame business strategies within a 2-by-2 domain framework (low/high rainfed ag potential across low/high market access areas). This approach assumes that agricultural development and adaptation strategies are largely driven by pre-existing bio-physical and spatial conditions.
+
+We propose then focusing on around half a dozen countries for which we have recent/accessible microdata (e.g. LSMS-ISA and maybe AGRA baseline surveys) to look more closely, in the same 2x2 domain framework, at specific farm household and macro characteristics to do two things:  
+
+1. Apply some typology to distinguish between say “predominantly-subsistence” focused and “transitioning-commercial” smallholders  
+2. Report on hh level variables that can provide insight into the scale of potential business development challenges and opportunities in each country. 
+
+![Fig. Suggested Approach](fig/method-stan_2017.05.02.png)
+
+Key farm and household-level variables to look at may include:
+
+* Holding size
+* Income/consumption
+* Access to inputs/extension
+* Use of inputs
+* Land tenure status
+* Education
+* Cell-phone ownership
+* Cooperative/self-help group membership
+* Access to credit, insurance
+* Off-farm income
+* ...
+
+
