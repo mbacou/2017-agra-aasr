@@ -2,10 +2,6 @@
 /* Author: BACOU, Melanie                          */
 /* Date:   2017.04.04                              */
 
-caption {
-  text-align: left;
-}
-
 .marginnote {
    word-wrap: break-word;
  }
@@ -27,8 +23,16 @@ caption {
   font-size: 15px;
 }
 
-.caption {
+.caption, caption {
   color: #777;
+}
+
+caption {
+  text-align: left;
+}
+
+caption span {
+  font-weight: bold;
 }
 
 .table-condensed>tbody>tr>td, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>td, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>thead>tr>th {
