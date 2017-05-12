@@ -401,7 +401,7 @@ tmp <- data.frame(clas=class9, C=rep(tmp, each=3), D=rep(tmp, 3))
 
 pander(tabular((`Income Diversification`=D)~(`Crop Commercialization`=C)*Heading()*identity*Heading()*(as.character(clas)), data=tmp),
   split.table=Inf, emphasize.strong.cols=1, emphasize.italics.cols=2:4, emphasize.rownames=F,
-  caption="Household Classification")
+  caption="(#tab:tabclas) Household Classification")
 
 ```
 
@@ -412,17 +412,17 @@ The following 3 tables show the count of observations in each class for farm hou
 pander(tabular(Heading()*noaggross_clas~Format(big.mark=",")*Heading()*croparea_clas*Heading()*cropsales_clas,
   data=ghs), split.table=Inf, justify="rrrrrrrrrr",
   emphasize.strong.cols=1, emphasize.rownames=F,
-  caption="Count of Observations across Classes of Farm Households")
+  caption="(#tab:countsa) Count of Observations across Classes of Farm Households")
 
 pander(tabular(Heading()*noaggross_clas~Format(big.mark=",")*Heading()*croparea_2ha*Heading()*cropsales_clas,
   data=ghs), split.table=Inf, justify="rrrrrrr",
   emphasize.strong.cols=1, emphasize.rownames=F,
-  caption="Count of Observations across Classes of Farm Households (below/above 2 ha)")
+  caption="(#tab:countsb) Count of Observations across Classes of Farm Households (below/above 2 ha)")
 
 pander(tabular(Heading()*noaggross_clas~Format(big.mark=",")*Heading()*croparea_4ha*Heading()*cropsales_clas,
   data=ghs), split.table=Inf, justify="rrrrrrr",
   emphasize.strong.cols=1, emphasize.rownames=F,
-  caption="Count of Observations across Classes of Farm Households (below/above 4 ha)")
+  caption="(#tab:countsc) Count of Observations across Classes of Farm Households (below/above 4 ha)")
 
 ```
 
@@ -447,14 +447,14 @@ plot(svytable(~croparea_4ha+class9, ghs.svy.shf), main=NA, las=2,
 ```
 
 
-```{r tab:tab1}
+```{r tab1}
 
 pander(ftable(svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_clas)), ghs.svy.farm, na.rm=T), rownames=list(
   levels(ghs$croparea_4ha),
   levels(ghs$cropsales_clas),
   levels(ghs$noaggross_clas)))*100, round=2,
   emphasize.italics.rows=c(1,5,7,9), emphasize.strong.cols=1, emphasize.strong.rows=2,
-  caption="Est. Proportions of Farm Holdings across Categories")
+  caption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories")
 
 ```
 
@@ -540,7 +540,7 @@ for (i in seq_along(l)) lines(
 ```
 
 
-```{r tab:tab2}
+```{r tab2}
 
 # Estimated quintiles of `cropsales_sh` for smallholders
 tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(cropsales/1000)), ~croparea_4ha,
@@ -550,7 +550,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity,
   data=tmp),
   emphasize.italics.cols=c(4,6), split.table=Inf,
-  caption="Crop Commercialization for Farms below/above 4 ha (percent, '000 LCU)")
+  caption="(#tab:tab2a) Crop Commercialization for Farms below/above 4 ha (percent, '000 LCU)")
 
 # Estimated quintiles of `noaggross_sh` for smallholders
 tmp <- svyCrossTab(list(~I(noaggross_sh*100), ~I(noaggross/1000)), ~croparea_4ha,
@@ -560,7 +560,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity,
   data=tmp),
   emphasize.italics.cols=c(4,6), split.table=Inf,
-  caption="Off-Farm Income for Farms below/above 4 ha (percent, '000 LCU)")
+  caption="(#tab:tab2b) Off-Farm Income for Farms below/above 4 ha (percent, '000 LCU)")
 
 ```
 
@@ -600,7 +600,7 @@ svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
 
 Note the tables below omit the last 3 classes to save space.
 
-```{r tab:tab3}
+```{r tab3}
 
 # Estimated quintiles of other variables for smallholders
 tmp <- svyCrossTab(list(~I(cropvalue/1000), ~I(cropsales/1000), ~I(lstocksold/1000),
@@ -614,7 +614,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
   data=tmp),
   justify="ccrrrrrrrrrrrr", emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Sources of Agricultural Income for Small Farm Households across Categories ('000 LCU)")
+  caption="(#tab:tab3) Sources of Agricultural Income for Small Farm Households across Categories ('000 LCU)")
 
 tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(aggross_sh*100)),
   ~class9, subset(ghs.svy.shf, !class9 %like% "HiC"), quantiles=c(.25,.5,.75))
@@ -626,7 +626,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=2),
   data=tmp), justify="ccrrrrrrrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Sources of Agricultural Income for Small Farm Households across Categories (percent)")
+  caption="(#tab:tab3a) Sources of Agricultural Income for Small Farm Households across Categories (percent)")
 
 tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total),
   ~class9, subset(ghs.svy.shf, !class9 %like% "HiC"), quantiles=c(.25,.5,.75))
@@ -638,12 +638,12 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrrrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)")
+  caption="(#tab:tab3b) Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)")
 
 
 ```
 
-```{r tab:tab4}
+```{r tab4}
 
 # Demographics
 tmp <- svyCrossTab(list(~hhsize, ~I(femhead*100), ~agehead, ~I(lithead*100),
@@ -657,7 +657,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrrrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Demographics of Small Farm Households across Categories")
+  caption="(#tab:tab4) Demographics of Small Farm Households across Categories")
 
 ```
 
@@ -676,7 +676,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrrrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Parcels and Input Uses for Small Farm Households across Categories (percent)")
+  caption="(#tab:tab5) Parcels and Input Uses for Small Farm Households across Categories (percent)")
 
 ```
 
@@ -695,7 +695,7 @@ pander(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*Factor(By)*Heading()*Stat*Heading()*Format(digits=0, big.mark=",", nsmall=2)*identity,
   data=tmp), justify="ccrrrrrrrrrrrr",
   emphasize.italics.cols=c(4,6,8), split.table=Inf,
-  caption="Poverty Incidence in Small Farm Households across Categories (PPP, percent)")
+  caption="(#tab:tab6) Poverty Incidence in Small Farm Households across Categories (PPP, percent)")
 
 ```
 

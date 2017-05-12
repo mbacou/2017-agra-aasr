@@ -26,7 +26,7 @@ nocite: |
 ```{r setup, include=FALSE}
 
 knitr::opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="png", fig.path="fig/", fig.width=6, fig.height=3, dpi=300, out.height="340px",
+  dev="svg", fig.path="fig/", fig.width=6, fig.height=3, dpi=300, out.height="340px",
   dev.args=list(png=list(pointsize=10, family="Roboto Condensed"), svg=list(family="Roboto Condensed")))
 
 library(data.table)
