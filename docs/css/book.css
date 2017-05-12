@@ -27,6 +27,10 @@
   color: #777;
 }
 
+.caption {
+ font-size: .9em;
+}
+
 caption {
   text-align: left;
 }
