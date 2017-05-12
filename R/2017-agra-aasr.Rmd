@@ -517,6 +517,13 @@ summary(ghs$croparea_4ha)
 # <= 4 ha  > 4 ha    NA's 
 #    2840      94    1946 
 
+ghs[croparea==0, summary(croparea_4ha)]
+# <= 4 ha  > 4 ha    NA's 
+#     240       0       7
+# => need to re-run results without these 240
+ghs[croparea==0, summary(cropsales)]
+ghs[croparea==0, summary(TLU_total)]
+
 # SHF 4ha dummy `croparea_2ha` (2-class)
 ghs[, croparea_2ha := NULL]
 ghs[farm_hh==T, croparea_2ha := factor(croparea <= 2, levels=c(T, F), labels=c("<= 2 ha", "> 2 ha"))]
