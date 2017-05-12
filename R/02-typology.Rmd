@@ -392,7 +392,7 @@ Within the subsample of *farm households* we look at the distribution of househo
 * Crop commercialization $cropsales\_sh$ (using breaks at **5%** and **50%** of crop production)
 * Share of off-farm income in total hhld income $naggross\_sh$ (using breaks at **1/3** and **2/3** of total income)
 
-The resulting classes of farm households are labelled as follows:
+The resulting classes of farm households are labelled as follows:  
 
 ```{r tabclas}
 
@@ -430,7 +430,7 @@ In the next tables we limit categories to farm households **below/above 4ha** (a
 
 Estimated proportions of farm households across classes and categories are shown in the next graph and table.
 
-```{r fig2a, fig.cap="Fig. Est. Proportions of Farm Holdings across Categories"}
+```{r fig2a, fig.cap="Est. Proportions of Farm Holdings across Categories"}
 
 par(mfrow=c(1,3), mar=c(5,1,0,2))
 plot(svytable(~croparea_4ha+cropsales_clas, ghs.svy.shf), main=NA, las=2,
@@ -462,13 +462,13 @@ pander(ftable(svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_cla
 
 ```{remark}
 
-  Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
+Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
 
-  * there are **33M** households in Nigeria
+* there are **33M** households in Nigeria
 * **58.8%** (**19.2M**) generate a revenue from farming (wages, rents, crops, livestock, and/or fish)
 * **97%** (**16M**) of farm holdings are *small*
-  * corresponding to a beneficiary population of **107M**
-  * crop commercialization is low at **12.2%** for smallholdings (below 4 ha) and **17.7%** for larger holdings (over 4 ha) on average. Median rates are much smaller however with **0.07%** for smallholdings and **0.30%** for larger holdings.
+* corresponding to a beneficiary population of **107M**
+* crop commercialization is low at **12.2%** for smallholdings (below 4 ha) and **17.7%** for larger holdings (over 4 ha) on average. Median rates are much smaller however with **0.07%** for smallholdings and **0.30%** for larger holdings.
 * income diversification in farm households is **17%** on average (**18%** for smallholdings and **13%** for larger holdings) (i.e. off-farm income is 17% on average), but medians off-farm incomes are negligible at **0.83%** (**0.63%** for smallholdings and **0.33%** for larger holdings).
 
 <u>Notes</u>: for LCU conversions **1 int$ = 108.23 Naira** (2015)
@@ -476,7 +476,7 @@ pander(ftable(svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_cla
 ```
 
 
-```{r fig1b, fig.cap="Fig. Cultivated Area, Crop Commercialization, and Income Diversification"}
+```{r fig1b, fig.cap="Cultivated Area, Crop Commercialization, and Income Diversification"}
 
 par(mfrow=c(1,3), font.main=1)
 svyhist(~croparea, ghs.svy.farm, main="Cultivated Area", xlab="croparea (ha)", xlim=c(0,10))
@@ -488,7 +488,7 @@ lines(svysmooth(~I(noaggross_sh*100), ghs.svy.farm, bandwidth=1), lwd=1, col=40)
 
 ```
 
-```{r fig1c, fig.cap="Fig. Crop Commercialization and Income Diversification along Cultivated Area"}
+```{r fig1c, fig.cap="Crop Commercialization and Income Diversification along Cultivated Area"}
 
 par(mfrow=c(1,2), cex=.7)
 svyboxplot(I(cropsales_sh*100)~croparea_4ha, ghs.svy.farm,
@@ -499,7 +499,7 @@ svyboxplot(I(noaggross_sh*100)~croparea_4ha, ghs.svy.farm,
 ```
 
 
-```{r fig1e, fig.cap="Fig. Crop Commercialization by Age and Gender"}
+```{r fig1e, fig.cap="Crop Commercialization by Age and Gender"}
 
 par(mfrow=c(1,2), cex=.7)
 svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
@@ -509,7 +509,7 @@ legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
 
 ```
 
-```{r fig1f, eval=F, fig.cap="Fig. Crop Commercialization by Age and Zone"}
+```{r fig1f, eval=F, fig.cap="Crop Commercialization by Age and Zone"}
 
 par(mfrow=c(1,1), cex=.7)
 l <- levels(ghs$zone)
@@ -521,7 +521,7 @@ for (i in seq_along(l)) lines(
 
 ```
 
-```{r fig1g, fig.cap="Fig. Income Diversification by Age and Gender"}
+```{r fig1g, fig.cap="Income Diversification by Age and Gender"}
 
 par(mfrow=c(1,2), cex=.7)
 svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Off-Farm Income ('000 LCU)")
@@ -531,7 +531,7 @@ legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
 
 ```
 
-```{r, eval=F, fig.cap="Fig. Income Diversification by Age and Zone"}
+```{r, eval=F, fig.cap="Income Diversification by Age and Zone"}
 
 l <- levels(ghs$zone)
 plot(c(15,100), c(0,800), type="n", xlab="Age of Hhld Head", ylab="Off-Farm Income ('000 LCU)")
@@ -569,7 +569,7 @@ pander(tabular(
 
 The 9 categories of small farm holdings are further characterized in the next graphs and summary tables.
 
-```{r fig3, eval=F, fig.cap="Fig. Distribution of Farm Sizes across Categories of Small Farm Holdings (ha)", fig.height=6, out.height="300px"}
+```{r fig3, eval=F, fig.cap="Distribution of Farm Sizes across Categories of Small Farm Holdings (ha)", fig.height=6, out.height="300px"}
 
 # farmarea
 svyCrossPlot(~farmarea, ghs.svy.shf, breaks=20, bandwidth=.5, xlim=c(0,4),
@@ -577,7 +577,7 @@ svyCrossPlot(~farmarea, ghs.svy.shf, breaks=20, bandwidth=.5, xlim=c(0,4),
 
 ```
 
-```{r fig4, eval=F, fig.cap="Fig. Distribution of Livestock Assets across Categories of Small Farm Holdings (TLU)", fig.height=6, out.height="300px"}
+```{r fig4, eval=F, fig.cap="Distribution of Livestock Assets across Categories of Small Farm Holdings (TLU)", fig.height=6, out.height="300px"}
 
 # TLU_total
 svyCrossPlot(~TLU_total, ghs.svy.shf, breaks=20, bandwidth=1, xlim=c(0,30),
@@ -585,7 +585,7 @@ svyCrossPlot(~TLU_total, ghs.svy.shf, breaks=20, bandwidth=1, xlim=c(0,30),
 
 ```
 
-```{r fig5, eval=F, fig.cap="Fig. Distribution of Livestock Sales across Categories of Small Farm Holdings ('000 LCU)", fig.height=6, out.height="300px"}
+```{r fig5, eval=F, fig.cap="Distribution of Livestock Sales across Categories of Small Farm Holdings ('000 LCU)", fig.height=6, out.height="300px"}
 
 # lstocksold
 svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(0,1500),
@@ -593,7 +593,7 @@ svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(
 
 ```
 
-```{r fig6, eval=F, fig.cap="Fig. Share of Farm Income across Categories of Small Farm Holdings (percent)", fig.height=6, out.height="300px"}
+```{r fig6, eval=F, fig.cap="Share of Farm Income across Categories of Small Farm Holdings (percent)", fig.height=6, out.height="300px"}
 
 # aggross_sh
 svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
