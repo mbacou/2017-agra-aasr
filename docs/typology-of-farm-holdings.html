@@ -792,7 +792,7 @@ HiC</th>
   <span class="dt">ylab=</span><span class="kw">list</span>(<span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>),
   <span class="dt">xlab=</span><span class="kw">list</span>(<span class="st">&quot;Categories 9-class&quot;</span>, <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
 <div class="figure"><span id="fig:fig2a"></span>
-<img src="_main_files/figure-html/fig2a-1.png" alt="Fig. Est. Proportions of Farm Holdings across Categories" width="1800" height="340px" />
+<img src="fig/fig2a-1.png" alt="Fig. Est. Proportions of Farm Holdings across Categories" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.1: Fig. Est. Proportions of Farm Holdings across Categories
 </p>
@@ -925,7 +925,7 @@ Fig. 3.1: Fig. Est. Proportions of Farm Holdings across Categories
 </div>
 <p><code>r   par(mfrow=c(1,3), font.main=1)   svyhist(~croparea, ghs.svy.farm, main=&quot;Cultivated Area&quot;, xlab=&quot;croparea (ha)&quot;, xlim=c(0,10))   lines(svysmooth(~croparea, ghs.svy.farm, bandwidth=1), lwd=1, col=40)   svyhist(~I(cropsales_sh*100), ghs.svy.farm, main=&quot;Crop Commercialization&quot;, xlab=&quot;cropsales_sh (percent)&quot;)   lines(svysmooth(~I(cropsales_sh*100), ghs.svy.farm, bandwidth=1), lwd=1, col=40)   svyhist(~I(noaggross_sh*100), ghs.svy.farm, main=&quot;Income Diversification&quot;, xlab=&quot;noaggross_sh (percent)&quot;)   lines(svysmooth(~I(noaggross_sh*100), ghs.svy.farm, bandwidth=1), lwd=1, col=40)</code></p>
 <div class="figure"><span id="fig:fig1b"></span>
-<img src="_main_files/figure-html/fig1b-1.png" alt="Fig. Cultivated Area, Crop Commercialization, and Income Diversification" width="1800" height="340px" />
+<img src="fig/fig1b-1.png" alt="Fig. Cultivated Area, Crop Commercialization, and Income Diversification" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.2: Fig. Cultivated Area, Crop Commercialization, and Income Diversification
 </p>
@@ -936,7 +936,7 @@ Fig. 3.2: Fig. Cultivated Area, Crop Commercialization, and Income Diversificati
 <span class="kw">svyboxplot</span>(<span class="kw">I</span>(noaggross_sh*<span class="dv">100</span>)~croparea_4ha, ghs.svy.farm,
   <span class="dt">xlab=</span><span class="st">&quot;Cultivated Area&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Off-Farm Incomen (percent)&quot;</span>, <span class="dt">legend=</span><span class="dv">2</span>, <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">20</span>))</code></pre></div>
 <div class="figure"><span id="fig:fig1c"></span>
-<img src="_main_files/figure-html/fig1c-1.png" alt="Fig. Crop Commercialization and Income Diversification along Cultivated Area" width="1800" height="340px" />
+<img src="fig/fig1c-1.png" alt="Fig. Crop Commercialization and Income Diversification along Cultivated Area" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.3: Fig. Crop Commercialization and Income Diversification along Cultivated Area
 </p>
@@ -947,7 +947,7 @@ Fig. 3.3: Fig. Crop Commercialization and Income Diversification along Cultivate
 <span class="kw">svyplot</span>(<span class="kw">I</span>(cropsales/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, femhead==<span class="dv">1</span>), <span class="dt">style=</span><span class="st">&quot;transparent&quot;</span>, <span class="dt">basecol=</span><span class="dv">41</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Crop Sales (&#39;000 LCU)&quot;</span>)
 <span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">41</span>), <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>), <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:fig1e"></span>
-<img src="_main_files/figure-html/fig1e-1.png" alt="Fig. Crop Commercialization by Age and Gender" width="1800" height="340px" />
+<img src="fig/fig1e-1.png" alt="Fig. Crop Commercialization by Age and Gender" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.4: Fig. Crop Commercialization by Age and Gender
 </p>
@@ -965,7 +965,7 @@ for (i in <span class="kw">seq_along</span>(l)) <span class="kw">lines</span>(
 <span class="kw">svyplot</span>(<span class="kw">I</span>(noaggross/<span class="dv">1000</span>)~agehead, <span class="kw">subset</span>(ghs.svy.farm, femhead==<span class="dv">1</span>), <span class="dt">style=</span><span class="st">&quot;transparent&quot;</span>, <span class="dt">basecol=</span><span class="dv">41</span>, <span class="dt">xlab=</span><span class="st">&quot;Age of Hhld Head&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Off-Farm Income (&#39;000 LCU)&quot;</span>)
 <span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">lty=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="dv">41</span>), <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>), <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>)</code></pre></div>
 <div class="figure"><span id="fig:fig1g"></span>
-<img src="_main_files/figure-html/fig1g-1.png" alt="Fig. Income Diversification by Age and Gender" width="1800" height="340px" />
+<img src="fig/fig1g-1.png" alt="Fig. Income Diversification by Age and Gender" width="1800" height="340px" />
 <p class="caption">
 Fig. 3.5: Fig. Income Diversification by Age and Gender
 </p>

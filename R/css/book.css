@@ -11,6 +11,10 @@
   word-wrap: break-word;
 }
 
+div.sourceCode {
+   display: none;
+ }
+
 .math {
   font-size: 13px;
 }
