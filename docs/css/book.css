@@ -6,14 +6,14 @@
    word-wrap: break-word;
  }
 
- div.sourceCode {
-   display: none;
- }
-
 .book .book-body .page-wrapper .page-inner section.normal pre  {
   width: auto;
   word-wrap: break-word;
 }
+
+div.sourceCode {
+   display: none;
+ }
 
 .math {
   font-size: 13px;
