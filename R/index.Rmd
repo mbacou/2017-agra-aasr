@@ -6,8 +6,8 @@ description: "A multi-scale and cross-time framework"
 site: bookdown::bookdown_site
 output:
   bookdown::github_book:
-    code_folding: hide
-    css: css/book.css
+    code_folding: "hide"
+    css: "css/book.css"
     config:
       toolbar:
         position: static    
