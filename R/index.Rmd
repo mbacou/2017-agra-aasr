@@ -5,14 +5,14 @@ date: "Last updated on `r Sys.Date()` -- DRAFT, DO NOT USE OR CITE"
 description: "A multi-scale and cross-time framework"
 site: bookdown::bookdown_site
 output:
-  bookdown::github_book:
-    code_folding: hide
-    config:
-      toolbar:
-        position: static    
-  bookdown::pdf_book: default
+  bookdown::gitbook:
+    split_by: chapter+number
+    split_bib: yes
+    css: css/book.css
+  bookdown::word_document2:
+    reference_docx: "/home/mbacou/Google Drive/X-Files/templates/rmarkdown.docx"
+    always_allow_html: yes
 documentclass: book
-css: css/book.css
 bibliography: biblio.bib
 csl: apa.csl
 link-citations: yes
@@ -22,12 +22,11 @@ nocite: |
 
 # Background {-}
 
-
 ```{r setup, include=FALSE}
 
 knitr::opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="svg", fig.path="fig/", fig.width=6, fig.height=3, dpi=300, out.height="340px",
-  dev.args=list(png=list(pointsize=10, family="Roboto Condensed"), svg=list(family="Roboto Condensed")))
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.5,
+  dev.args=list(png=list(pointsize=10, family="Roboto Condensed", res=300), svg=list(family="Roboto Condensed", antialias="subpixel")))
 
 library(data.table)
 library(rhandsontable)
@@ -39,110 +38,6 @@ library(tables)
 load("../tmp/2017-agra-aasr.RData")
 
 ```
-
-```{r helpers, eval=FALSE, collapse=TRUE}
-
-#####################################################################################
-# Helper - Construct data codebook
-summaryTable <- function(dt) {
-  
-  dt.lbl <- data.table(
-    varCode=names(dt),
-    varLabel=attr(dt, "var.labels")
-  )  
-  tmp <- as.data.table(summary(dt))
-  tmp[, V1 := 1:7]
-  tmp <- dcast(tmp, V2~V1)
-  setnames(tmp, c("varCode", "Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.", "NA's"))
-  tmp[, varCode := str_trim(varCode)]
-  
-  setkey(tmp, varCode)
-  setkey(dt.lbl, varCode)
-  dt.lbl <- tmp[dt.lbl]
-  dt.lbl <- dt.lbl[names(dt)]
-  
-  dt.lbl[, `Hist.` := sapply(dt, function(x) ifelse(class(x)=="numeric", toJSON(list(values=hist(x, plot=FALSE)$counts)), toJSON(NA)))]
-  
-  setcolorder(dt.lbl, c(1,9,10,2:8))
-  return(dt.lbl)
-}
-
-#####################################################################################
-# Helper - Combine and format results from survey::svyby()
-svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
-  
-  # Pass a list of formulas (list(~var1, ~var2, ...))
-  # Then use tables::tabular() to format nested tables
-  
-  require(survey)
-  require(data.table)
-  require(stringr)
-  
-  # Reshape means
-  x <- lapply(formula, function(x) {
-    m <- svyby(x, by, design, svymean, na.rm=TRUE)
-    m <- as.data.table(ftable(m))
-    return(m)
-  })
-  x <- rbindlist(x)
-  setnames(x, c("by", "stat", "var", "Mean"))
-  x[stat=="svymean", stat := "est."]
-  x[stat=="SE", stat := "std. err."]
-  
-  # Reshape quantiles
-  y <- lapply(formula, function(x) {
-    m <- svyby(x, by, design, svyquantile, quantiles, ci=TRUE, na.rm=TRUE)
-    m <- as.data.table(ftable(m))
-    m[, var := as.character(x)[2]]
-    return(m)
-  })
-  y <- rbindlist(y)  
-  setnames(y, c("by", "stat", "qtl", "value", "var"))
-  y[stat=="svyquantile", stat := "est."]
-  y[stat=="SE", stat := "std. err."]
-  y[, qtl := paste0("Q", as.numeric(as.character(qtl))*100)]
-  y <- dcast(var+by+stat~qtl, data=y)
-  
-  setkey(x, var, by, stat)
-  setkey(y, var, by, stat)
-  x <- x[y]
- 
-  # Add optional labels
-  if(!missing(labels)) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2],
-    var := labels[i]]
-  
-  var.levels <- sapply(formula, function(x) as.character(x)[2])
-  var.levels <- str_replace(var.levels, fixed("I("), fixed("("))
-  x[, var := factor(str_replace(var, fixed("I("), fixed("(")), levels=var.levels)]
-  x[, stat := factor(as.character(stat), ordered=T)]
-  setcolorder(x, c(3,1,2,4:ncol(x)))
-  setnames(x, 1:3, c("Variable", "By", "Stat"))
-  return(x)
-}
-
-#####################################################################################
-# Helper - Combine multiple svyhist(), svysmooth(), and svycdf() plots
-svyCrossPlot <- function(formula, design, breaks="Sturges", bandwidth=NULL, ...) {
-  
-  require(survey)
-  
-  n <- levels(ghs$class9)
-  par(mfrow=c(length(n), 2))
-  for (i in n) {
-    svyhist(formula, subset(design, class9==i), breaks=breaks,
-      ylab="Density", main=i, ...)
-    lines(svysmooth(formula, subset(design, class9==i), bandwidth=bandwidth), 
-      lwd=1, col=40)
-    plot(svycdf(formula, subset(design, class9==i)), 
-      ylab="Est. CDF", main=i, ...)
-    abline(h=0.5, lty=2, col=40)
-    abline(h=0, lty=2, col="grey70")
-    abline(h=1, lty=2, col="grey70")
-  }
-}
-
-```
-
 
 This study is a prospective chapter in *AGRA Africa Agriculture Status Report (AASR) 2017*.
 
@@ -164,20 +59,34 @@ We propose then focusing on around half a dozen countries for which we have rece
 1. Apply some typology to distinguish between say “predominantly-subsistence” focused and “transitioning-commercial” smallholders  
 2. Report on hh level variables that can provide insight into the scale of potential business development challenges and opportunities in each country. 
 
-![Fig. Suggested Approach](fig/method-stan_2017.05.02.png)
+![(#fig:stan-method) Suggested Approach (05/02/2017)](fig/method-stan_2017.05.02.png)
 
 Key farm and household-level variables to look at may include:
 
-* Holding size
-* Income/consumption
-* Access to inputs/extension
-* Use of inputs
-* Land tenure status
+* Time to Market
+* Average yield
+* Yield gap
+* Average size of land holdings
+* Share of land harvested
+* Production (amount by crop types)
+* Consumption
+* Rural households population
+* Urban households population
+* Rural and urban poverty
+* Average household size
+* Households by head (Male, Female)
+* Average age of the individuals 
+* Households size
 * Education
-* Cell-phone ownership
-* Cooperative/self-help group membership
-* Access to credit, insurance
-* Off-farm income
-* ...
-
+* Households level income diversification
+* Livestock assets
+* Ownership of mobile phones
+* Households who receive credit
+* Households who receive credit from bank or MFI
+* Access to extension services
+* People in working age (16-64)
+* Use of improved technologies and farm management practices
+* Average wage rate
+* Land rental rate
+* Any information on agri-business or agro processing?
 

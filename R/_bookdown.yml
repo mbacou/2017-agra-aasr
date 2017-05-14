@@ -1,10 +1,7 @@
 new_session: no
+output_dir: ../docs
 edit: https://github.com/mbacou/2017-agra-aasr/blob/master/R/%s
-output_dir: "../docs"
-download: [docx, epub]
-sharing:
-  github: yes
-  facebook: no
+download: [word]
 language:
   label:
     fig:    "Fig. "
@@ -12,3 +9,14 @@ language:
     eq:     "Eq. "
     ex:     "Ex. "
     remark: "Remark. "
+config:
+  toc:
+    collapse: subsection
+    scroll_highlight: yes
+  toolbar:
+    position: fixed
+  fontsettings:
+    size: 1
+  sharing:
+    facebook: false
+    twitter: false

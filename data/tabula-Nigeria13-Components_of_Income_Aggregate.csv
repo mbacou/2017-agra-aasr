@@ -1,0 +1,9 @@
+Variable,Description,Participants,Participation Rate,Returns to Participation - Participant HHs,Returns to Participation - All HHs,Share of Total Income - All HHs (Mean of Shares),Share ofTotal Income - All HHs (Share of Means),Returns to Participation - Participant HHs,Returns to Participation - All HHs
+agr_wge,Wage Employment - Agriculture,40 ,0.01 ,311337 ,3515 ,0.01 ,0.01 ,1979 ,22 
+nonagr_wge,Wage Employment - Nonfarm,446 ,0.14 ,731050 ,104061 ,0.12 ,0.24 ,4647 ,662 
+crop1,Crop Production,2490 ,0.75 ,292214 ,217792 ,0.71 ,0.51 ,1858 ,1385 
+livestock,Livestock Production,2538 ,0.76 ,34194 ,25848 ,0.05 ,0.06 ,217 ,164 
+selfemp,Non-ag Self Employment,1851 ,0.59 ,121179 ,71630 ,0.09 ,0.17 ,770 ,455 
+transfer,Total Transfers,138 ,0.05 ,9069 ,408 ,0.00 ,0.00 ,58 ,3 
+other,Other Income Sources,462 ,0.15 ,42125 ,6240 ,0.02 ,0.01 ,268 ,40 
+totincome1,Total Household Income - crop1,3099 ,0.95 ,450431 ,429495 ,1.00 ,1.00 ,2864 ,2730 

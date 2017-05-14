@@ -5,13 +5,37 @@ Many (unpublished and mostly country-level) studies have attempted to derive far
 ```{r inventory, eval=FALSE}
 
 library(data.table)
-library(survey)
-library(pander)
-library(tables)
+library(rhandsontable)
 library(stringr)
 
 setwd("~/Projects/2017-agra-aasr")
 load("./tmp/2017-agra-aasr.RData")
+
+#####################################################################################
+# Helper - Construct data codebook
+summaryTable <- function(dt) {
+  
+  dt.lbl <- data.table(
+    varCode=names(dt),
+    varLabel=attr(dt, "var.labels")
+  )  
+  tmp <- as.data.table(summary(dt))
+  tmp[, V1 := 1:7]
+  tmp <- dcast(tmp, V2~V1)
+  setnames(tmp, c("varCode", "Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.", "NA's"))
+  tmp[, varCode := str_trim(varCode)]
+  
+  setkey(tmp, varCode)
+  setkey(dt.lbl, varCode)
+  dt.lbl <- tmp[dt.lbl]
+  dt.lbl <- dt.lbl[names(dt)]
+  
+  dt.lbl[, `Hist.` := sapply(dt, function(x) ifelse(class(x)=="numeric", toJSON(list(values=hist(x, plot=FALSE)$counts)), toJSON(NA)))]
+  
+  setcolorder(dt.lbl, c(1,9,10,2:8))
+  return(dt.lbl)
+}
+#####################################################################################
 
 # Load dataset #1 (variables extracted for the Poverty, Land, Climate paper)
 hh1 <- read.dta("./tmp/Final_SSA_hhPOV_ 6 Apr 2016.12.dta")
