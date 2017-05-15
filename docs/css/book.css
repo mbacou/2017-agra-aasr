@@ -6,6 +6,12 @@
 .center { text-align:center; }
 .right  { text-align:right; }
 
+.book .book-body .page-wrapper .page-inner section.normal blockquote {
+  color: #333;
+  border-left: 4px solid #FFF3B8;
+  background-color: #FFFCED;
+}
+
 .book.font-family-1, .book .book-header, .book .book-summary {
     font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

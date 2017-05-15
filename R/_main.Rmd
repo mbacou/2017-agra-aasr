@@ -1,0 +1,1506 @@
+---
+title: "Business-oriented Typology and Characterization of Agriculture in SSA"
+author: "[Melanie Bacou](http://github.com/mbacou) for BMGF"
+date: "Last updated on `r Sys.Date()` -- DRAFT, DO NOT USE OR CITE"
+description: "A multi-scale and cross-time framework"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook:
+    split_by: chapter+number
+    split_bib: yes
+    css: css/book.css
+  bookdown::word_document2:
+    reference_docx: "/home/mbacou/Google Drive/X-Files/templates/rmarkdown.docx"
+always_allow_html: yes
+documentclass: book
+bibliography: biblio.bib
+csl: apa.csl
+link-citations: yes
+nocite: |
+  @aasr_2016, @alvarez2014typology, @jayne2015agdev, @hazell2013urban, @douillet2014developing, @jordan2005eth, @omamo2006strategic, @bacou2015ethseg, @omamo2006strategic, @benin2016agricultural, @willy2015adaptation, @jayne2015africafarmland, @diao2017ghana, @roberts2014eth, @schnitzer2014tza, @heady2013ethland, @maxwell2014foodinsec, @minot2013agataeth, @girei2017fadama, @christen2013segmenting
+---
+
+# Background {-}
+
+```{r setup, include=F}
+
+library(data.table)
+library(rhandsontable)
+library(jsonlite)
+library(survey)
+library(knitr)
+library(tables)
+
+# Load workspace
+load("../tmp/2017-agra-aasr.RData")
+
+# Output options
+opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8,
+  dev.args=list(
+    png=list(pointsize=10, family="Roboto Condensed", res=300), 
+    svg=list(family="Roboto Condensed", antialias="subpixel")))
+table_options(htmloptions(justification="c", head=F, pad=T))
+palette(HC.colors)
+
+```
+
+This study is a prospective chapter in *AGRA Africa Agriculture Status Report (AASR) 2017*.
+
+The overall objective of the AASR report is to [@aasr_cn_2017]:  
+ 
+1. provide an overview of the smallholder farmers and how they have adapted to the challenges they face as economic actors; 
+2. explore innovative strategies that can substantially raise the productivity and incomes of smallholder farmers; 
+3. identify policies and programs that can support the movement of Africa’s farming systems from subsistence-oriented to market-oriented thriving businesses; 
+4. identify the necessary conditions, appropriate technologies, and institutions that can propel and support smallholder agriculture businesses; 
+5. examine the past and the present role of public and private sector investment in agriculture and the success factors that can be scaled up to accelerate transformation. 
+
+
+# Method
+
+The study should provide a context-setting chapter that attempts to characterize, scale, locate, point to prioritization of high-level smallholder commercialization strategies, opportunities and challenges. A proposed approach is to chracterize SHFs and frame business strategies within a 2-by-2 domain framework (low/high rainfed ag potential across low/high market access areas). This approach assumes that agricultural development and adaptation strategies are largely driven by pre-existing bio-physical and spatial conditions.
+
+We propose then focusing on around half a dozen countries for which we have recent/accessible microdata (e.g. LSMS-ISA and maybe AGRA baseline surveys) to look more closely, in the same 2x2 domain framework, at specific farm household and macro characteristics to do two things:  
+
+1. Apply some typology to distinguish between say “predominantly-subsistence” focused and “transitioning-commercial” smallholders  
+2. Report on hh level variables that can provide insight into the scale of potential business development challenges and opportunities in each country. 
+
+![(#fig:stan-method) Suggested Approach (05/02/2017)](fig/method-stan_2017.05.02.png)
+
+Key farm and household-level variables to look at may include:
+
+* Time to Market
+* Average yield
+* Yield gap
+* Average size of land holdings
+* Share of land harvested
+* Production (amount by crop types)
+* Consumption
+* Rural households population
+* Urban households population
+* Rural and urban poverty
+* Average household size
+* Households by head (Male, Female)
+* Average age of the individuals 
+* Households size
+* Education
+* Households level income diversification
+* Livestock assets
+* Ownership of mobile phones
+* Households who receive credit
+* Households who receive credit from bank or MFI
+* Access to extension services
+* People in working age (16-64)
+* Use of improved technologies and farm management practices
+* Average wage rate
+* Land rental rate
+* Any information on agri-business or agro processing?
+
+
+<!--chapter:end:index.Rmd-->
+
+# Supporting Datasets
+
+Many (unpublished and mostly country-level) studies have attempted to derive farmer characteristics and farm typologies across geospatial dimensions (see e.g. refs below). IFPRI in particular generated cross-country comparable household variables (derived from World Bank LSMS-ISA panels, Demographic and Health Surveys, and/or other large-scale household surveys and agricultural census).
+
+```{r inventory, eval=FALSE}
+
+library(data.table)
+library(rhandsontable)
+library(stringr)
+
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr.RData")
+
+#####################################################################################
+# Helper - Construct data codebook
+summaryTable <- function(dt) {
+  
+  dt.lbl <- data.table(
+    varCode=names(dt),
+    varLabel=attr(dt, "var.labels")
+  )  
+  tmp <- as.data.table(summary(dt))
+  tmp[, V1 := 1:7]
+  tmp <- dcast(tmp, V2~V1)
+  setnames(tmp, c("varCode", "Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.", "NA's"))
+  tmp[, varCode := str_trim(varCode)]
+  
+  setkey(tmp, varCode)
+  setkey(dt.lbl, varCode)
+  dt.lbl <- tmp[dt.lbl]
+  dt.lbl <- dt.lbl[names(dt)]
+  
+  dt.lbl[, `Hist.` := sapply(dt, function(x) ifelse(class(x)=="numeric", toJSON(list(values=hist(x, plot=FALSE)$counts)), toJSON(NA)))]
+  
+  setcolorder(dt.lbl, c(1,9,10,2:8))
+  return(dt.lbl)
+}
+#####################################################################################
+
+# Load dataset #1 (variables extracted for the Poverty, Land, Climate paper)
+hh1 <- read.dta("./tmp/Final_SSA_hhPOV_ 6 Apr 2016.12.dta")
+hh.dim <- list(hh1=dim(hh1))
+
+# Show summaries
+hh1.lbl <- summaryTable(hh1)
+hh1 <- data.table(hh1)
+
+# List surveys/years included in this set
+dt1.sum <- hh1[, .(
+  Regions=uniqueN(svyL1Cd), 
+  Districts=uniqueN(paste(svyL1Cd, svyL2Cd)), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year))]
+dt1sum <- rhandsontable(dt1.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh1)
+
+# Describe variables
+dt1var <- rhandsontable(hh1.lbl, rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+# Load dataset #2 (HarvestChoice Ag Snapshots)
+hh2 <- read.dta("./tmp/Combined_Regdemovars13.12.dta")
+hh.dim$hh2 <- dim(hh2)
+
+# Summarize
+hh2.lbl <- summaryTable(hh2)
+hh2 <- data.table(hh2)
+
+# List surveys/years included in this set
+dt2.sum <- hh2[, .(
+  Regions=uniqueN(svyL1Cd), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year))]
+dt2sum <- rhandsontable(dt2.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh2)
+
+# Describe variables
+dt2var <- rhandsontable(hh2.lbl, rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+# Load dataset #3 (Beliyou's Resilience Study)
+hh3 <- read.dta("./tmp/Combined_4_Mel.12.dta")
+hh.dim$hh3 <- dim(hh3)
+
+# Summarize
+hh3.lbl <- summaryTable(hh3)
+hh3 <- data.table(hh3)
+
+# List surveys/years included in this set
+dt3.sum <- hh3[, .(
+  Regions=uniqueN(region), 
+  Districts=uniqueN(paste(region, district)), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year), round)]
+dt3sum <- rhandsontable(dt3.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh3)
+
+# Describe variables
+dt3var <- rhandsontable(hh3.lbl[1:150], rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+# Load dataset #4 (SSA Poverty)
+hh4 <- read.dta("./tmp/SSApoverty_Dist_forGWR.12.dta")
+hh.dim$hh4 <- dim(hh4)
+
+# Keep labels
+hh4.lbl <- data.table(varCode=names(hh4), varLabel=attr(hh4, "var.labels"))
+
+# Remove dummy vars
+hh4 <- hh4[, !names(hh4) %like% "ctry"]
+hh4 <- hh4[, !names(hh4) %like% "yr"]
+hh4 <- hh4[, !names(hh4) %like% "fs"]
+setkey(hh4.lbl, varCode)
+hh4.lbl <- hh4.lbl[names(hh4)]
+attr(hh4, "var.labels") <- hh4.lbl$varLabel
+
+# Correct types
+for (i in names(hh4)) if (class(hh4[[i]])=="numeric") hist(hh4[[i]], plot=F)
+hh4[[i]] <- as.character(hh4[[i]])
+
+# Summarize
+hh4.lbl <- summaryTable(hh4)
+hh4 <- data.table(hh4)
+
+# List surveys/years included in this set
+dt4.sum <- hh4[, .(
+  Regions=uniqueN(svyL1Cd), 
+  Districts=uniqueN(paste(svyL1Cd, svyL2Cd)), 
+  Obs=.N), keyby=.(ISO3, Year=as.integer(year))]
+dt4sum <- rhandsontable(dt4.sum, rowHeaders=NULL, height=600, width="auto")
+rm(hh4)
+
+# Describe variables
+dt4var <- rhandsontable(hh4.lbl, rowHeaders=NULL, height=600, width="auto") %>%
+  hot_col("Hist.", renderer=htmlwidgets::JS("renderSparkline")) %>%
+  hot_cols(fixedColumnsLeft=1)
+
+
+# Load GHA GLSS rounds (Eduardo)
+
+
+```
+
+
+
+## Cross-Country Harmonized Variables
+
+Inventory and summarize the latest versions of IFPRI's harmonized variables. Some of these variables are also available (summarized) across districts and/or regions and/or gender.
+
+### Dataset #1 (Poverty, Land, Climate paper)
+
+This dataset contains `r hh.dim$hh1[2]` variables and `r hh.dim$hh1[1]` observations. The breakdown across countries and survey years is as follows, and variables are further described in the next table. Many of these variables are also documented in @azzarri2016poverty.
+
+```{r}
+
+dt1sum
+
+```
+
+
+```{r}
+
+dt1var
+
+```
+
+### Dataset #2 (HarvestChoice Agricultural Snapshots)
+
+My copy of the household-level file is corrupt (would need to contact IFPRI directly) but the variables are similar in the region-level file.
+
+This dataset contains `r hh.dim$hh2[2]` variables. The breakdown across countries and survey years is as follows, and variables are further described in the next table.
+
+```{r}
+
+dt2sum
+
+```
+
+
+```{r}
+
+dt2var
+
+```
+
+
+### Dataset #3 (Panels for Resilience Study)
+
+This dataset contains `r hh.dim$hh3[2]` variables and `r hh.dim$hh3[1]`  observations. The breakdown across countries and survey years is as follows, and variables are further described in the next table.
+
+```{r}
+
+dt3sum
+
+```
+
+This dataset also includes over 2,000 constructed climatic variables (monthly SPEI, temperature, rainfall, PDSI, etc.). To save space they are not shown in the variable summary below.
+
+```{r}
+
+dt3var
+
+```
+
+### Dataset #4 (SSA Poverty Regressions)
+
+This dataset contains `r hh.dim$hh4[2]` variables and `r hh.dim$hh4[1]` observations. The breakdown across countries and survey years is as follows, and variables are further described in the next table. This is a district-level dataset (IFPRI holds the hh-level variables).
+
+```{r}
+
+dt4sum
+
+```
+
+```{r}
+
+dt4var
+
+```
+
+## Demographic and Health Surveys (harmonized)
+
+IFPRI holds cross-country harmonized variables from the latest DHS. Complete metadata is in a [DHS Google Sheet](https://docs.google.com/spreadsheets/d/1v8DDLgi9lQbS4uKnxYPM83PYC90rijJvjKN4xAntKlE/edit#gid=916658631). We would need to request access to the CHILD and WOMAN recodes, I only have the STRATA summaries.
+
+
+## Other Country-Level Panel Variables
+
+### Ghana GLSS Rounds
+
+(as needed). IFPRI/DSG holds 3 rounds (2005, 2008, 2012) of harmonized variables focused on wages and productivity trends.
+
+### Nigeria Farm Segmentation Study
+
+(as needed, used in the typology below)
+
+<!--chapter:end:01-inventory.Rmd-->
+
+# Typology of Farm Holdings
+
+This section is an exploration of smallholdings and smallholder farmers (definition and characteristics) in Nigeria and Ethiopia.
+
+## Nigeria
+
+```{r nga-ghs, eval=FALSE}
+
+library(data.table)
+library(survey)
+library(tables)
+library(stringr)
+
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr.RData")
+
+#####################################################################################
+# Helper - Combine and format results from survey::svyby()
+svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
+  
+  # Pass a list of formulas (list(~var1, ~var2, ...))
+  # Then use tables::tabular() to format pivot tables
+  
+  require(survey)
+  require(data.table)
+  require(stringr)
+  
+  # Reshape means
+  x <- lapply(formula, function(x) {
+    m <- svyby(x, by, design, svymean, na.rm=TRUE)
+    m <- as.data.table(ftable(m))
+    return(m)
+  })
+  x <- rbindlist(x)
+  setnames(x, c("by", "stat", "var", "Mean"))
+  x[stat=="svymean", stat := "est."]
+  x[stat=="SE", stat := "std. err."]
+  
+  # Reshape quantiles
+  y <- lapply(formula, function(x) {
+    m <- svyby(x, by, design, svyquantile, quantiles, ci=TRUE, na.rm=TRUE)
+    m <- as.data.table(ftable(m))
+    m[, var := as.character(x)[2]]
+    return(m)
+  })
+  y <- rbindlist(y)  
+  setnames(y, c("by", "stat", "qtl", "value", "var"))
+  y[stat=="svyquantile", stat := "est."]
+  y[stat=="SE", stat := "std. err."]
+  y[, qtl := paste0("Q", as.numeric(as.character(qtl))*100)]
+  y <- dcast(var+by+stat~qtl, data=y)
+  
+  setkey(x, var, by, stat)
+  setkey(y, var, by, stat)
+  x <- x[y]
+ 
+  # Add optional labels
+  if(!missing(labels)) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2],
+    var := labels[i]]
+  
+  var.levels <- sapply(formula, function(x) as.character(x)[2])
+  var.levels <- str_replace(var.levels, fixed("I("), fixed("("))
+  x[, var := factor(str_replace(var, fixed("I("), fixed("(")), levels=var.levels)]
+  x[, stat := factor(as.character(stat), ordered=T)]
+  setcolorder(x, c(3,1,2,4:ncol(x)))
+  setnames(x, 1:3, c("Variable", "By", "Stat"))
+  return(x)
+}
+
+#####################################################################################
+# Helper - Combine multiple svyhist(), svysmooth(), and svycdf() plots
+svyCrossPlot <- function(formula, design, breaks="Sturges", bandwidth=NULL, ...) {
+  
+  require(survey)
+  
+  n <- levels(ghs$class9)
+  par(mfrow=c(length(n), 2))
+  for (i in n) {
+    svyhist(formula, subset(design, class9==i), breaks=breaks,
+      ylab="Density", main=i, ...)
+    lines(svysmooth(formula, subset(design, class9==i), bandwidth=bandwidth), 
+      lwd=1, col=40)
+    plot(svycdf(formula, subset(design, class9==i)), 
+      ylab="Est. CDF", main=i, ...)
+    abline(h=0.5, lty=2, col=40)
+    abline(h=0, lty=2, col="grey70")
+    abline(h=1, lty=2, col="grey70")
+  }
+}
+#####################################################################################
+
+# Load and copy constructed vars from the 2016 NGA Segmentation (GHS)
+e1 <- new.env()
+setwd("~/Google Drive/2016-BMGF-Segmentation/NGA")
+load("./temp/nga_bmgf_seg_1.RData", envir=e1)
+setwd("~/Projects/2017-agra-aasr")
+
+ghs <- e1$ghs
+ghs.farm <- e1$farm
+ghs.geo <- e1$geo12
+ghs.inc <- e1$inc12
+ghs.ppp <- e1$ppp12
+rm(e1)
+
+# Verify all income aggregates in `ghs.inc` (received from Cleo/IFPRI)
+# Cleo suggested using crop/fish/livestock and by-products sold/gift/lost/reimbursed
+# `cropsold`, `agbyprodincimp`, `reimbursmt_n`, `gift_n` in `Income2.dta`
+# Note that last 3 vars have negative sign, need to correct
+summary(ghs.inc$hh)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 10000   90040  190000  183200  280000  370000
+summary(ghs$hhid)
+summary(ghs.ppp$hhid)
+# => `hh` match `hhid`
+
+vars <- c("cropsold", "croplost", "cropownimp",
+  "reimbursmt_n", "lost_n", "gift_n", "self",
+  "fishincimp", "agr_wge", "nonagr_wge", "other",
+  "farmrntimp", "agrentimp", "privtransfer", "pubtransfer")
+ghs.inc[, lapply(names(.SD), function(x) boxplot(.SD[[x]], main=x)), .SDcols=vars]
+
+# Reconstruct all value vars in `ghs`
+# `livstrevimp`, `livstbyprod`, `fishincimp` have been corrected in separate files
+# Use `ghs$lstocksold` instead of `ghs.inc$livstrevimp`
+# Use `ghs$fishsold` instead of `ghs.inc$fishincimp`
+vars.val <- c("cropsales", "cropvalue", "agsales", "agsalespc", "aggross", "totgross", "cropsales_sh", "aggross_sh")
+ghs[, (unique(c(vars, vars.val))) := NULL]
+
+setkey(ghs, hhid)
+setkey(ghs.inc, hh)
+setkey(ghs.farm, hhid)
+ghs[ghs.farm, croparea := croparea]
+
+ghs[ghs.inc, cropsales := rowSums(.SD[, .(cropsold, agbyprodincimp, -reimbursmt_n, -gift_n)], na.rm=T)]
+summary(ghs$cropsales)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
+#    0       0       0   37910   18500 3068000      19
+
+ghs[ghs.inc, cropvalue := rowSums(.SD[, .(cropsales, croplost, cropownimp, -lost_n)], na.rm=T)]
+summary(ghs$cropvalue)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA's
+#    0         0     68370  14990000  23400000 161000000        19
+
+ghs[, agsales := rowSums(.SD[, .(cropsales, lstocksold, fishsold)], na.rm=T)]
+summary(ghs$agsales)
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+#    0        0        0   240900    63420 90620000
+
+ghs[, agsalespc := agsales/equiv]
+ghs[ghs.inc, aggross := rowSums(.SD[, .(agsales, agr_wge, farmrntimp, agrentimp, cropownimp)], na.rm=T)]
+summary(ghs$aggross)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA's
+#    0         0    150900  15200000  23450000 163100000        19
+
+ghs[ghs.inc, totgross := rowSums(.SD[, .(aggross, nonagr_wge, other, privtransfer, pubtransfer, self)], na.rm=T)]
+summary(ghs$totgross)
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA's
+#    0    287500   1525000  15630000  23620000 163100000        19
+
+ghs[, noaggross := rowSums(.SD[, .(totgross, -aggross)], na.rm=T)]
+summary(ghs$noaggross)
+# Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+#    0     2075   172700   419800   499400 10150000
+
+ghs[, aggross_sh := aggross/totgross]
+ghs[, noaggross_sh := 1 - aggross_sh]
+ghs[, cropsales_sh := cropsales/cropvalue]
+
+# Fix Inf values
+ghs[agsalespc==Inf, agsalespc := NA]
+
+# Define a farm holding as a household matching any of these conditions:
+# - has any `farmarea` or `croparea`
+# - has any `cropvalue` or `lstocksold` or `fishsold`
+# - has any `TLU_total`
+# - has any ag revenue `aggross`
+ghs[, boxplot(TLU_total)]
+ghs[, farm_hh := FALSE]
+ghs[farmarea>0 | croparea>0 | cropvalue>0 | lstocksold>0 | fishsold>0 | TLU_total>0 | aggross>0,
+  farm_hh := TRUE]
+ghs[, summary(farm_hh)]
+#    Mode   FALSE    TRUE    NA's
+# logical    1537    3343       0
+
+# Which farms in `ghs` are not accounted for in `ghs.farm`?
+ghs.farm[!ghs[farm_hh==T], .N]
+# [1] 116
+ghs[farm_hh==T][!ghs.farm, .N]
+# [1] 278
+ghs.farm[!ghs[farm_hh==T], croparea]
+# => all 0 or NA
+ghs[farm_hh==T][!ghs.farm, cropsales]
+# => some crop sales
+
+# SHF 4ha dummy `croparea_4ha` (2-class)
+# Merge `croparea` into `ghs` (`hhid` are unique)
+ghs[, croparea_4ha := NULL]
+ghs[farm_hh==T, croparea_4ha := factor(croparea <= 4, levels=c(T, F), labels=c("<= 4 ha", "> 4 ha"))]
+summary(ghs$croparea_4ha)
+# <= 4 ha  > 4 ha    NA's
+#    2840      94    1946
+
+ghs[croparea==0, summary(croparea_4ha)]
+# <= 4 ha  > 4 ha    NA's
+#     240       0       7
+# => need to re-run results without these 240
+ghs[croparea==0, summary(cropsales)]
+ghs[croparea==0, summary(TLU_total)]
+
+# SHF 4ha dummy `croparea_2ha` (2-class)
+ghs[, croparea_2ha := NULL]
+ghs[farm_hh==T, croparea_2ha := factor(croparea <= 2, levels=c(T, F), labels=c("<= 2 ha", "> 2 ha"))]
+summary(ghs$croparea_2ha)
+# <= 2 ha  > 2 ha    NA's
+#    2616     318    1946
+
+# Remove farms with no croparea from this classification
+ghs[croparea==0, croparea_2ha := NA]
+summary(ghs$croparea_2ha)
+# <= 2 ha  > 2 ha    NA's 
+#    2376     318    2186 
+
+# SHF 4ha dummy `croparea_clas` (3-class)
+ghs[, croparea_clas := NULL]
+ghs[farm_hh==T, croparea_clas := cut(croparea, c(-1,2,4,25), labels=c("<= 2 ha", "2-4 ha", "> 4 ha"), ordered=T, right=F)]
+summary(ghs$croparea_clas)
+# <= 2 ha  2-4 ha  > 4 ha    NA's
+#    2616     224      94    1946
+
+# Remove farms with no croparea from this classification
+ghs[croparea==0, croparea_clas := NA]
+summary(ghs$croparea_clas)
+# <= 2 ha  2-4 ha  > 4 ha    NA's 
+#    2376     224      94    2186 
+
+# Crop commercialization dummy `cropsales_any` (2-class)
+ghs[, cropsales_any := NULL]
+ghs[farm_hh==T, cropsales_any := factor(cropsales_sh > 0, levels=c(T, F), labels=c("sales", "no sales"))]
+summary(ghs$cropsales_any)
+# sales no sales     NA's
+#  1868     1234     1778
+
+# Crop commercialization dummy `cropsales_clas` (3-class)
+ghs[, cropsales_clas := NULL]
+ghs[farm_hh==T, cropsales_clas := cut(cropsales_sh, c(-1,.05,.5,1.1), labels=c("LoC", "MeC", "HiC"), ordered=T, right=F)]
+summary(ghs$cropsales_clas)
+#  LoC  MeC  HiC NA's
+# 2559  239  304 1778
+
+# Income diversification dummy `noaggross_clas` (3-class)
+ghs[, noaggross_clas := NULL]
+ghs[farm_hh==T, noaggross_clas := cut(noaggross_sh, c(-1,1/3,2/3,1.1), labels=c("LoD", "MeD", "HiD"), ordered=T, right=F)]
+summary(ghs$noaggross_clas)
+#  LoD  MeD  HiD NA's
+# 2528  172  608 1572
+
+class9 <- c("LoCLoD", "LoCMeD", "LoCHiD",
+  "MeCLoD", "MeCMeD", "MeCHiD", "HiCLoD", "HiCMeD", "HiCHiD")
+
+# Classification dummy `` (9-class)
+ghs[, class9 := NULL]
+ghs[, class9 := factor(paste0(cropsales_clas, noaggross_clas), levels=class9)]
+summary(ghs$class9)
+# LoCLoD LoCMeD LoCHiD MeCLoD MeCMeD MeCHiD HiCLoD HiCMeD HiCHiD   NA's
+#   2220     54    285    121     34     84    125     70    109   1778
+
+# Merge new dummay vars into `ghs.farm` and `ghs.ppp`
+setkey(ghs, hhid)
+setkey(ghs.farm, hhid)
+setkey(ghs.ppp, hhid)
+setkey(ghs.geo, hhid)
+
+ghs.farm[, c("croparea_2ha", "croparea_4ha",
+  "cropsales_sh", "cropsales_clas",
+  "noaggross_clas", "class9") := NULL]
+ghs.ppp[, c("croparea_2ha", "croparea_4ha",
+  "cropsales_sh", "cropsales_clas",
+  "noaggross_clas", "class9") := NULL]
+ghs.geo[, c("croparea_2ha", "croparea_4ha",
+  "cropsales_sh", "cropsales_clas",
+  "noaggross_clas", "class9", "wt_wave2", "zone", "sector", "rural") := NULL]
+
+ghs.farm[ghs, `:=`(
+  croparea_2ha = croparea_2ha,
+  croparea_4ha = croparea_4ha,
+  cropsales_sh = cropsales_sh,
+  cropsales_clas = cropsales_clas,
+  noaggross_clas = noaggross_clas,
+  class9 = class9
+)]
+
+ghs.ppp[ghs, `:=`(
+  zone = zone,
+  croparea_2ha = croparea_2ha,
+  croparea_4ha = croparea_4ha,
+  cropsales_sh = cropsales_sh,
+  cropsales_clas = cropsales_clas,
+  noaggross_clas = noaggross_clas,
+  class9 = class9
+)]
+
+ghs.geo[ghs, `:=`(
+  croparea_2ha = croparea_2ha,
+  croparea_4ha = croparea_4ha,
+  cropsales_sh = cropsales_sh,
+  cropsales_clas = cropsales_clas,
+  noaggross_clas = noaggross_clas,
+  class9 = class9,
+  wt_wave2 = wt_wave2,
+  zone = zone,
+  rural = rural
+  )]
+
+# Add a few extra geo vars to `ghs` to plot
+ghs[ghs.geo, `:=`(
+  dist_market = dist_market,
+  dist_road2 = dist_road2
+  )]
+
+##########################################
+# Define 2-stage stratified survey design (use most recent GHS wave only)
+ghs.svy <- svydesign(~ea+hhid, strata=~zone+rural, weights=~wt_wave2,
+  data=ghs[!is.na(wt_wave2)], nest=T)
+ghs.farm.svy <- svydesign(~ea+hhid, strata=~zone+sector, weights=~wt_wave2,
+  data=ghs.farm[!is.na(wt_wave2)], nest=T)
+ghs.ppp.svy <- svydesign(~hhid, strata=~zone+rural, weights=~weight,
+  data=ghs.ppp[!is.na(weight)], nest=T)
+ghs.geo.svy <- svydesign(~hhid, strata=~zone+rural, weights=~wt_wave2,
+  data=ghs.geo[!is.na(wt_wave2)], nest=T)
+
+summary(ghs.svy)
+# Stratified 2 - level Cluster Sampling design (with replacement)
+# With (481, 4867) clusters.
+# svydesign(~ea + hhid, strata = ~zone + rural, weights = ~wt_wave2,
+#     data = ghs[!is.na(wt_wave2)], nest = T)
+# Probabilities:
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
+# 0.0000239 0.0001235 0.0001892 0.0002150 0.0002699 0.0014700
+# First-level Stratum Sizes:
+#            north central north east north west south east south south south west
+# obs                  798        754        890        791         786        848
+# design.PSU            79         74         85         77          79         87
+# actual.PSU            79         74         85         77          79         87
+
+# Subset survey sample to farms
+ghs.svy.farm <- subset(ghs.svy, farm_hh==T)
+# Subset survey sample to only SHF (note that they exclude farms with no `croparea`)
+ghs.svy.shf <- subset(ghs.svy, croparea_4ha=="<= 4 ha")
+ghs.farm.svy.shf <- subset(ghs.farm.svy, croparea_4ha=="<= 4 ha")
+ghs.ppp.svy.shf <- subset(ghs.ppp.svy, croparea_4ha=="<= 4 ha")
+ghs.geo.svy.shf <- subset(ghs.geo.svy, croparea_4ha=="<= 4 ha")
+
+# Verify sampling design (e.g. total population)
+(svytotal(~hhsize, ghs.svy, na.rm=T))/1E6
+#         total      SE
+# hhsize 187.88 7601475
+
+svytotal(~farm_hh, ghs.svy, na.rm=T)/1E6
+#               total      SE
+# farm_hhFALSE 13.480 1259455
+# farm_hhTRUE  19.256  712970
+
+svymean(~farm_hh, ghs.svy, na.rm=T)
+#                 mean     SE
+# farm_hhFALSE 0.41177 0.0249
+# farm_hhTRUE  0.58823 0.0249
+
+svymean(~croparea_4ha, ghs.svy.farm, na.rm=T)
+#                         mean     SE
+# croparea_4ha<= 4 ha 0.971845 0.0034
+# croparea_4ha> 4 ha  0.028155 0.0034
+
+svytotal(~hhsize, ghs.svy.shf, na.rm=T)
+#            total      SE
+# hhsize 106349144 4497228
+
+svymean(~cropsales_sh, ghs.svy.farm, na.rm=T)
+#                mean     SE
+# cropsales_sh 0.1141 0.0087
+
+svyby(~cropsales_sh, ~croparea_4ha, ghs.svy.farm, svymean, na.rm=T)
+#         croparea_4ha cropsales_sh         se
+# <= 4 ha      <= 4 ha    0.1220143 0.00648625
+# > 4 ha        > 4 ha    0.1768049 0.04914111
+
+svyby(~cropsales_sh, ~croparea_4ha, ghs.svy.farm, svyquantile, quantiles=.5, ci=T, na.rm=T)*100
+#         croparea_4ha cropsales_sh          se
+# <= 4 ha           NA    0.0771759 0.009096591
+# > 4 ha            NA    0.2983541 0.297538378
+
+svyby(~agsalespc, ~croparea_4ha, ghs.svy.farm, svymean, na.rm=T)
+#         croparea_4ha agsalespc       se
+# <= 4 ha      <= 4 ha   87756.2 13964.07
+# > 4 ha        > 4 ha  140465.3 44667.0
+
+svymean(~I(noaggross_sh*100), subset(ghs.svy.farm, !is.na(croparea)), na.rm=T)
+#                         mean     SE
+# I(noaggross_sh * 100) 22.044 0.0127
+# I(noaggross_sh * 100) 17.446 1.1725
+
+svyquantile(~I(noaggross_sh*100), ghs.svy.farm, .5, na.rm=T)
+#                             0.5
+# I(noaggross_sh * 100) 0.8265929
+
+svyby(~I(noaggross_sh*100), ~croparea_4ha, ghs.svy.farm, svymean, na.rm=T)
+#         croparea_4ha I(noaggross_sh * 100)       se
+# <= 4 ha      <= 4 ha              17.58628 1.190880
+# > 4 ha        > 4 ha              12.53712 3.285989
+
+svyby(~I(noaggross_sh*100), ~croparea_4ha, ghs.svy.farm, svyquantile, .5, ci=T, na.rm=T)
+#         croparea_4ha I(noaggross_sh * 100)         se
+# <= 4 ha      <= 4 ha             0.6300151 0.08870994
+# > 4 ha        > 4 ha             0.3270542 0.12108961
+
+# Other farms statistics
+tmp <- ghs[!is.na(wt_wave2) & farm_hh==T, .(
+  f2malehh_tot=sum(femhead*wt_wave2, na.rm=T),
+  malehh_tot=sum(-(femhead-1)*wt_wave2, na.rm=T),
+  femalehh=weightedMean(femhead, wt_wave2, na.rm=T),
+  hasland=weighted.mean(farmarea>0, wt_wave2, na.rm=T),
+  farmarea=weightedMean(hectares_1_hh_farmer, wt_wave2, na.rm=T),
+  farmarea_med=weightedMedian(hectares_1_hh_farmer, wt_wave2, na.rm=T)
+), keyby=croparea <= 4]
+
+tmp <- farm[, .(
+  farmslive_tot=sum(farmslive*wt_wave2, na.rm=T),
+  farmslive=weightedMean(farmslive, wt_wave2, na.rm=T),
+  intens_idx2=weightedMean(intens_idx2, wt_wave2, na.rm=T),
+  intens_idx2_med=weightedMedian(intens_idx2, wt_wave2, na.rm=T)
+), keyby=croparea <= 4]
+
+# Livestock
+tmp <- ghs[!is.na(wt_wave2) & totgross > 0, .(
+  TLU_total=sum(TLU_total, wt_wave2, na.rm=T),
+  TLU_hh=weightedMean(TLU_total, wt_wave2, na.rm=T),
+  TLU_hh_imp=weightedMean(TLU_total_imp, wt_wave2, na.rm=T)
+), keyby=croparea <= 4][, wt_wave2 := NULL]
+
+# Input uses
+tmp <- farm[, lapply(.SD, weightedMean, wt_wave2, na.rm=T),
+  .SDcols=c("wt_wave2", "parcels", "sh_chempest", "sh_chemherb", "sh_fertorg",
+    "sh_fertinorg", "sh_seedp", "tractorown_farms"),
+  keyby=croparea <= 4][, wt_wave2 := NULL]
+
+# Poverty
+vars <- c("weight", names(ppp12)[names(ppp12) %like% "ppp"])
+tmp <- ppp12[, lapply(.SD, weightedMean, weight, na.rm=T), .SDcols=vars,
+  keyby=croparea <= 4][, weight := NULL]
+
+# CROP SALES
+
+
+# FOOD EXPENDITURES
+m <- svymean(~I(100*foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm=T)), ghs.ppp.svy, na.rm=T)
+#                                                                                   mean     SE
+# I(100 * foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm = T)) 73.394 0.2999
+
+plot(m)
+
+svyquantile(~I(100*foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm=T)), ghs.ppp.svy, .5, ci=T, na.rm=T)
+#                                                                                      0.5
+# I(100 * foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm = T)) 76.27067
+
+# Save workspace
+rm(i, x, tmp)
+save.image("./tmp/2017-agra-aasr.RData")
+
+```
+
+Relevant sources of household-level micro records for Nigeria include:
+
+* 2010 and 2012 Nigeria General Household Survey Panels
+* DfID's sponsored agricultural survey (1,300 hhlds) (contact Abt Associates)
+* Fadama III 2009 Baseline and 2012 Midline Surveys and FADAMA's Agricultural Production Surveys (APS) (still not publicly available, see e.g. @girei2017fadama)
+
+### Definitions
+
+(more vars to be added as needed)
+
+#### Assets
+
+* $farmarea$ farm size (incl. parcels rented out and fallows)
+* $TLU\_total$ tropical livestock units (combines all animals)
+
+#### Farming
+
+* $croparea$ cultivated area (ha, annual)
+* $cropsales$ annual value of crops and crop byproducts sold (per RIGA method)
+$$ cropsales=cropsold+agbyprodincimp-reimbursmtn-giftn $$
+* $cropvalue$ gross value of crop production (excl. perennials, annual)
+$$ cropvalue=cropsales+croplost+cropownimp-lostn $$
+* $crop1$ net value of crop production (annual)
+* $livestock$ net value of livestock production (annual)
+* $lstocksold$ gross value of livestock products and byproducts sold (annual)
+$$ lstocksold=livstrevgrossimp+livstbyprodimp $$
+* $agsales$ gross farm sales, i.e. combined value of crop, livestock, and fish products sold
+$$ agsales=cropsales+lstocksold+fishsold $$
+* $agsalespc$ farm sales per adult equivalent
+$$ agsalespc=\frac{agsales}{equiv} $$
+* $cropsales\_sh$ commercialization rate for crops, defined as the value of crops and crop products sold over the value of annual crop production (excl. perennial crops)
+$$ cropsales\_sh = \frac{cropsales}{cropvalue} $$
+
+#### Income
+
+* $agrwge$ wage employment in agriculture
+* $nonagrwge$ wage employment in non-farm sectors
+* $selfemp$ non-farm self employment
+* $transfer$ net transfers
+* $other$ other sources of incomes
+* $totincome1$ total net annual household income (uses $crop1$)
+* $aggross$ gross farm income (includes value of own consumption, ag wages and ag rents)
+$$ aggross=agsales+agrwge+farmrntimp+agrentimp+cropownimp $$
+* $totgross$ total gross income (incl. farm income, non-farm income, and transfers)
+$$ totgross=aggross+nonagrwge+other+privtransfer+pubtransfer+self $$
+* $aggross\_sh$ share of farm income in total household income
+$$ aggross\_sh=\frac{aggross}{totgross} $$
+* $noaggross\_sh$ share of non-farm income in total household income
+$$ noaggross\_sh=1-aggross\_sh $$
+
+
+Note that all intermediary *value* variables (income and expenses) have been generated by IFPRI using [FAO RIGA](http://www.fao.org/economic/riga/riga-database/en/) guidelines. 
+
+> Using these variables we define a **farm holding** as a household matching any of the following conditions:
+> 
+> * has any $farmarea$ or $croparea$
+> * has any $cropvalue$ or $lstocksold$ or $fishsold$
+> * owns any livestock $TLU\_total$
+> * collects any other revenue from farming $aggross$
+> 
+> Within the sub-sample of *farm households* we look at the distribution of households across 3 key ("threshold") variables:
+> 
+> * Cultivated/operated area $croparea$ (using breaks at **2 ha** and/or **4 ha** and **excluding farm households with no $croparea$**)
+> * Crop commercialization $cropsales\_sh$ (using breaks at **5%** and **50%** of crop production)
+> * Share of off-farm income in total hhld income $naggross\_sh$ (using breaks at **1/3** and **2/3** of total gross income)
+
+The resulting classes of farm households are labeled as follows:  
+
+```{r tabclas, results="asis"}
+
+tmp <- factor(c("low", "medium", "high"), levels=c("low", "medium", "high"))
+tmp <- data.frame(clas=class9, C=rep(tmp, each=3), D=rep(tmp, 3))
+
+table_options(HTMLcaption="(#tab:tabclas) Household Classification")
+html(tabular((`Income Diversification`=D)~(`Crop Commercialization`=C)*Heading()*identity*Heading()*(as.character(clas)), 
+  data=tmp))
+
+```
+
+
+### An Aside on Income Diversification
+
+Initial results from the 2 Nigeria GHS panels tend to show very low income diversification among rural farm households. We propose to check these results against income and expenditure aggregates derived by FAO RIGA. RIGA documentation for Nigeria indicates the following income shares [@riga2016nga] (among rural households only):
+
+```{r riga-net}
+
+tmp <- fread("../data/tabula-Nigeria13-Components_of_Income_Aggregate.csv")
+kable(tmp[, .SD, .SDcols=c(1,3:8)], split.table=Inf,
+  justify="crrrrrr", round=2, big.mark=",", keep.trailing.zeros=T,
+  caption="(#tab:riga) RIGA Income Aggregates, NGHS 2012/2013 (Rural Households)")
+
+```
+
+All income aggregates are net of expenses. For this study however *gross* crop and livestock sales and *gross* farm and non-farm incomes would be preferable. These are derived in the codes below.
+
+```{r riga-gross}
+
+# Load RIGA components
+
+
+
+```
+
+### Key Results
+
+The following 3 tables show the count of observations in each class for farm households with cultivated area <= 2ha, between 2 and 4ha, and <= 4ha.
+
+```{r counts, results="asis"}
+
+table_options(HTMLcaption="(#tab:countsa) Count of Observations across Classes of Farm Households")
+html(tabular(Heading()*noaggross_clas+1~Format(digits=0, big.mark=",")*Heading()*croparea_clas*Heading()*cropsales_clas+1,
+  data=ghs))
+
+table_options(HTMLcaption="(#tab:countsb) Count of Observations across Classes of Farm Households (below/above 2 ha)")
+html(tabular(Heading()*noaggross_clas+1~Format(digits=0, big.mark=",")*Heading()*croparea_2ha*Heading()*cropsales_clas+1,
+  data=ghs))
+
+table_options(HTMLcaption="(#tab:countsc) Count of Observations across Classes of Farm Households (below/above 4 ha)")
+html(tabular(Heading()*noaggross_clas+1~Format(digits=0, big.mark=",")*Heading()*croparea_4ha*Heading()*cropsales_clas+1,
+  data=ghs))
+
+```
+
+In the next tables we limit categories to farm households **below/above 4ha** (as this approach produces classes with a larger count of observations). Using data from the 2012 Nigeria General Household Survey (GHS) we estimate the proportions of farm households across all categories and the distributions of other key household characteristics (household structure, assets, farm input uses, etc.).
+
+Estimated proportions of farm households across classes and categories are shown in the next graph and table.
+
+```{r fig2a, fig.cap="Est. Proportions of Farm Holdings across Categories"}
+
+par(mfrow=c(1,3), mar=c(3,3,0,.25))
+plot(svytable(~croparea_4ha+cropsales_clas, ghs.svy.shf), main=NA, las=2, col=(1:6)*6,
+  ylab="Cultivated Area", xlab="Crop Commercialization 3-class")
+plot(svytable(~croparea_4ha+noaggross_clas, ghs.svy.shf), main=NA, las=2, col=(1:6)*6,
+  ylab="Cultivated Area", xlab="Off-Farm Income 3-class")
+plot(svytable(~croparea_4ha+class9, ghs.svy.shf), main=NA, las=2, col=(1:6)*6,
+  ylab="Cultivated Area", xlab="Categories 9-class")
+
+```
+
+
+```{r tab1, results="asis"}
+
+tmp <- svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_clas)), ghs.svy.farm, na.rm=T)
+tmp <- as.data.table(tmp*100)
+tmp[, `:=`(
+  croparea_4ha = factor(rep(levels(ghs$croparea_4ha), 9)),
+  cropsales_clas = factor(rep(levels(ghs$cropsales_clas), each=2, 3), levels=c("LoC", "MeC", "HiC")),
+  noaggross_clas = factor(rep(levels(ghs$noaggross_clas), each=6, 1), levels=c("LoD", "MeD", "HiD"))
+  )]
+
+table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories (percent)")
+html(tabular(Heading()*noaggross_clas*(mean+SE)~Heading()*croparea_4ha*Heading()*cropsales_clas*Heading()*Format(digits=0, nsmall=1, scientific=F)*identity,
+  data=tmp))
+
+```
+
+
+> Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
+> 
+> * there are **33M** households in Nigeria
+> * **58.8%** (**19.2M**) generate a revenue from farming (wages, rents, crops, livestock, and/or fish)
+> * **97%** (**16M**) of farm holdings are *small*
+> * corresponding to a beneficiary population of **107M**
+> * crop commercialization is low at **12.2%** for smallholdings (below 4 ha) and **17.7%** for larger holdings (over 4 ha) on average. Median rates are much smaller however with **0.07%** for smallholdings and **0.30%** for larger holdings.
+> * income diversification in farm households is **17%** on average (**18%** for smallholdings and **13%** for larger holdings) (i.e. off-farm income is 17% on average), but medians off-farm incomes are negligible at **0.83%** (**0.63%** for smallholdings and **0.33%** for larger holdings).
+> 
+> <u>Notes</u>: for LCU conversions **1 int$ = 108.23 Naira** (2015)
+
+
+```{r fig1b, fig.cap="Prob. Density of Cultivated Area, Crop Commercialization, and Income Diversification"}
+
+par(mfrow=c(1,3), font.main=1)
+svyhist(~croparea, ghs.svy.farm, main="Cultivated Area", xlab="croparea (ha)", xlim=c(0,10))
+lines(svysmooth(~croparea, ghs.svy.farm, bandwidth=1), lwd=1, col=40)
+svyhist(~I(cropsales_sh*100), ghs.svy.farm, main="Crop Commercialization", xlab="cropsales_sh (percent)")
+lines(svysmooth(~I(cropsales_sh*100), ghs.svy.farm, bandwidth=1), lwd=1, col=40)
+svyhist(~I(noaggross_sh*100), ghs.svy.farm, main="Income Diversification", xlab="noaggross_sh (percent)")
+lines(svysmooth(~I(noaggross_sh*100), ghs.svy.farm, bandwidth=1), lwd=1, col=40)
+
+```
+
+```{r fig1c, fig.cap="Crop Commercialization and Income Diversification along Cultivated Area"}
+
+par(mfrow=c(1,2), cex=.9)
+svyboxplot(I(cropsales_sh*100)~croparea_4ha, ghs.svy.farm,
+  xlab="Cultivated Area", ylab="Crop Commercialization (percent)", legend=2, ylim=c(0,20))
+svyboxplot(I(noaggross_sh*100)~croparea_4ha, ghs.svy.farm,
+  xlab="Cultivated Area", ylab="Off-Farm Incomen (percent)", legend=2, ylim=c(0,20))
+
+```
+
+
+```{r tab2, results="asis"}
+
+# Estimated quintiles of `cropsales_sh` for smallholders
+tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(cropsales/1000)), ~croparea_4ha,
+  ghs.svy.farm, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab2a) Crop Commercialization for Farms below/above 4 ha (percent, '000 LCU)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity, 
+  data=tmp))
+
+# Estimated quintiles of `noaggross_sh` for smallholders
+tmp <- svyCrossTab(list(~I(noaggross_sh*100), ~I(noaggross/1000)), ~croparea_4ha,
+  ghs.svy.farm, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab2b) Non-Farm Income for Farms below/above 4 ha (percent, '000 LCU)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity,
+  data=tmp))
+
+```
+
+The 9 categories of small farm holdings are further characterized in the following graphs and summary tables.
+
+```{r fig1e, fig.cap="Crop Commercialization by Age and Gender"}
+
+par(mfrow=c(1,2), cex=.9)
+svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(4), legend=c("Male"), bty="n")
+svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="transparent", basecol=41, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
+
+```
+
+```{r fig1f, eval=F, fig.cap="Crop Commercialization by Age and Zone"}
+
+par(mfrow=c(1,1), cex=.9)
+l <- levels(ghs$zone)
+plot(c(15,80), c(0,350), type="n", xlab="Age of Hhld Head", ylab="Est. Mean Crop Sales ('000 LCU)")
+legend("topright", lty=c(1,1), col=seq_along(l)*5, legend=l, bty="n")
+for (i in seq_along(l)) lines(
+  svysmooth(I(cropsales/1000)~agehead, subset(ghs.svy.farm, zone==levels(ghs$zone)[i]), banwidth=10),
+  col=i*5)
+
+```
+
+```{r fig1g, fig.cap="Income Diversification by Age and Gender"}
+
+par(mfrow=c(1,2), cex=.9)
+svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(4), legend=c("Male"), bty="n")
+svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="transparent", basecol=41, xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
+
+```
+
+```{r, eval=F, fig.cap="Income Diversification by Age and Zone"}
+
+l <- levels(ghs$zone)
+plot(c(15,100), c(0,800), type="n", xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
+legend("topright", lty=c(1,1), col=seq_along(l)*5, legend=l, bty="n")
+for (i in seq_along(l)) lines(
+  svysmooth(I(noaggross/1000)~agehead, subset(ghs.svy.farm, zone==levels(ghs$zone)[i]), banwidth=10),
+  col=i*5)
+
+```
+
+
+```{r fig1h, fig.cap="Crop Commercialization and Income Diversification along Market Access"}
+
+par(mfrow=c(1,2), cex=.9)
+svyplot(I(cropsales/1000)~dist_market, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Market (km)", ylab="Crop Sales ('000 LCU)")
+svyplot(I(noaggross/1000)~dist_market, ghs.svy.farm, style="transparent", basecol=34, xlab="Distance to Market (km)", ylab="Non-Farm Income ('000 LCU)")
+
+```
+
+```{r fig1i, fig.cap="Crop Commercialization and Income Diversification vs. Distance to Nearest Road"}
+
+par(mfrow=c(1,2), cex=.9)
+svyplot(I(cropsales/1000)~dist_road2, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Road (km)", ylab="Crop Sales ('000 LCU)")
+svyplot(I(noaggross/1000)~dist_road2, ghs.svy.farm, style="transparent", basecol=34, xlab="Distance to Road (km)", ylab="Non-Farm Income ('000 LCU)")
+
+```
+
+```{r fig3, eval=F, fig.cap="Distribution of Farm Sizes across Categories of Small Farm Holdings (ha)", fig.height=6}
+
+# farmarea
+svyCrossPlot(~farmarea, ghs.svy.shf, breaks=20, bandwidth=.5, xlim=c(0,4),
+  xlab="Farm Area (ha)")
+
+```
+
+```{r fig4, eval=F, fig.cap="Distribution of Livestock Assets across Categories of Small Farm Holdings (TLU)", fig.height=6}
+
+# TLU_total
+svyCrossPlot(~TLU_total, ghs.svy.shf, breaks=20, bandwidth=1, xlim=c(0,30),
+  xlab="Livestock Holdings (TLU)")
+
+```
+
+```{r fig5, eval=F, fig.cap="Distribution of Livestock Sales across Categories of Small Farm Holdings ('000 LCU)", fig.height=6}
+
+# lstocksold
+svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(0,1500),
+  xlab="Livestock Sales ('000 LCU)")
+
+```
+
+```{r fig6, eval=F, fig.cap="Share of Farm Income across Categories of Small Farm Holdings (percent)", fig.height=6}
+
+# aggross_sh
+svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
+  xlab="Share of Farm Income (percent)")
+
+```
+
+Note that all tables below omit standard errors to save space.
+
+```{r tab3, results="asis"}
+
+# Market access
+tmp <- svyCrossTab(list(~dist_market, ~dist_road2, ~mkt50k, ~mkt100k),
+  ~class9, ghs.geo.svy.shf, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3a) Market Access for Small Farm Households across Categories (km, travel time in hrs)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, nsmall=2, big.mark=",", scientific=F),
+  data=tmp)[, -seq(2,18,2)])
+
+# Sources of income
+tmp <- svyCrossTab(list(~I(cropvalue/1000), ~I(cropsales/1000), ~I(lstocksold/1000),
+  ~I(agsales/1000), ~agsalespc, ~I(aggross/1000), 
+  ~I(cropsales_sh*100), ~I(aggross_sh*100)),
+  ~class9, ghs.svy.shf, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3b) Sources of Agricultural Income for Small Farm Households across Categories ('000 LCU, percent)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
+  data=tmp)[, -seq(2,18,2)])
+
+# Livestock
+tmp <- svyCrossTab(list(~farmarea, ~croparea, ~catt_numberimp, ~pigs_numberimp,
+  ~chic_numberimp, ~sheep_numberimp, ~goat_numberimp, ~TLU_total),
+  ~class9, ghs.svy.shf, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3c) Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp)[, -seq(2,18,2)])
+
+
+```
+
+```{r tab4, results="asis"}
+
+# Demographics
+tmp <- svyCrossTab(list(~hhsize, ~I(femhead*100), ~agehead, ~I(lithead*100),
+  ~eduyears, ~numchildren, ~equiv, ~females, ~males, 
+  ~sh_ed_none, ~sh_ed_prim, ~sh_ed_secu),
+  ~class9, ghs.svy.shf, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab4) Demographics of Small Farm Households across Categories")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp)[, -seq(2,18,2)])
+
+```
+
+
+```{r tab5, results="asis"}
+
+# Input uses
+tmp <- svyCrossTab(list(~parcels, ~I(chempest_farms*100), ~I(chemherb_farms*100),
+  ~I(fertorg_farms*100), ~I(fertinorg_farms*100), ~I(seedp_farms*100), ~I(tractorown_farms*100), ~intens_idx2),
+  ~class9, ghs.farm.svy.shf, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab5) Parcels and Input Uses for Small Farm Households across Categories (percent)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp)[, -seq(2,18,2)])
+
+```
+
+```{r tab6, results="asis"}
+
+# Poverty
+tmp <- svyCrossTab(list(~pcexp_ppp_m, ~foodexp_ppp_m, ~nfoodexp_ppp_m,
+  ~I(poor_ppp1*100), ~I(poor_ppp2*100), ~I(povgap_ppp1*100), ~I(povgap_ppp2*100),
+  ~I(sevpov_ppp1*100), ~I(sevpov_ppp2*100)),
+  ~class9, ghs.ppp.svy.shf, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab6) Poverty Incidence in Small Farm Households across Categories (PPP, percent)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", nsmall=1, scientific=F),
+  data=tmp)[, -seq(2,18,2)])
+
+```
+
+
+
+
+
+
+## Ethiopia
+
+Relevant sources of household-level micro records for Ethiopia include:
+
+  * 2011/12 ERSS (income vars)
+* 2013/14 and 2015/16 Ethiopia Socioeconomic Surveys
+* 2012/13 Ethiopia’s Agricultural Sample Survey (AgSS) -- but it's difficult to cross-tabulate results from the AgSS (crop production and input uses) with the ERSS' income data
+* 2012 ATA Baseline Survey (3,000 hhlds), see [@minot2013agataeth].
+
+
+```{r eth-erss, eval=F}
+
+# Load and copy constructed vars from the 2015 ETH Segmentation
+setwd("~/Google Drive/2016-BMGF-Segmentation/ETH")
+e1 <- new.env()
+load("./temp/eth-erss-11_bmgf_seg.RData", envir=e1)
+names(e1)
+erss <- e1$hh
+erss.lbl <- e1$hh.lb
+
+e1 <- new.env()
+# Seems more recent
+load("./temp/eth_bmgf_seg.RData", envir=e1)
+names(e1)
+erss2 <- e1$hh
+erss2.lbl <- e1$hh.lb
+
+rm(e1)
+setwd("~/Projects/2017-agra-aasr")
+
+# Differences between the 2 set of ERSS vars?
+names(erss2)[!names(erss2) %in% names(erss)]
+# => merged in all seg vars, poverty, expendc, real_totcons, livestock, eff
+names(erss)[!names(erss) %in% names(erss2)]
+# [1] "hhid"     "input_12"
+
+# Merge in `input_12` and keep `erss2` only
+setkey(erss, household_id)
+setkey(erss2, household_id)
+erss[!erss2][, .(household_id, hhid)]
+erss2[erss][, .(household_id, hhid)]
+
+```
+
+<!--chapter:end:02-typology.Rmd-->
+
+# Quadrant Classification
+
+## Nigeria
+
+[TBD]
+
+For documentation purposes below are code snippets from the 2016 Farmer Segmentation for Nigeria (definitions and characterization of quadrants and livelihood zones).
+
+
+```{r, eval=FALSE}
+
+#####################################################################################
+# 2016.05.03 Quadrant Definitions across Livelihood Zones (from Diemuth 2016.04.06)
+#####################################################################################
+# We need to add a new segment vars to all key micro datasets, starting with GHS.
+# Diemuth provided latest quadrant definitions.
+#
+#  - [country]_agpotallclass_1km.tif – Agricultural potential raster with 1km cell
+# resolution and same extent as ethtt_1km100khr. Created from clipping sub-Saharan Africa
+# Agricultural Potential 5 minute grid vector layer from FAO & IIASA, 2007. For the
+# 2x2 segmented data, 5-6 values were considered high, 1-4 low and -809-0 were
+# unsuitable and -997 were water.
+# -997 = Water
+# -809 = Protected Areas
+# -807 = Urban Areas
+# -805 = Irrigated Areas
+# -801 = Forest
+# 0 = Land not suited for agriculture
+# 1 = Land very poorly suited for pasture and at best poorly suited for rainfed crops
+# 2 = Land poorly suited for pasture and at best poorly suited for rainfed crops
+# 3 = Lands suited for pasture and at best poorly suited for rainfed crops
+# 4 = Land suited for rainfed crops and pasture possible
+# 5 = Land well suited for rainfed crops and pasture possible
+# 6 = Prime land suited for rainfed crops and pasture possible
+#
+# - [country]_tt1km100khr_4hr.tif – Classified travel time raster with a 4 hr threshold,
+# HarvestChoice, 2015
+# 100 – travel time greater than 4 hours, lo access
+# 200 – travel time less than or equal to 4 hours, high access
+
+# Load the 2 rasters and classify LGAs
+qd.agpot <- raster("./maps/quadrant/nga_agpotallclass_1km.tif")
+qd.tt100k <- raster("./maps/quadrant/nga_tt1km100khr_4hr.tif")
+proj4string(qd.agpot)
+proj4string(qd.tt100k)
+proj4string(geo12.pts)
+unique(qd.agpot)
+#  [1] -997 -809 -807 -805 -801    0    1    2    3    4    5    6
+summary(qd.tt100k)
+#         nga_tt1km100khr_4hr
+# Min.                    100
+# 1st Qu.                 100
+# Median                  200
+# 3rd Qu.                 200
+# Max.                    200
+# NA's                      0
+# Note that raster tt100k is already classified.
+
+qd.agpot.lbl <- c(
+  "water",
+  "protected area",
+  "urban area",
+  "irrigated area",
+  "forest",
+  "land not suited for agriculture",
+  "land very poorly suited for pasture and at best poorly suited for rainfed crops",
+  "land poorly suited for pasture and at best poorly suited for rainfed crops",
+  "land suited for pasture and at best poorly suited for rainfed crops",
+  "land suited for rainfed crops and pasture possible ",
+  "land well suited for rainfed crops and pasture possible",
+  "prime land suited for rainfed crops and pasture possible")
+
+qd.agpot.lbl <- data.table(varCode=unique(qd.agpot), varLabel=qd.agpot.lbl)
+
+# Intersect with GHS coords
+tmp <- extract(qd.agpot, geo12.pts)
+tmp <- data.table(hhid=geo12.pts$hhid, qd.agpot=tmp)
+tmp[, qd.agpot := factor(qd.agpot, levels=qd.agpot.lbl$varCode, labels=qd.agpot.lbl$varLabel)]
+tmp1 <- extract(qd.tt100k, geo12.pts)
+tmp[, qd.tt100k := tmp1]
+tmp[, qd.tt100k := factor(qd.tt100k, levels=c(100, 200), labels=c("ML", "MH"))]
+setkey(tmp, hhid)
+setkey(geo12, hhid)
+geo12 <- tmp[geo12]
+rm(tmp, tmp1)
+
+# Classify hhlds across quadrants
+# Rename old segment var to avoid confusion
+setnames(geo12, c("qd.agpot", "qd.tt100k"), c("qd_agpot", "qd_tt100k"))
+setnames(geo12, "seg_quad", "seg_quad_old")
+setnames(ghs, "seg_quad", "seg_quad_old")
+setnames(ppp12, "seg_quad", "seg_quad_old")
+setnames(inc12, "seg_quad", "seg_quad_old")
+setnames(farm, "seg_quad", "seg_quad_old")
+
+geo12[qd_agpot %in% qd.agpot.lbl$varLabel[1:6], qd_agpot_clas := "AU"]
+geo12[qd_agpot %in% qd.agpot.lbl$varLabel[7:10], qd_agpot_clas := "AL"]
+geo12[qd_agpot %in% qd.agpot.lbl$varLabel[11:12], qd_agpot_clas := "AH"]
+summary(factor(geo12$qd_agpot_clas))
+#   AH   AL   AU NA's
+# 1968 1490 1323  117
+
+summary(factor(geo12$qd_tt100k))
+#   ML   MH NA's
+#  750 4051   97
+
+# Impute missing hhld coords with LGA means
+# Compute LGA means from `g2` map (using dominant class)
+geo12[is.na(qd_agpot_clas), .N, by=.(adm1_nm, adm2_nm)]
+# => missing records in 58 LGAs
+
+tmp <- geo12[!is.na(qd_agpot_clas), .(
+  qd_agpot_clas=modal(qd_agpot_clas, na.rm=T),
+  qd_tt100k=modal(qd_tt100k, na.rm=T)
+), keyby=.(adm1_nm, adm2_nm)]
+
+setnames(tmp, 3:4, c("qd_agpot_clas_imp", "qd_tt100k_imp"))
+setkey(geo12, adm1_nm, adm2_nm)
+geo12 <- tmp[geo12]
+
+geo12[is.na(qd_agpot_clas), qd_agpot_clas := qd_agpot_clas_imp]
+geo12[is.na(qd_tt100k), qd_tt100k := qd_tt100k_imp]
+
+geo12[is.na(qd_agpot_clas), .N, by=.(adm1_nm, adm2_nm)]
+#    adm1_nm adm2_nm  N
+# 1:  Rivers   Bonny 10
+geo12[is.na(qd_tt100k), .N, by=.(adm1_nm, adm2_nm)]
+# Empty data.table (0 rows) of 3 cols: adm1_nm,adm2_nm,N
+# => only 10 missing records in Bonny
+
+# What is the dominant agpot in Bonny? Extract all LGAs for re-use.
+tmp <- extract(qd.agpot, g2, fun=modal, na.rm=T)
+g2$qd_agpot <- tmp
+# Note that we already have median 100k travel time across LGAs in `g2$mkt100k`
+# though I'm not sure it's the same source as Diemuth/Stan
+
+# load Joe's latest travel times
+tt100k <- dt[, .SD, .SDcols=c("CELL5M", "X", "Y", "tt10_100k")]
+rm(dt)
+tt100k <- SpatialPixelsDataFrame(tt100k[, .(X,Y)], data.frame(tt100k))
+proj4string(tt100k) <- CRS("+init=epsg:4326")
+tt100k <- raster(tt100k, layer="tt10_100k")
+tmp <- extract(tt100k, g2, fun=median, na.rm=T)
+g2$qd_tt100k <- tmp
+# Export for mapping
+tt100k <- crop(tt100k, g2)
+tt100k <- mask(tt100k, g2)
+writeRaster(tt100k, "./maps/markets/tt100k.tif")
+rm(tmp)
+
+# What is Bonny?
+g2[g2$adm2_nm=="Bonny", "qd_agpot"]
+# => -997, so AU
+geo12[is.na(qd_agpot_clas), qd_agpot_clas := "AU"]
+summary(factor(geo12$qd_agpot_clas))
+#   AH   AL   AU
+# 1997 1530 1371
+
+# Make final quadrant classification for GHS
+geo12[, seg_quad := paste0(qd_tt100k, qd_agpot_clas)]
+geo12[, unique(seg_quad)]
+# [1] "MHAU" "MHAL" "MHAH" "MLAH" "MLAL" "MLAU"
+geo12[, seg_quad := ordered(seg_quad, levels=c("MLAU", "MLAL", "MLAH", "MHAU", "MHAL", "MHAH"))]
+
+# Merge quadrants into `ghs`, `farm` and `ppp12`
+setkey(geo12, hhid)
+setkey(ghs, hhid)
+setkey(farm, hhid)
+setkey(ppp12, hhid)
+ghs$seg_quad <- geo12[ghs][, seg_quad]
+farm$seg_quad <- geo12[farm][, seg_quad]
+ppp12$seg_quad <- geo12[ppp12][, seg_quad]
+
+# Re-run summary tables
+# => done
+
+#####################################################################################
+# Crop preferences across quadrants/zones - GHS
+#####################################################################################
+
+# Note that Cleo generated the hh-level vars and Eduardo estimated state-level vars
+ghs.plot <- read.dta("./data/NGA-GHS/NGA_GHS_Indicator_plot_2012.dta")
+ghs.plot <- data.table(ghs.plot)
+
+# Merge in segmentation vars
+setkey(geo12, hhid)
+setkey(ghs.crop, hhid)
+setkey(ghs.plot, hhid)
+ghs.crop$seg_quad <- geo12[ghs.crop][, seg_quad]
+ghs.plot$seg_quad <- geo12[ghs.plot][, seg_quad]
+ghs.crop$seg_lvl_6 <- geo12[ghs.crop][, seg_lvl_6]
+ghs.plot$seg_lvl_6 <- geo12[ghs.plot][, seg_lvl_6]
+
+# Share of female plot managers
+tmp <- ghs.plot[, .N, by=.(hhid, wt_w2v1, manager, state, gender)]
+
+tmp <- ghs.crop[, .(
+  num_fem_mgr=sum(num_fem_mgr*wt_wave2, na.rm=T)/sum(num_hh_mgr*wt_wave2, na.rm=T),
+  fem_mgr=weighted.mean(num_fem_mgr>0, wt_wave2, na.rm=T),
+  fem_earn=weighted.mean(fem_earn, wt_wave2, na.rm=T)
+), keyby=seg_lvl_6]
+tmp <- ghs.crop[, .(
+  num_fem_mgr=sum(num_fem_mgr*wt_wave2, na.rm=T)/sum(num_hh_mgr*wt_wave2, na.rm=T),
+  fem_mgr=weighted.mean(num_fem_mgr>0, wt_wave2, na.rm=T),
+  fem_earn=weighted.mean(fem_earn, wt_wave2, na.rm=T)
+), keyby=seg_quad]
+tmp <- ghs.crop[, .(
+  num_fem_mgr=sum(num_fem_mgr*wt_wave2, na.rm=T)/sum(num_hh_mgr*wt_wave2, na.rm=T),
+  fem_mgr=weighted.mean(num_fem_mgr>0, wt_wave2, na.rm=T),
+  fem_earn=weighted.mean(fem_earn, wt_wave2, na.rm=T))]
+
+
+# Share of female-managed plots
+tmp <- ghs.plot[, .(femplotmgr=weighted.mean(gender=="female", wt_w2v1, na.rm=T)),
+  keyby=seg_lvl_6]
+tmp <- ghs.plot[, .(femplotmgr=weighted.mean(gender=="female", wt_w2v1, na.rm=T)),
+  keyby=seg_quad]
+tmp <- ghs.plot[, .(femplotmgr=weighted.mean(gender=="female", wt_w2v1, na.rm=T))]
+
+
+# TODO Area of female-managed plots under each crop
+tmp <- ghs.plot[, lapply(.SD, sum, na.rm=T),
+  keyby=.(hhid, wt_w2v1, state, gender), .SDcols=96:147]
+tmp <- tmp[, lapply(.SD, function(x) sum(x*wt_w2v1, na.rm=T)),
+  keyby=.(state, gender), .SDcols=c(2, 5:56)]
+tmp[, wt_w2v1 := NULL]
+tmp <- melt(tmp, id.vars=1:2)
+tmp[, variable := str_replace(variable, "area_", "")]
+tmp <- tmp[!is.na(gender)]
+
+# Proportion of female-managed plots by crop
+tmp <- melt(ghs.plot,
+  id.vars=c("seg_quad", "seg_lvl_6", "gender", "wt_w2v1"),
+  measure.vars=11:147)
+tmp[value=="yes", value := "1"]
+tmp[value=="no", value := "0"]
+tmp[, value := as.numeric(value)]
+tmp <- tmp[, lapply(.SD, weighted.mean, wt_w2v1), keyby=.(seg_lvl_6, gender, variable)]
+
+# TODO Additional production stats
+# TODO Also check on Sara's harmonized farm management stats
+
+```
+
+
+
+## Ethiopia
+
+[TBD]
+
+<!--chapter:end:03-quadrant.Rmd-->
+
+# References {-}
+
+Note that some of these references are unpublished materials, do not cite.
+
+<!--chapter:end:06-refs.Rmd-->
+

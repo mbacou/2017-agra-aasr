@@ -24,24 +24,24 @@ nocite: |
 
 ```{r setup, include=F}
 
-knitr::opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8,
-  dev.args=list(png=list(pointsize=10, family="Roboto Condensed", res=300), svg=list(family="Roboto Condensed", antialias="subpixel")))
-
 library(data.table)
 library(rhandsontable)
 library(jsonlite)
 library(survey)
-library(pander)
+library(knitr)
 library(tables)
 
+# Load workspace
 load("../tmp/2017-agra-aasr.RData")
 
-# Default options
-table_options(htmloptions(justification="c", head=FALSE, pad=TRUE))
-panderOptions("table.split.table", Inf)
-panderOptions("keep.trailing.zeros", TRUE)
-palette(HC.colors)
+# Output options
+opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8,
+  dev.args=list(
+    png=list(pointsize=10, family="Roboto Condensed", res=300), 
+    svg=list(family="Roboto Condensed", antialias="subpixel")))
+table_options(htmloptions(justification="c", head=F, pad=T))
+palette(HC.pal)
 
 ```
 
