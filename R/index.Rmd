@@ -11,7 +11,7 @@ output:
     css: css/book.css
   bookdown::word_document2:
     reference_docx: "/home/mbacou/Google Drive/X-Files/templates/rmarkdown.docx"
-    always_allow_html: yes
+always_allow_html: yes
 documentclass: book
 bibliography: biblio.bib
 csl: apa.csl
@@ -38,7 +38,9 @@ library(tables)
 load("../tmp/2017-agra-aasr.RData")
 
 # Default options
-table_options(htmloptions(head=F, pad=T))
+table_options(htmloptions(justification="c", head=FALSE, pad=TRUE))
+panderOptions("table.split.table", Inf)
+panderOptions("keep.trailing.zeros", TRUE)
 palette(HC.colors)
 
 ```

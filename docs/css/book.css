@@ -64,6 +64,11 @@ caption span {
   font-size: .9em;
 }
 
+.book .book-body .page-wrapper .page-inner section.normal table tr,
+.book .book-body .page-wrapper .page-inner section.normal table thead th {
+  border: none;
+}
+
 .book .book-body .page-wrapper .page-inner section.normal table td,
 .book .book-body .page-wrapper .page-inner section.normal table th {
   padding: 0 2px;
@@ -73,6 +78,14 @@ caption span {
 .book .book-body .page-wrapper .page-inner section.normal table tbody th:nth-child(2) {
   font-weight: normal;
   font-style: italic;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal table thead tr:first-child th {
+  border-top: 1px solid #ddd;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal table tr:last-child th {
+  border-bottom: 2px solid #ddd;
 }
 
 .references p {
