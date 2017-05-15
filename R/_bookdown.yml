@@ -1,7 +1,7 @@
 new_session: no
 output_dir: ../docs
 edit: https://github.com/mbacou/2017-agra-aasr/blob/master/R/%s
-download: [word]
+download: [../docs/main.docx]
 language:
   label:
     fig:    "Fig. "

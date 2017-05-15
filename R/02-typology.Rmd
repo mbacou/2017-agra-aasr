@@ -215,12 +215,24 @@ summary(ghs$croparea_2ha)
 # <= 2 ha  > 2 ha    NA's
 #    2616     318    1946
 
+# Remove farms with no croparea from this classification
+ghs[croparea==0, croparea_2ha := NA]
+summary(ghs$croparea_2ha)
+# <= 2 ha  > 2 ha    NA's 
+#    2376     318    2186 
+
 # SHF 4ha dummy `croparea_clas` (3-class)
 ghs[, croparea_clas := NULL]
 ghs[farm_hh==T, croparea_clas := cut(croparea, c(-1,2,4,25), labels=c("<= 2 ha", "2-4 ha", "> 4 ha"), ordered=T, right=F)]
 summary(ghs$croparea_clas)
 # <= 2 ha  2-4 ha  > 4 ha    NA's
 #    2616     224      94    1946
+
+# Remove farms with no croparea from this classification
+ghs[croparea==0, croparea_clas := NA]
+summary(ghs$croparea_clas)
+# <= 2 ha  2-4 ha  > 4 ha    NA's 
+#    2376     224      94    2186 
 
 # Crop commercialization dummy `cropsales_any` (2-class)
 ghs[, cropsales_any := NULL]
@@ -257,6 +269,17 @@ summary(ghs$class9)
 setkey(ghs, hhid)
 setkey(ghs.farm, hhid)
 setkey(ghs.ppp, hhid)
+setkey(ghs.geo, hhid)
+
+ghs.farm[, c("croparea_2ha", "croparea_4ha",
+  "cropsales_sh", "cropsales_clas",
+  "noaggross_clas", "class9") := NULL]
+ghs.ppp[, c("croparea_2ha", "croparea_4ha",
+  "cropsales_sh", "cropsales_clas",
+  "noaggross_clas", "class9") := NULL]
+ghs.geo[, c("croparea_2ha", "croparea_4ha",
+  "cropsales_sh", "cropsales_clas",
+  "noaggross_clas", "class9", "wt_wave2", "zone", "sector", "rural") := NULL]
 
 ghs.farm[ghs, `:=`(
   croparea_2ha = croparea_2ha,
@@ -277,6 +300,24 @@ ghs.ppp[ghs, `:=`(
   class9 = class9
 )]
 
+ghs.geo[ghs, `:=`(
+  croparea_2ha = croparea_2ha,
+  croparea_4ha = croparea_4ha,
+  cropsales_sh = cropsales_sh,
+  cropsales_clas = cropsales_clas,
+  noaggross_clas = noaggross_clas,
+  class9 = class9,
+  wt_wave2 = wt_wave2,
+  zone = zone,
+  rural = rural
+  )]
+
+# Add a few extra geo vars to `ghs` to plot
+ghs[ghs.geo, `:=`(
+  dist_market = dist_market,
+  dist_road2 = dist_road2
+  )]
+
 ##########################################
 # Define 2-stage stratified survey design (use most recent GHS wave only)
 ghs.svy <- svydesign(~ea+hhid, strata=~zone+rural, weights=~wt_wave2,
@@ -285,6 +326,8 @@ ghs.farm.svy <- svydesign(~ea+hhid, strata=~zone+sector, weights=~wt_wave2,
   data=ghs.farm[!is.na(wt_wave2)], nest=T)
 ghs.ppp.svy <- svydesign(~hhid, strata=~zone+rural, weights=~weight,
   data=ghs.ppp[!is.na(weight)], nest=T)
+ghs.geo.svy <- svydesign(~hhid, strata=~zone+rural, weights=~wt_wave2,
+  data=ghs.geo[!is.na(wt_wave2)], nest=T)
 
 summary(ghs.svy)
 # Stratified 2 - level Cluster Sampling design (with replacement)
@@ -302,10 +345,11 @@ summary(ghs.svy)
 
 # Subset survey sample to farms
 ghs.svy.farm <- subset(ghs.svy, farm_hh==T)
-# Subset survey sample to only SHF
+# Subset survey sample to only SHF (note that they exclude farms with no `croparea`)
 ghs.svy.shf <- subset(ghs.svy, croparea_4ha=="<= 4 ha")
 ghs.farm.svy.shf <- subset(ghs.farm.svy, croparea_4ha=="<= 4 ha")
 ghs.ppp.svy.shf <- subset(ghs.ppp.svy, croparea_4ha=="<= 4 ha")
+ghs.geo.svy.shf <- subset(ghs.geo.svy, croparea_4ha=="<= 4 ha")
 
 # Verify sampling design (e.g. total population)
 (svytotal(~hhsize, ghs.svy, na.rm=T))/1E6
@@ -419,6 +463,7 @@ svyquantile(~I(100*foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), n
 # I(100 * foodexp_ppp_m/rowSums(cbind(foodexp_ppp_m, nfoodexp_ppp_m), na.rm = T)) 76.27067
 
 # Save workspace
+rm(i, x, tmp)
 save.image("./tmp/2017-agra-aasr.RData")
 
 ```
@@ -458,9 +503,9 @@ $$ cropsales\_sh = \frac{cropsales}{cropvalue} $$
 
 #### Income
 
-* $agrwge$ wage employement in agriculture
-* $nonagrwge$ wage employement in non-farm sectors
-* $selfemp$ non-farm self employement
+* $agrwge$ wage employment in agriculture
+* $nonagrwge$ wage employment in non-farm sectors
+* $selfemp$ non-farm self employment
 * $transfer$ net transfers
 * $other$ other sources of incomes
 * $totincome1$ total net annual household income (uses $crop1$)
@@ -514,9 +559,12 @@ pander(tmp[, .SD, .SDcols=c(1,3:8)], split.table=Inf,
 
 ```
 
-All income aggregates are net of expenses, but for this study gross crop and livestock sales and gross farm and non-farm incomes would be preferable. These are derived in the codes below.
+All income aggregates are net of expenses. For this study however *gross* crop and livestock sales and *gross* farm and non-farm incomes would be preferable. These are derived in the codes below.
 
 ```{r riga-gross}
+
+# Load RIGA components
+
 
 
 ```
@@ -528,15 +576,15 @@ The following 3 tables show the count of observations in each class for farm hou
 ```{r counts, results="asis"}
 
 table_options(HTMLcaption="(#tab:countsa) Count of Observations across Classes of Farm Households")
-html(tabular(Heading()*noaggross_clas~Format(digits=0, big.mark=",")*Heading()*croparea_clas*Heading()*cropsales_clas,
+html(tabular(Heading()*noaggross_clas+1~Format(digits=0, big.mark=",")*Heading()*croparea_clas*Heading()*cropsales_clas+1,
   data=ghs))
 
 table_options(HTMLcaption="(#tab:countsb) Count of Observations across Classes of Farm Households (below/above 2 ha)")
-html(tabular(Heading()*noaggross_clas~Format(digits=0, big.mark=",")*Heading()*croparea_2ha*Heading()*cropsales_clas,
+html(tabular(Heading()*noaggross_clas+1~Format(digits=0, big.mark=",")*Heading()*croparea_2ha*Heading()*cropsales_clas+1,
   data=ghs))
 
 table_options(HTMLcaption="(#tab:countsc) Count of Observations across Classes of Farm Households (below/above 4 ha)")
-html(tabular(Heading()*noaggross_clas~Format(digits=0, big.mark=",")*Heading()*croparea_4ha*Heading()*cropsales_clas,
+html(tabular(Heading()*noaggross_clas+1~Format(digits=0, big.mark=",")*Heading()*croparea_4ha*Heading()*cropsales_clas+1,
   data=ghs))
 
 ```
@@ -568,7 +616,7 @@ tmp[, `:=`(
   noaggross_clas = factor(rep(levels(ghs$noaggross_clas), each=6, 1), levels=c("LoD", "MeD", "HiD"))
   )]
 
-table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories")
+table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories (percent)")
 html(tabular(Heading()*noaggross_clas*(mean+SE)~Heading()*croparea_4ha*Heading()*cropsales_clas*Heading()*Format(digits=0, nsmall=1, scientific=F)*identity,
   data=tmp))
 
@@ -587,7 +635,7 @@ Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
 
 
 
-```{r fig1b, fig.cap="Cultivated Area, Crop Commercialization, and Income Diversification"}
+```{r fig1b, fig.cap="Prob. Density of Cultivated Area, Crop Commercialization, and Income Diversification"}
 
 par(mfrow=c(1,3), font.main=1)
 svyhist(~croparea, ghs.svy.farm, main="Cultivated Area", xlab="croparea (ha)", xlim=c(0,10))
@@ -609,6 +657,30 @@ svyboxplot(I(noaggross_sh*100)~croparea_4ha, ghs.svy.farm,
 
 ```
 
+
+```{r tab2, results="asis"}
+
+# Estimated quintiles of `cropsales_sh` for smallholders
+tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(cropsales/1000)), ~croparea_4ha,
+  ghs.svy.farm, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab2a) Crop Commercialization for Farms below/above 4 ha (percent, '000 LCU)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity, 
+  data=tmp))
+
+# Estimated quintiles of `noaggross_sh` for smallholders
+tmp <- svyCrossTab(list(~I(noaggross_sh*100), ~I(noaggross/1000)), ~croparea_4ha,
+  ghs.svy.farm, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab2b) Non-Farm Income for Farms below/above 4 ha (percent, '000 LCU)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity,
+  data=tmp))
+
+```
+
+The 9 categories of small farm holdings are further characterized in the following graphs and summary tables.
 
 ```{r fig1e, fig.cap="Crop Commercialization by Age and Gender"}
 
@@ -635,9 +707,9 @@ for (i in seq_along(l)) lines(
 ```{r fig1g, fig.cap="Income Diversification by Age and Gender"}
 
 par(mfrow=c(1,2), cex=.9)
-svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Off-Farm Income ('000 LCU)")
+svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
 legend("topright", lty=c(1,1), col=c(4), legend=c("Male"), bty="n")
-svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="transparent", basecol=41, xlab="Age of Hhld Head", ylab="Off-Farm Income ('000 LCU)")
+svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="transparent", basecol=41, xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
 legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
 
 ```
@@ -645,7 +717,7 @@ legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
 ```{r, eval=F, fig.cap="Income Diversification by Age and Zone"}
 
 l <- levels(ghs$zone)
-plot(c(15,100), c(0,800), type="n", xlab="Age of Hhld Head", ylab="Off-Farm Income ('000 LCU)")
+plot(c(15,100), c(0,800), type="n", xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
 legend("topright", lty=c(1,1), col=seq_along(l)*5, legend=l, bty="n")
 for (i in seq_along(l)) lines(
   svysmooth(I(noaggross/1000)~agehead, subset(ghs.svy.farm, zone==levels(ghs$zone)[i]), banwidth=10),
@@ -654,29 +726,21 @@ for (i in seq_along(l)) lines(
 ```
 
 
-```{r tab2, results="asis"}
+```{r fig1h, fig.cap="Crop Commercialization and Income Diversification along Market Access"}
 
-# Estimated quintiles of `cropsales_sh` for smallholders
-tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(cropsales/1000)), ~croparea_4ha,
-  ghs.svy.farm, quantiles=c(.25,.5,.75))
-
-table_options(HTMLcaption="(#tab:tab2a) Crop Commercialization for Farms below/above 4 ha (percent, '000 LCU)")
-html(tabular(
-  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity, 
-  data=tmp))
-
-# Estimated quintiles of `noaggross_sh` for smallholders
-tmp <- svyCrossTab(list(~I(noaggross_sh*100), ~I(noaggross/1000)), ~croparea_4ha,
-  ghs.svy.farm, quantiles=c(.25,.5,.75))
-
-table_options(HTMLcaption="(#tab:tab2b) Off-Farm Income for Farms below/above 4 ha (percent, '000 LCU)")
-html(tabular(
-  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*Format(big.mark=",", nsmall=2, digits=0)*identity,
-  data=tmp))
+par(mfrow=c(1,2), cex=.9)
+svyplot(I(cropsales/1000)~dist_market, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Market (km)", ylab="Crop Sales ('000 LCU)")
+svyplot(I(noaggross/1000)~dist_market, ghs.svy.farm, style="transparent", basecol=34, xlab="Distance to Market (km)", ylab="Non-Farm Income ('000 LCU)")
 
 ```
 
-The 9 categories of small farm holdings are further characterized in the next graphs and summary tables.
+```{r fig1i, fig.cap="Crop Commercialization and Income Diversification vs. Distance to Nearest Road"}
+
+par(mfrow=c(1,2), cex=.9)
+svyplot(I(cropsales/1000)~dist_road2, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Road (km)", ylab="Crop Sales ('000 LCU)")
+svyplot(I(noaggross/1000)~dist_road2, ghs.svy.farm, style="transparent", basecol=34, xlab="Distance to Road (km)", ylab="Non-Farm Income ('000 LCU)")
+
+```
 
 ```{r fig3, eval=F, fig.cap="Distribution of Farm Sizes across Categories of Small Farm Holdings (ha)", fig.height=6}
 
@@ -714,28 +778,32 @@ Note that all tables below omit standard errors to save space.
 
 ```{r tab3, results="asis"}
 
-# Estimated quintiles of other variables for smallholders
+# Market access
+tmp <- svyCrossTab(list(~dist_market, ~dist_road2, ~mkt50k, ~mkt100k),
+  ~class9, ghs.geo.svy.shf, quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3a) Market Access for Small Farm Households across Categories (km, travel time in hrs)")
+html(tabular(
+  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, nsmall=2, big.mark=",", scientific=F),
+  data=tmp)[, -seq(2,18,2)])
+
+# Sources of income
 tmp <- svyCrossTab(list(~I(cropvalue/1000), ~I(cropsales/1000), ~I(lstocksold/1000),
-  ~I(agsales/1000), ~agsalespc, ~I(aggross/1000)),
+  ~I(agsales/1000), ~agsalespc, ~I(aggross/1000), 
+  ~I(cropsales_sh*100), ~I(aggross_sh*100)),
   ~class9, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab3) Sources of Agricultural Income for Small Farm Households across Categories ('000 LCU)")
+table_options(HTMLcaption="(#tab:tab3b) Sources of Agricultural Income for Small Farm Households across Categories ('000 LCU, percent)")
 html(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
   data=tmp)[, -seq(2,18,2)])
 
-tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(aggross_sh*100)),
+# Livestock
+tmp <- svyCrossTab(list(~farmarea, ~croparea, ~catt_numberimp, ~pigs_numberimp,
+  ~chic_numberimp, ~sheep_numberimp, ~goat_numberimp, ~TLU_total),
   ~class9, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab3a) Sources of Agricultural Income for Small Farm Households across Categories (percent)")
-html(tabular(
-  Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
-  data=tmp)[, -seq(2,18,2)])
-
-tmp <- svyCrossTab(list(~farmarea, ~croparea, ~TLU_total),
-  ~class9, ghs.svy.shf, quantiles=c(.25,.5,.75))
-
-table_options(HTMLcaption="(#tab:tab3b) Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)")
+table_options(HTMLcaption="(#tab:tab3c) Land and Livestock Assets of Small Farm Households across Categories (ha, TLU)")
 html(tabular(
   Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
   data=tmp)[, -seq(2,18,2)])
@@ -747,7 +815,8 @@ html(tabular(
 
 # Demographics
 tmp <- svyCrossTab(list(~hhsize, ~I(femhead*100), ~agehead, ~I(lithead*100),
-  ~eduyears, ~numchildren, ~equiv, ~females, ~males, ~sh_ed_none, ~sh_ed_prim),
+  ~eduyears, ~numchildren, ~equiv, ~females, ~males, 
+  ~sh_ed_none, ~sh_ed_prim, ~sh_ed_secu),
   ~class9, ghs.svy.shf, quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:tab4) Demographics of Small Farm Households across Categories")
