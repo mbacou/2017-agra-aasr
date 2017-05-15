@@ -2,6 +2,10 @@
 /* Author: BACOU, Melanie                          */
 /* Date:   2017.04.04                              */
 
+.left   { text-align:left; }
+.center { text-align:center; }
+.right  { text-align:right; }
+
 .book.font-family-1, .book .book-header, .book .book-summary {
     font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -47,12 +51,9 @@ caption span {
     background-color: transparent;
 }
 
-td, th {
-  vertical-align: bottom;
-}
-
 .table-condensed>tbody>tr>td, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>td, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>thead>tr>th {
-    padding: 0 2px;
+  padding: 0 2px;
+  vertical-align: bottom;
 }
 
 .table-condensed td em, .book .book-body .page-wrapper .page-inner section.normal td em {
@@ -63,8 +64,19 @@ td, th {
   font-size: .9em;
 }
 
-.book .book-body .page-wrapper .page-inner section.normal table td {
+.book .book-body .page-wrapper .page-inner section.normal table td,
+.book .book-body .page-wrapper .page-inner section.normal table th {
   padding: 0 2px;
+  vertical-align: bottom;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal table tbody th:nth-child(2) {
+  font-weight: normal;
+  font-style: italic;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal table tbody th:last {
+  border-bottom-width: 2px;
 }
 
 .references p {
