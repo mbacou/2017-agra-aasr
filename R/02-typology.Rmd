@@ -556,11 +556,11 @@ Initial results from the 2 Nigeria GHS panels tend to show very low income diver
 tmp <- fread("../data/tabula-Nigeria13-Components_of_Income_Aggregate.csv")
 kable(tmp[, .SD, .SDcols=c(1,3:8)], split.table=Inf,
   justify="crrrrrr", round=2, big.mark=",", keep.trailing.zeros=T,
-  caption="(#tab:riga) RIGA Income Aggregates, NGHS 2012/2013 (Rural Households)")
+  caption="RIGA Income Aggregates, NGHS 2012/2013 (Rural Households)")
 
 ```
 
-All income aggregates are net of expenses. For this study however *gross* crop and livestock sales and *gross* farm and non-farm incomes would be preferable. These are derived in the codes below.
+All income aggregates are *net* of expenses. For this study however *gross* crop and livestock sales and *gross* farm and non-farm incomes would be preferable. These are derived in the codes below.
 
 ```{r riga-gross}
 
@@ -597,12 +597,12 @@ Estimated proportions of farm households across classes and categories are shown
 ```{r fig2a, fig.cap="Est. Proportions of Farm Holdings across Categories"}
 
 par(mfrow=c(1,3), mar=c(3,3,0,.25))
-plot(svytable(~croparea_4ha+cropsales_clas, ghs.svy.shf), main=NA, las=2, col=(1:6)*6,
+plot(svytable(~croparea_4ha+cropsales_clas, ghs.svy.shf), main=NA, las=1, col=9,
   ylab="Cultivated Area", xlab="Crop Commercialization 3-class")
-plot(svytable(~croparea_4ha+noaggross_clas, ghs.svy.shf), main=NA, las=2, col=(1:6)*6,
-  ylab="Cultivated Area", xlab="Off-Farm Income 3-class")
-plot(svytable(~croparea_4ha+class9, ghs.svy.shf), main=NA, las=2, col=(1:6)*6,
-  ylab="Cultivated Area", xlab="Categories 9-class")
+plot(svytable(~croparea_4ha+noaggross_clas, ghs.svy.shf), main=NA, las=1, col=36,
+  ylab="Cultivated Area", xlab="Non-Farm Income 3-class")
+plot(svytable(~croparea_4ha+class9, ghs.svy.shf), main=NA, las=1, col=27,
+  ylab="Cultivated Area", xlab="Typology 9-class")
 
 ```
 
