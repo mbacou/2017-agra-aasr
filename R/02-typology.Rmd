@@ -549,18 +549,18 @@ html(tabular((`Income Diversification`=D)~(`Crop Commercialization`=C)*Heading()
 
 ### An Aside on Income Diversification
 
-Initial results from the 2 Nigeria GHS panels tend to show very low income diversification among rural farm households. We propose to check these results against income and expenditure aggregates derived by FAO RIGA. RIGA documentation for Nigeria indicates the following income shares [@riga2016nga] (among rural households only):
+Initial results from the 2 Nigeria GHS panels tend to show very low income diversification among rural farm households. We propose to check these results against income and expenditure aggregates derived by FAO RIGA. RIGA documentation for Nigeria indicates the following aggregate income shares [@riga2016nga] (among rural households only):
 
 ```{r riga-net}
 
 tmp <- fread("../data/tabula-Nigeria13-Components_of_Income_Aggregate.csv")
 kable(tmp[, .SD, .SDcols=c(1,3:8)], split.table=Inf,
-  justify="crrrrrr", round=2, big.mark=",", keep.trailing.zeros=T,
+  justify="crrrrrr", round=2, format.args=list(big.mark=","), keep.trailing.zeros=T,
   caption="RIGA Income Aggregates, NGHS 2012/2013 (Rural Households)")
 
 ```
 
-All income aggregates are *net* of expenses. For this study however *gross* crop and livestock sales and *gross* farm and non-farm incomes would be preferable. These are derived in the codes below.
+All income aggregates are *net* of expenses. For this study however *gross* crop and livestock sales and *gross* farm and non-farm incomes would be preferable. These are derived in the codes below [in progress].
 
 ```{r riga-gross}
 
@@ -775,7 +775,7 @@ svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
 
 ```
 
-Note that all tables below omit standard errors to save space.
+Note that all tables below omit standard errors for clarity.
 
 ```{r tab3, results="asis"}
 
