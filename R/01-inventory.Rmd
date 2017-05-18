@@ -1,6 +1,6 @@
 # Supporting Datasets
 
-Many (some unpublished and mostly country-level) studies have attempted to derive farmer characteristics and farm typologies across geospatial dimensions (see e.g. refs below). IFPRI in particular generated cross-country comparable household variables (derived from World Bank LSMS-ISA panels, Demographic and Health Surveys, and/or other large-scale household surveys and agricultural census).
+Many (some unpublished and mostly country-level) studies have attempted to derive farmer characteristics and farm typologies across geospatial dimensions (see e.g. (references)[./references.html] below). IFPRI in particular generated cross-country comparable household variables (derived from World Bank LSMS-ISA panels, Demographic and Health Surveys, and/or other large-scale household surveys and agricultural census).
 
 A version of this data inventory is also available in (PDF format)[https://github.com/mbacou/2017-agra-aasr/blob/master/out/2017-agra-aasr%20Variable%20Inventory%20(rev.%201).xlsx].
 
