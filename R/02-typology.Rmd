@@ -1,11 +1,12 @@
 # Typology of Farm Holdings
 
-This section is an exploration of smallholdings and smallholder farmers (definition and characteristics) in Nigeria and Ethiopia.
+This section is an exploration of smallholdings and smallholder farmers (definition and characteristics) in Ghana, Nigeria and Ethiopia.
 
 ## Nigeria
 
 ```{r nga-ghs, eval=FALSE}
 
+library(foreign)
 library(data.table)
 library(survey)
 library(tables)
@@ -470,8 +471,12 @@ save.image("./tmp/2017-agra-aasr.RData")
 Relevant sources of household-level micro records for Nigeria include:
 
 * 2010 and 2012 Nigeria General Household Survey Panels
+* 2003 and 2009/10 Harmonized Nigeria Living Standard Surveys
 * DfID's sponsored agricultural survey (1,300 hhlds) (contact Abt Associates)
-* Fadama III 2009 Baseline and 2012 Midline Surveys and FADAMA's Agricultural Production Surveys (APS) (still not publicly available, see e.g. @girei2017fadama)
+* Fadama III 2009 Baseline and 2012 Midline Surveys and Fadama's Agricultural Production Surveys (APS) (still not publicly available, see e.g. @girei2017fadama)
+* 2010/11 National Agricultural Sample Survey (NASS) (only a PDF is available)
+* 2006 Nigeria Private Farmer Crop Sample Survey
+* 2006 Nigeria Private Farmer Livestock Poultry Sample Survey
 
 ### Definitions
 
@@ -859,6 +864,34 @@ html(tabular(
 
 
 
+## Ghana
+
+```{r gha-glss, eval=FALSE}
+
+# Inventory existing data extracts
+glss5.input <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/GHA_GLSS5-08_inputs.12.dta")
+glss5.bio <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/gha-glss5_L2_bio.dta")
+# => CELL5M and WorldClim bio1-19 vars
+data.table(varCode=names(glss5.input), varLabel=attr(glss5.input, "var.labels"))
+#               varCode                               varLabel
+#  1:              hhid        household identification number
+#  2:             clust                         cluster number
+#  3:            weight Sample weight for glss4 (=1 for glss3)
+#  4:           landcul        Land cultivated by hh, hectares
+#  5: ino_fert_value_hh                      Value of ino_fert
+#  6: org_fert_value_hh                      Value of org_fert
+#  7:     pest_value_hh                          Value of pest
+#  8:     seed_value_hh                          Value of seed
+#  9:       org_fert_hh                Household uses org_fert
+# 10:       ino_fert_hh                Household uses ino_fert
+# 11:           seed_hh                    Household uses seed
+# 12:           pest_hh                    Household uses pest
+
+
+```
+
+Relevant sources of household-level micro records for Ghana are the **6 rounds of Ghana Living Standards Surveys** in 1987, 1988, 1991/92, 1998/1999 and 2005/2006 (GLSS5), and 2012/13 (GLSS6). The latest GLSS collected information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture, among others. Like the previous rounds of GLSS, the sixth round of the GLSS had a specific focus on **Labour Force**, with the Labour Force module expanded to include a section on Child Labour.
+
 
 
 
@@ -866,7 +899,7 @@ html(tabular(
 
 Relevant sources of household-level micro records for Ethiopia include:
 
-  * 2011/12 ERSS (income vars)
+* 2011/12 ERSS (income vars)
 * 2013/14 and 2015/16 Ethiopia Socioeconomic Surveys
 * 2012/13 Ethiopia’s Agricultural Sample Survey (AgSS) -- but it's difficult to cross-tabulate results from the AgSS (crop production and input uses) with the ERSS' income data
 * 2012 ATA Baseline Survey (3,000 hhlds), see [@minot2013agataeth].
