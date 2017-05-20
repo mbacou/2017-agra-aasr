@@ -14,11 +14,6 @@ output:
     css: css/book.css
   bookdown::word_document2:
     reference_docx: "/home/mbacou/Google Drive/X-Files/templates/rmarkdown.docx"
-lot: yes
-lof: yes
-fontsize: 12pt
-monofont: "Source Code Pro"
-monofontoptions: "Scale=0.7"
 always_allow_html: yes
 bibliography: biblio.bib
 csl: apa.csl

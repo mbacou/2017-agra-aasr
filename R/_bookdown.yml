@@ -23,5 +23,5 @@ config:
     size: 1
   sharing:
     github: yes
-    facebook: false
-    twitter: false
+    facebook: no
+    twitter: no
