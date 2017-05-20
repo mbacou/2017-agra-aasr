@@ -55,7 +55,7 @@ The overall objective of the AASR report is to [@aasr_cn_2017]:
 5. examine the past and the present role of public and private sector investment in agriculture and the success factors that can be scaled up to accelerate transformation. 
 
 
-# Method
+# Methods
 
 The study should provide a context-setting chapter that attempts to characterize, scale, locate, point to prioritization of high-level smallholder commercialization strategies, opportunities and challenges. A proposed approach is to chracterize SHFs and frame business strategies within a 2-by-2 domain framework (low/high rainfed ag potential across low/high market access areas). This approach assumes that agricultural development and adaptation strategies are largely driven by pre-existing bio-physical and spatial conditions.
 

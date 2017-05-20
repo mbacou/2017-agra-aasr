@@ -6,6 +6,27 @@
 .center { text-align:center; }
 .right  { text-align:right; }
 
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+
+h5, h6 {
+  font-style: italic;
+}
+
+.level1 h1 {
+    border-bottom: 1px solid;
+}
+
+.level1 h1 .header-section-number {
+    display: inline-block;
+    border-bottom: 3px solid;
+}
+
+ul.summary > li:first-child {
+  font-weight: 700;
+}
+
 .book .book-body .page-wrapper .page-inner section.normal blockquote {
   color: #333;
   border-left: 4px solid #FFF3B8;
@@ -23,18 +44,6 @@
 .book .book-body .page-wrapper .page-inner section.normal pre  {
   width: auto;
   word-wrap: break-word;
-}
-
-.math {
-  font-size: 13px;
-}
-
-.table-condensed {
-  font-size: 14px;
-}
-
-.table-condensed caption {
-  font-size: 15px;
 }
 
 .caption, caption {

@@ -1,7 +1,6 @@
 new_session: no
 output_dir: ../docs
 edit: https://github.com/mbacou/2017-agra-aasr/blob/master/R/%s
-download: [../docs/main.docx]
 language:
   label:
     fig:    "Fig. "
@@ -9,4 +8,7 @@ language:
     eq:     "Eq. "
     ex:     "Ex. "
     remark: "Remark. "
+  ui:
+    edit: "Edit"
+    chapter_name: "Section "
 
