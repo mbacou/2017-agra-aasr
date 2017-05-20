@@ -9,9 +9,6 @@ output:
   bookdown::gitbook:
     url: "https://mbacou.github.io/2017-agra-aasr/"
     github-repo: "mbacou/2017-agra-aasr"
-    split_by: chapter+number
-    split_bib: yes
-    css: css/book.css
   bookdown::word_document2:
     reference_docx: "/home/mbacou/Google Drive/X-Files/templates/rmarkdown.docx"
 always_allow_html: yes

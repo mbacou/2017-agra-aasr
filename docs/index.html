@@ -70,6 +70,9 @@
       <nav role="navigation">
 
 <ul class="summary">
+<li><a href="./">2017-AGRA-AASR</a></li>
+
+<li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Background</a></li>
 <li class="chapter" data-level="1" data-path="1-method.html"><a href="1-method.html"><i class="fa fa-check"></i><b>1</b> Method</a></li>
 <li class="chapter" data-level="2" data-path="2-supporting-datasets.html"><a href="2-supporting-datasets.html"><i class="fa fa-check"></i><b>2</b> Supporting Datasets</a><ul>
@@ -159,9 +162,9 @@
 require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
-"github": false,
-"facebook": true,
-"twitter": true,
+"github": true,
+"facebook": false,
+"twitter": false,
 "google": false,
 "weibo": false,
 "instapper": false,
@@ -179,7 +182,11 @@ gitbook.start({
 },
 "download": "../docs/main.docx",
 "toc": {
-"collapse": "subsection"
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "fixed"
 }
 });
 });
