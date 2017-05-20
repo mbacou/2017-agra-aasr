@@ -4,15 +4,22 @@ author: "[Melanie Bacou](http://github.com/mbacou) for BMGF"
 date: "Last updated on `r Sys.Date()` -- DRAFT, DO NOT USE OR CITE"
 description: "A multi-scale and cross-time framework"
 site: bookdown::bookdown_site
+knit: bookdown::render_book
 output:
   bookdown::gitbook:
+    url: "https://mbacou.github.io/2017-agra-aasr/"
+    github-repo: "mbacou/2017-agra-aasr"
     split_by: chapter+number
     split_bib: yes
     css: css/book.css
   bookdown::word_document2:
     reference_docx: "/home/mbacou/Google Drive/X-Files/templates/rmarkdown.docx"
+lot: yes
+lof: yes
+fontsize: 12pt
+monofont: "Source Code Pro"
+monofontoptions: "Scale=0.7"
 always_allow_html: yes
-documentclass: book
 bibliography: biblio.bib
 csl: apa.csl
 link-citations: yes

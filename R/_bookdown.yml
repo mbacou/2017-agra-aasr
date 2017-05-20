@@ -13,10 +13,15 @@ config:
   toc:
     collapse: subsection
     scroll_highlight: yes
+    before: |
+        <li><a href="./">Typology and Characterization of Agriculture in Africa South of the Sahara</a></li>
+    after: |
+        <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
   toolbar:
     position: fixed
   fontsettings:
     size: 1
   sharing:
+    github: yes
     facebook: false
     twitter: false
