@@ -15,16 +15,17 @@ h5, h6 {
 }
 
 .level1 h1 {
-    border-bottom: 1px solid;
+  border-bottom: 1px solid;
 }
 
 .level1 h1 .header-section-number {
-    display: inline-block;
-    border-bottom: 3px solid;
+  display: inline-block;
+  border-bottom: 3px solid;
 }
 
 ul.summary > li:first-child {
-  font-weight: 700;
+  font-weight: 600;
+  padding-top: 6px;
 }
 
 .book .book-body .page-wrapper .page-inner section.normal blockquote {
@@ -34,7 +35,7 @@ ul.summary > li:first-child {
 }
 
 .book.font-family-1, .book .book-header, .book .book-summary {
-    font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .marginnote {
@@ -51,7 +52,7 @@ ul.summary > li:first-child {
 }
 
 .book .book-body .page-wrapper .page-inner section.normal .caption {
- font-size: .9em;
+   font-size: .9em;
 }
 
 caption {
