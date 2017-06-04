@@ -163,18 +163,29 @@
 </ul>
 <div id="cultivated-area" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> Cultivated Area</h3>
-<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable, but the results look dubious for GLSS4 (see <a href="ghana.html#tab:tabcultareahh">3.15</a> below).</p>
+<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable (the results look a little dubious for GLSS4, see <a href="ghana.html#tab:tabcultareahh">3.15</a> below). Using land ownership derived from RIGA instead (i.e. <span class="math inline">\(croparea=landown-landrent\)</span>) does yield higher proportions of households for GLSS5 but lower for GLSS6.</p>
 <table class="Rtable">
 <caption>
-<span id="tab:tabcultareahh">Tab. 3.15: </span> Proportions of sampled households with any cultivated area across survey years (before imputation)
+<span id="tab:tabcultareahh">Tab. 3.15: </span> Proportions of sampled households with any cultivated area across survey years (mutliple sources)
 </caption>
 <thead>
 <tr class="center">
 <th>
  
 </th>
-<th colspan="2">
+<th colspan="4">
 Percent oh Hhlds with Cultivated Area
+</th>
+</tr>
+<tr class="center">
+<th>
+ 
+</th>
+<th colspan="2">
+HarvestChoice
+</th>
+<th colspan="2">
+RIGA
 </th>
 </tr>
 <tr class="center">
@@ -182,10 +193,16 @@ Percent oh Hhlds with Cultivated Area
 Year
 </th>
 <th>
+rural
+</th>
+<th>
 urban
 </th>
 <th>
 rural
+</th>
+<th>
+urban
 </th>
 </tr>
 </thead>
@@ -195,43 +212,67 @@ rural
 1998
 </th>
 <td>
+ 37.1
+</td>
+<td>
  12.5
 </td>
 <td>
- 37.1
+ 35.9
+</td>
+<td>
+ 11.2
 </td>
 </tr>
 <tr class="center">
 <th class="left">
 1999
 </th>
+<td>
+ 34.0
+</td>
 <td>
   9.2
 </td>
 <td>
- 34.0
+ 29.5
+</td>
+<td>
+  9.3
 </td>
 </tr>
 <tr class="center">
 <th class="left">
 2005
 </th>
+<td>
+ 56.9
+</td>
 <td>
  20.1
 </td>
 <td>
- 56.9
+ 72.5
+</td>
+<td>
+ 32.2
 </td>
 </tr>
 <tr class="center">
 <th class="left">
 2006
 </th>
+<td>
+ 51.4
+</td>
 <td>
  12.5
 </td>
 <td>
- 51.4
+ 69.8
+</td>
+<td>
+ 17.2
 </td>
 </tr>
 <tr class="center">
@@ -244,111 +285,28 @@ rural
 <td>
 100.0
 </td>
+<td>
+ 59.5
+</td>
+<td>
+ 25.7
+</td>
 </tr>
 <tr class="center">
 <th class="left">
 2013
 </th>
+<td>
+ 99.6
+</td>
 <td>
  97.1
 </td>
 <td>
- 99.6
-</td>
-</tr>
-</tbody>
-</table>
-<p>We propose to impute annual cultivated area using <span class="math inline">\(croparea=landown-landrent\)</span> instead, but this has obvious shortcomings. Using this approach table <a href="ghana.html#tab:tabcultarea">3.16</a> below shows the proportions of sampled households with any “cultivated area”.</p>
-<table class="Rtable">
-<caption>
-<span id="tab:tabcultarea">Tab. 3.16: </span> Proportions of sampled households with any cultivated area across survey years (using land area derived from RIGA)
-</caption>
-<thead>
-<tr class="center">
-<th>
- 
-</th>
-<th colspan="2">
-Percent oh Hhlds with Cultivated Area
-</th>
-</tr>
-<tr class="center">
-<th>
-Year
-</th>
-<th>
-rural
-</th>
-<th>
-urban
-</th>
-</tr>
-</thead>
-<tbody>
-<tr class="center">
-<th class="left">
-1998
-</th>
-<td>
-35.9
+ 61.6
 </td>
 <td>
-11.2
-</td>
-</tr>
-<tr class="center">
-<th class="left">
-1999
-</th>
-<td>
-29.5
-</td>
-<td>
- 9.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
-2005
-</th>
-<td>
-72.5
-</td>
-<td>
-32.2
-</td>
-</tr>
-<tr class="center">
-<th class="left">
-2006
-</th>
-<td>
-69.8
-</td>
-<td>
-17.2
-</td>
-</tr>
-<tr class="center">
-<th class="left">
-2012
-</th>
-<td>
-59.5
-</td>
-<td>
-25.7
-</td>
-</tr>
-<tr class="center">
-<th class="left">
-2013
-</th>
-<td>
-61.6
-</td>
-<td>
-17.3
+ 17.3
 </td>
 </tr>
 </tbody>
@@ -360,7 +318,7 @@ urban
 <div id="income-diversification" class="section level3">
 <h3><span class="header-section-number">3.3.3</span> Income Diversification</h3>
 <table>
-<caption><span id="tab:samples">Tab. 3.17: </span>Composition of GLSS Survey Samples</caption>
+<caption><span id="tab:samples">Tab. 3.16: </span>Composition of GLSS Survey Samples</caption>
 <thead>
 <tr class="header">
 <th align="left">Survey</th>

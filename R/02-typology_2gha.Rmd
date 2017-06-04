@@ -523,29 +523,24 @@ Because RIGA income aggregates are net of costs, we used the following component
 
 ### Cultivated Area
 
-RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable, but the results look dubious for GLSS4 (see \@ref(tab:tabcultareahh) below).
+RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable (the results look a little dubious for GLSS4, see \@ref(tab:tabcultareahh) below). Using land ownership derived from RIGA instead (i.e. $croparea=landown-landrent$) does yield higher proportions of households for GLSS5 but lower for GLSS6.
 
 ```{r, tabcultareahh, results="asis"}
 
-tmp <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(0,1), labels=c("urban", "rural")))]
+tmph <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(1,0), labels=c("rural", "urban")))]
+tmpr <- gha[, 100*sum(rowSums(.SD[, .(landown, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
 
-table_options(HTMLcaption="(#tab:tabcultareahh) Proportions of sampled households with any cultivated area across survey years (before imputation)")
-html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*V1*Heading()*Factor(rural)*Heading()*Format(digits=2)*identity, 
+tmph[, Source := "HarvestChoice"]
+tmpr[, Source := "RIGA"]
+tmp <- rbind(tmph, tmpr)
+
+table_options(HTMLcaption="(#tab:tabcultareahh) Proportions of sampled households with any cultivated area across survey years (mutliple sources)")
+html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*V1*Heading()*Factor(Source)*Heading()*Factor(rural)*Heading()*Format(digits=2)*identity, 
   data=tmp))
 
 ```
 
-We propose to impute annual cultivated area using $croparea=landown-landrent$ instead, but this has obvious shortcomings. Using this approach table \@ref(tab:tabcultarea) below shows the proportions of sampled households with any "cultivated area".
 
-```{r, tabcultarea, results="asis"}
-
-tmp <- gha[, 100*sum(rowSums(.SD[, .(landown, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
-
-table_options(HTMLcaption="(#tab:tabcultarea) Proportions of sampled households with any cultivated area across survey years (using land area derived from RIGA)")
-html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*V1*Heading()*Factor(rural)*Heading()*Format(digits=2)*identity, 
-  data=tmp))
-
-```
 
 
 ### Crop Commercialization
