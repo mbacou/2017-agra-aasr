@@ -612,18 +612,23 @@ plot(svytable(~croparea_4ha+class9, ghs.svy.shf), main=NA, las=1, col=27,
 ```
 
 
-```{r tab1}
+```{r tab1, results="asis"}
 
 tmp <- svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_clas)), ghs.svy.farm, na.rm=T)
-tmp <- as.data.table(tmp*100)
+tmp.cv <- confint(tmp)
+tmp <- cbind(as.data.table(tmp*100), as.data.table(tmp.cv*100))
+tmp[`2.5 %`<0, `2.5 %` := 0]
+tmp <- tmp[, lapply(.SD, function(x) format(x, digits=0, nsmall=1, scientific=F))]
+tmp[, confint := paste(`2.5 %`, `97.5 %`, sep=" - ")]
+
 tmp[, `:=`(
   croparea_4ha = factor(rep(levels(ghs$croparea_4ha), 9)),
   cropsales_clas = factor(rep(levels(ghs$cropsales_clas), each=2, 3), levels=c("LoC", "MeC", "HiC")),
   noaggross_clas = factor(rep(levels(ghs$noaggross_clas), each=6, 1), levels=c("LoD", "MeD", "HiD"))
   )]
 
-# table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories (percent)")
-html(tabular(Heading()*noaggross_clas*(mean+SE)~Heading()*croparea_4ha*Heading()*cropsales_clas*Heading()*Format(digits=0, nsmall=1, scientific=F)*identity,
+table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories (percent)")
+html(tabular(Heading()*noaggross_clas*(mean+confint)~Heading()*croparea_4ha*Heading()*cropsales_clas*Heading()*identity,
   data=tmp), rmarkdown=T, 
   caption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories (percent)")
 
