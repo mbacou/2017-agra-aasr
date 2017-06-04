@@ -34,10 +34,11 @@ ul.summary > li:first-child {
   background-color: #FFFCED;
 }
 
-
+/*
 .book.font-family-1, .book .book-header, .book .book-summary {
   font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+*/
 
 .marginnote {
    word-wrap: break-word;

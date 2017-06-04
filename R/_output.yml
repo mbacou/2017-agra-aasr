@@ -12,6 +12,10 @@ bookdown::gitbook:
           <li><a href="./">2017-AGRA-AASR</a></li>
     toolbar:
       position: fixed
+    fontsettings:
+      theme: white
+      family: sans
+      size: 1
     sharing:
       github: yes
       facebook: no
