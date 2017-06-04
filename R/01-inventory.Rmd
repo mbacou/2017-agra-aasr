@@ -229,8 +229,8 @@ IFPRI holds cross-country harmonized variables from the latest DHS. Complete met
 
 ### Ghana GLSS Rounds
 
-(as needed). IFPRI/DSG holds 3 rounds (2005, 2008, 2012) of harmonized variables focused on wages and productivity trends.
+IFPRI/DSG holds 3 rounds (2005, 2008, 2012) of harmonized variables focused on wages and productivity trends. <u>Note</u>: no income/sales was derived, only yes/no dummy variables are available from DSG.
 
 ### Nigeria Farm Segmentation Study
 
-(as needed, used in the typology below)
+Extracted variables from the 2 rounds of GHS are used in the typology below.

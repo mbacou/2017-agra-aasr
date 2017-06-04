@@ -53,3 +53,28 @@ DT[, sum(value), by=.(grp, rleid(grp))]
 setkey(DT, grp)
 unique(DT, by=key(DT))
 
+p <- viridis_pal()(20)
+p <- viridis_pal(option="A")(20)
+p <- viridis_pal(option="B")(20)
+p <- viridis_pal(option="C")(20)
+
+p <- col2rgb(p, alpha=T)
+tmp <- paste0(seq(1,100,5)/100, ";", p[1,], ",", p[2,], ",", p[3,], ",", p[4,], ",", collapse=":")
+cat(tmp, sep="\n")
+
+# Variogram
+library(sp)
+library(gstat)
+
+data(meuse)
+coordinates(meuse) <- ~x+y
+spplot(meuse, "zinc")
+spplot(meuse, "soil")
+
+vAll <- variogram(zinc~soil, meuse)
+plot(vAll)
+
+vWithinSoils <- variogram(zinc~soil, meuse, dX=0.5)
+plot(vWithinSoils)
+
+

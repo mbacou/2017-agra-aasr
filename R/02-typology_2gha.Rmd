@@ -1,0 +1,574 @@
+## Ghana
+
+```{r, include=F}
+
+load("../tmp/2017-agra-aasr_GHA.RData")
+
+```
+
+```{r gha-glss, eval=FALSE}
+
+library(foreign)
+library(data.table)
+library(survey)
+library(tables)
+library(stringr)
+
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr_GHA.RData")
+
+# Pull complete sets from each wave, extract and describe:
+# - sales
+# - off and on-farm income
+# - cultivated area
+# - region, district, cluster
+# - urban/rural
+# Them combine all 3 waves once results make sense.
+
+#####################################################################################
+# GLSS6
+gha12.hh <- read.dta("~//Projects/hc-data/GHA-GLSS6/raw/PARTA/g6loc_edt.dta")
+gha12.hh.lbl <- data.table(varCode=names(gha12.hh), varLabel=attr(gha12.hh, "var.labels"))
+gha12.hh <- data.table(gha12.hh)
+  
+gha12.inc <- read.dta("~/Projects/hc-data/GHA-GLSS6/raw/AGGREGATES/GHA_2013_INCOME.dta")
+# => seems to have all needed income aggregates
+gha12.inc.lbl <- data.table(varCode=names(gha12.inc), varLabel=attr(gha12.inc, "var.labels"))
+gha12.inc <- data.table(gha12.inc)
+
+
+#####################################################################################
+# GLSS5
+# Quick inventory of existing data extracts
+glss5.input <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/GHA_GLSS5-08_inputs.12.dta")
+glss5.bio <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/gha-glss5_L2_bio.dta")
+# => CELL5M and WorldClim bio1-19 vars
+data.table(varCode=names(glss5.input), varLabel=attr(glss5.input, "var.labels"))
+#               varCode                               varLabel
+#  1:              hhid        household identification number
+#  2:             clust                         cluster number
+#  3:            weight Sample weight for glss4 (=1 for glss3)
+#  4:           landcul        Land cultivated by hh, hectares
+#  5: ino_fert_value_hh                      Value of ino_fert
+#  6: org_fert_value_hh                      Value of org_fert
+#  7:     pest_value_hh                          Value of pest
+#  8:     seed_value_hh                          Value of seed
+#  9:       org_fert_hh                Household uses org_fert
+# 10:       ino_fert_hh                Household uses ino_fert
+# 11:           seed_hh                    Household uses seed
+# 12:           pest_hh                    Household uses pest
+
+gha05.hh <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/gha-glss5_processed.dta")
+# => has a full set of hhlds
+gha05.inc <- read.dta("~/Projects/hc-data/GHA-GLSS5/riga/Ghana05_HH_INCOME.dta")
+# => has RIGA income aggs
+gha05.hh.lbl <- data.table(varCode=names(gha05.hh), varLabel=attr(gha05.hh, "var.labels"))
+gha05.hh <- data.table(gha05.hh)
+gha05.inc.lbl <- data.table(varCode=names(gha05.inc), varLabel=attr(gha05.inc, "var.labels"))
+gha05.inc <- data.table(gha05.inc)
+
+
+#####################################################################################
+# GLSS4
+load("~/Projects/hc-data/GHA-GLSS4/temp/GHA-GLSS4.RData")
+gha97.lbl <- lapply(names(micro), function(x) data.table(varCode=names(micro[[x]]), source=x))
+gha97.lbl <- rbindlist(gha97.lbl)
+gha97.lbl <- unique(gha97.lbl, by="varCode")
+# => we probably need to keep and merge all micro data files from `agg1` to `pov_gh` 
+# since these contain many useful constructed vars. Start with `sec0a` to make sure we have
+# a complete hhld sample (5998).
+gha97.hh <- micro[["sec0a"]]
+tmp <- gha97.lbl[source %like% "agg" | source %like% "exp" | source %like% "pov_gh" | source %like% "inc"][!(source %like% "sub" | source %in% paste0("inc", 1:5) | varCode %in% names(gha97.hh))]
+
+# Verify unique hhld ids across datasets
+uniqueN(gha97.hh, by=c("eanum", "nh"))
+# [1] 5998
+sapply(unique(tmp$source), function(x) uniqueN(micro[[x]], by=c("clust", "nh")))
+# => note that only few tables contain a full sample
+
+# Keep only household-level vars from the raw data
+tmp.dt <- which(sapply(micro, function(x) anyDuplicated(x, by=c("clust", "nh")))==0)
+tmp.dt <- names(tmp.dt)
+tmp <- tmp[source %in% tmp.dt]
+
+gha97.hh[, .(range(eanum), range(nh))]
+#     V1 V2
+# 1:   2  1
+# 2: 999 25
+
+micro$inc16[, .(range(clust), range(nh))]
+#      V1 V2
+# 1: 4002  1
+# 2: 4999 25
+
+# Recode `eanum` in `sec0a` to match codes used in other aggregates datasets
+gha97.hh[, clust := 4000 + eanum]
+uniqueN(gha97.hh, by=c("clust", "nh"))
+# [1] 5998
+
+# Merge all household-level vars into `gha97.hh`
+setkey(gha97.hh, clust, nh)
+for (i in unique(tmp$source)) {
+  setkey(micro[[i]], clust, nh)
+  gha97.hh <- micro[[i]][, .SD, .SDcols=c("clust", "nh", tmp[source==i, varCode])][gha97.hh]
+}
+
+# Keep a few extra constructed vars
+gha97.prod <- prod
+gha97.input <- inputs
+# Also save this subset of RIGA vars
+gha97.inc <- riga[[2]]
+
+# Clean up GLSS4
+rm(i, x, hh, prod, inputs, riga, tmp, tmp.dt, micro)
+
+
+#####################################################################################
+# Income and Sales derived from RIGA Components
+#####################################################################################
+# An other approach is to explore RIGA sales and income aggregates for the last 3
+# rounds of Ghana GLSS. Refer to RIGA documentation for decomposition details.
+# Use the following nomenclature (if vars are negative impute to 0):
+# - cropsales = totcropsold
+# - cropvalue = totcropprod
+# - cropsales_sh = cropsales/cropvalue (but can compare with `shagprodsold`)
+# - agsales = totagsold 
+# - aggross = totagprod + farmrntimp + agr_wge + selfimp1 (farm)
+# - naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr_wge + selfemp (non-farm)
+# - totgross = aggross + naggross
+# - aggross_sh = aggross/totgross
+vars <- c("farmrntimp", "agr_wge", "selfimp1", "transfersgrossimp", "otherincimp", 
+  "nonfarmrntimp", "nonagr_wge", "selfemp") 
+
+##########################################
+# GLSS6-RIGA
+
+gha12 <- gha12.hh[, .(hhid=HID, nh, clust, region, district, rural=tolower(loc2), year, month, weight)]
+
+### SALES
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS6/riga/Ghana13_HHCHAR_V12.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha12.lbl <- rbind(gha12.hh.lbl, gha12.inc.lbl, tmp.lbl)
+gha12.lbl <- unique(gha12.lbl, by="varCode")
+rm(gha12.hh.lbl, gha12.inc.lbl, tmp.lbl)
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000
+gha12[, range(hhid)]
+# [1] "60001/01" "61200/15"
+
+# Recode `hhid`
+gha12[, hhid := as.integer(str_replace_all(hhid, "/", ""))]
+gha12[, summary(hhid)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000 
+
+# Merge RIGA sales
+setkey(tmp, hh)
+setkey(gha12, hhid)
+gha12 <- tmp[, .SD, .SDcols=-c("district")][gha12]
+setnames(gha12, "hh", "hhid")
+
+### INCOME
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS6/riga/Ghana13_HH_INCOME_V12.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha12.lbl <- rbind(gha12.lbl, tmp.lbl)
+gha12.lbl <- unique(gha12.lbl, by="varCode")
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000
+
+# Merge RIGA incomes
+setkey(tmp, hh)
+setkey(gha12, hhid)
+gha12 <- tmp[, .SD, .SDcols=c("hh", vars)][gha12]
+setnames(gha12, "hh", "hhid")
+
+# Then are we sure that RIGA includes aggregates for urban hhlds?
+gha12[, .(
+  sum(nonagr_wge, na.rm=T),
+  sum(agr_wge, na.rm=T)
+), by=rural]
+#    rural       V1       V2
+# 1: urban 17692329 462277.4
+# 2: rural  6250761 632194.5
+# => looks okay
+
+
+##########################################
+# GLSS5-RIGA
+
+gha05 <- gha05.hh[, .(nh, clust, region, district, rural=tolower(loc2), year, month, weight)]
+anyDuplicated(gha05.hh, by=c("clust", "nh"))
+gha05[, hhid := clust*100+nh]
+anyDuplicated(gha05, by="hhid")
+
+### SALES
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS5/riga/Ghana05_HHCHAR.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha05.lbl <- rbind(gha05.hh.lbl, gha05.inc.lbl, tmp.lbl)
+gha05.lbl <- unique(gha05.lbl, by="varCode")
+rm(gha05.hh.lbl, gha05.inc.lbl, tmp.lbl)
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => 17, `hh` is not unique (!!)
+# Keep records with higher `totagprod`
+setorder(tmp, -totagprod)
+tmp <- unique(tmp, by="hh")
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000 
+gha05[, range(hhid)]
+# [1] 500102 558015
+
+# Merge RIGA sales
+setkey(tmp, hh)
+setkey(gha05, hhid)
+gha05 <- tmp[, .SD, .SDcols=-c("district")][gha05]
+setnames(gha05, "hh", "hhid")
+
+### INCOME
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS5/riga/Ghana05_HH_INCOME.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha05.lbl <- rbind(gha05.lbl, tmp.lbl)
+gha05.lbl <- unique(gha05.lbl, by="varCode")
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000
+
+# Merge RIGA incomes
+setkey(tmp, hh)
+setkey(gha05, hhid)
+gha05 <- tmp[, .SD, .SDcols=c("hh", vars)][gha05]
+setnames(gha05, "hh", "hhid")
+
+# Then are we sure that RIGA includes aggregates for urban hhlds?
+gha05[, .(
+  sum(nonagr_wge, na.rm=T),
+  sum(agr_wge, na.rm=T)
+), by=rural]
+#    rural          V1         V2
+# 1: urban 18692204447  706078685
+# 2: rural  5271284573 1048522438
+# => looks okay
+
+
+##########################################
+# GLSS4-RIGA
+
+gha97 <- gha97.hh[, .(nh, clust, region, district, rural=tolower(loc2), year, month, weight)]
+anyDuplicated(gha97.hh, by=c("clust", "nh"))
+gha97[, summary(clust)]
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4002    4252    4502    4500    4752    4999 
+gha97[, summary(nh)]
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 1.00    6.00   11.00   10.88   16.00   25.00 
+gha97[, hhid := clust*100+nh]
+anyDuplicated(gha97, by="hhid")
+
+### SALES
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS4/riga/Ghana98_HHCHAR.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+writeLines(knitr::kable(gha97.lbl, format="rst"), "~/Projects/hc-data/GHA-GLSS4/temp/GHA-GLSS4_raw.log")
+gha97.lbl <- unique(tmp.lbl, by="varCode")
+rm(gha97.hh.lbl, gha97.inc.lbl, tmp.lbl)
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 400200  425100  449900  450000  475000  499900 
+gha97[, range(hhid)]
+# [1] 400201 499920
+
+# Merge RIGA sales
+setkey(tmp, hh)
+setkey(gha97, hhid)
+gha97 <- tmp[gha97]
+setnames(gha97, "hh", "hhid")
+
+### INCOME
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS4/riga/Ghana98_HH_INCOME.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha97.lbl <- rbind(gha97.lbl, tmp.lbl)
+gha97.lbl <- unique(gha97.lbl, by="varCode")
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 400200  425100  449900  450000  475000  499900
+
+# Merge RIGA incomes
+setkey(tmp, hh)
+setkey(gha97, hhid)
+gha97 <- tmp[, .SD, .SDcols=c("hh", vars)][gha97]
+setnames(gha97, "hh", "hhid")
+
+# Then are we sure that RIGA includes aggregates for urban hhlds?
+gha97[, .(
+  sum(nonagr_wge, na.rm=T),
+  sum(agr_wge, na.rm=T)
+), by=rural]
+#    rural         V1        V2
+# 1:     2  903291234 126182173
+# 2:     1 1732925339  68048954
+# => looks okay
+
+
+##########################################
+# Combine all waves
+# Var names should match now across waves so we can easily rbind()
+# `gha97` has fewer vars (87 instead of 92), which ones are missing?
+setdiff(names(gha12), names(gha05))
+# [1] "landlend"
+setdiff(names(gha12), names(gha97))
+# [1] "landshare"     "telephone"     "cellphone"     "disthsrschool" "distpubphone"  "TLU_small"    
+# [7] "landlend" 
+
+# Can these missing vars be founs elsewhere?
+# Remove `landlend` it's not labelled
+gha12[, landlend := NULL]
+setnames(gha97, "disthgschool", "disthsrschool")
+setnames(gha97, "TLU_smallan", "TLU_small")
+
+# Add wave info
+gha12[, `:=`(svyCode="gha-glss6", wave=6)]
+gha05[, `:=`(svyCode="gha-glss5", wave=5)]
+gha97[, `:=`(svyCode="gha-glss4", wave=4)]
+
+gha <- rbind(gha12, gha05, gha97, fill=T)
+gha[, distsecschool := NULL]
+setkey(gha12.lbl, varCode)
+gha.lbl <- gha12.lbl[names(gha)]
+gha.lbl[is.na(varLabel)]
+#          varCode varLabel
+# 1:          hhid       NA
+# 2:         rural       NA
+# 3:       svyCode       NA
+# 4:          wave       NA
+gha.lbl[is.na(varLabel), "varLabel"] <- c("unique hhld id", "rural/urban", "survey code", "survey round")
+
+
+gha[, sum(distsecschool, na.rm=T), by=wave]
+#    wave   V1
+# 1:    6    0
+# 2:    5    0
+# 3:    4 5617
+
+# Clean up
+rm(gha12, gha05, gha97)
+
+# Do we have a consistent var for cultivated area?
+# => no, only `landown`, `landshare` and `landrent` (rented out)
+
+# Import harmonized panel vars from HarvestChoice Resilience Study (to get
+# cultivated area)
+gha.xtra <- read.dta("~/Projects/ssa-geospat/tmp/Combined_4_Mel.12.dta")
+gha.xtra.lbl <- data.table(varCode=names(gha.xtra), varLabel=attr(gha.xtra, "var.labels"))
+gha.xtra <- data.table(gha.xtra)
+gha.xtra <- gha.xtra[ISO3=="GHA"]
+gha.xtra <- gha.xtra[, .SD, .SDcols=1:which(names(gha.xtra)=="privtrans_ppp")]
+
+gha.xtra.lbl[varCode %like% "land"]
+#       varCode                                             varLabel
+# 1:    landown                              Size of land owned (Ha)
+# 2:    landcul                         Size of land cultivated (Ha)
+# 3: landfallow                  hectares land owned and left fallow
+# 4:   landfall                     Size of land left fallowing (Ha)
+# 5:   landpast                   Size of land used for pasture (Ha)
+# 6:    landoth hectares land owned and used for forest or other use
+# 7:   ilandown                     hectares of irrigated land owned
+
+gha.xtra[, 100*sum(landcul>0, na.rm=T)/.N, by=year]
+#    year        V1
+# 1: 2006 60.505031
+# 2: 2005 54.256495
+# 3: 2012 51.680048
+# 4: 2013 52.994258
+# 5: 1998  9.778161
+# 6: 1999  5.977797
+# => does not look good for GLSS4
+
+gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, by=year]
+#    year        V1
+# 1: 2006  37.38410
+# 2: 2005  38.69541
+# 3: 2012 100.00000
+# 4: 2013  98.49355
+# 5: 1998  28.14990
+# 6: 1999  24.50897
+
+gha[, 100*sum(rowSums(.SD[, .(landown, -landrent)], na.rm=T)>0, na.rm=T)/.N, by=year]
+#    year       V1
+# 1: 2012 43.64558
+# 2: 2013 42.24292
+# 3: 2006 50.79583
+# 4: 2005 52.52918
+# 5:   98 26.94873
+# 6:   99 21.75000
+# => best to use this approach for `croparea`
+
+# Impute year
+gha[year==98, year := 1998]
+gha[year==99, year := 1999]
+
+# Impute rural
+gha[rural=="1", rural := "urban"]
+gha[rural=="2", rural := "rural"]
+
+gha[, summary(weight)]
+#  Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# 0.127  113.600  338.000  386.100  571.900 3476.000 
+# => OK
+
+# Search for cultivated area in the raw data files
+rm(list=ls())
+load("./tmp/2017-agra-aasr_GHA_2017.06.04.RData")
+# => not there and not in `gha98_usaid.dta` either
+
+# Cultivated area
+gha[, croparea := rowSums(.SD[, .(landown, -landrent), na.rm=T)]
+
+
+
+##################################################################################### 
+# Farm Typology 
+#####################################################################################
+# Construct missing typology vars, using the following nomenclature (if vars are
+# negative convert to NA):
+# - cropsales = totcropsold
+# - cropvalue = totcropprod
+# - cropsales_sh = cropsales/cropvalue (but can compare with `shagprodsold`)
+# - agsales = totagsold 
+# - aggross = totagprod + farmrntimp + agr_wge + selfimp1 (farm)
+# - naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr_wge + selfemp (non-farm)
+# - totgross = aggross + naggross
+# - aggross_sh = aggross/totgross
+vars <- c("totcropsold", "totcropprod", "shagprodsold", "totagsold", "totagprod",
+  "farmrntimp", "agr_wge", "selfimp1", 
+  "transfersgrossimp", "otherincimp", "nonfarmrntimp", "nonagr_wge", "selfemp")
+
+# Summarize all these vars across waves
+tmp <- gha[, lapply(.SD, summary), .SDcols=vars, by=wave]
+sapply(gha[, .SD, .SDcols=vars], class)
+# => `selfimp1` and `selfemp` have negative values
+gha.lbl[varCode %in% c("selfimp1", "selfemp"), varLabel]
+# [1] "Net HH Income from Non-Ag Business- Agr, Fishing, Imptd"
+# [2] "Annual net nonfarm self employment income, imputed"
+# => we will have to ignore these for now (treat as NA values)
+
+neg2NA <- function(x) ifelse(x<0, NA, x)
+
+
+
+#####################################################################################
+# Save constructed vars for all individual waves
+#save.image("./tmp/2017-agra-aasr_GHA_2017.06.04.RData")
+# Keep only combined datasets
+save(gha, gha.lbl, gha.xtra, gha.xtra.lbl, file="./tmp/2017-agra-aasr_GHA.RData")
+
+# Save workspace
+rm(tmp, tmp.lbl)
+save.image("./tmp/2017-agra-aasr_GHA.RData")
+
+
+```
+
+Relevant sources of household-level micro records for Ghana are the **6 rounds of Ghana Living Standards Surveys** in 1987, 1988, 1991/92, 1998/1999 and 2005/2006 (GLSS5), and 2012/13 (GLSS6). The latest GLSS collected information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture, among others. Like the previous rounds of GLSS, the sixth round of the GLSS had a specific focus on **Labour Force**, with the Labour Force module expanded to include a section on Child Labour.
+
+RIGA aggregates were used to estimate both crop sales and farm vs. non-farm incomes. Generally in the RIGA approach @riga2007doco:
+- All aggregates are estimated at the household level.  
+- All income and expenditures are **annualized**.  
+- All income components are **net of costs**.  
+- Purchases and sales of **durable goods**, investments and windfall gains are excluded from household income and expenditure calculations since these are not transactions undertaken regularly by households and can result in the significant over- or under-stating of permanent income.  
+- All aggregates are reported in **local currency units**.  
+- For each survey, only the **rural** sample is used (to be verified)  
+- An outlier check was imposed after the construction of the income aggregate to deal with extreme income shares that arose following the aggregation of all income components. After estimating the shares of the seven principal income categories (agricultural wages, non-agricultural wages, crop, livestock, self employment, transfer and other) **observations whose share was greater than or less than 3 (indicating a percentage share of +/- 300%) were dropped from the aggregate**.  
+
+Because RIGA income aggregates are net of costs, we used the following components instead:
+
+- $cropsales$ derived from $totcropsold$
+- $cropvalue$ derived from $totcropprod$
+- $cropsales_sh = \frac{cropsales}{cropvalue}$ (but can also be derived from $shagprodsold$)
+- $agsales$ derived from $totagsold$
+- $aggross = totagprod + farmrntimp + agr\_wge + selfimp1$
+- $naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr\_wge + selfemp$
+- $totgross = aggross + naggross$
+- $aggross_sh = frac{aggross}{totgross}$
+
+### Cultivated Area
+
+RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable, but the results look dubious for GLSS4 (see \@ref(tab:tabcultarea_hh) below).
+
+```{r, tabcultarea_hh, results="asis"}
+
+tmp <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(0,1), labels=c("urban", "rural")))]
+
+table_options(HTMLcaption="(#tab:tabcultarea_hh) Proportions of sampled households with any cultivated area across survey years (before imputation)")
+html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*Factor(rural)*Heading()*V1*Heading()*Format(digits=2)*identity, 
+  data=tmp))
+
+```
+
+We propose to impute annual cultivated area using $croparea=landown-landrent$ instead, but this has obvious shortcomings. Using this approach table \@ref(tab:tabcultarea) below shows the proportions of sampled households with any "cultivated area".
+
+```{r, tabcultarea, results="asis"}
+
+tmp <- gha[, 100*sum(rowSums(.SD[, .(landown, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
+
+table_options(HTMLcaption="(#tab:tabcultarea) Proportions of sampled households with any cultivated area across survey years (using land area derived from RIGA)")
+html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*Factor(rural)*Heading()*V1*Heading()*Format(digits=2)*identity, 
+  data=tmp))
+
+```
+
+
+### Crop Commercialization
+
+
+### Income Diversification
+
+
+
+```{r, samples}
+
+tmp <- data.frame(
+  Survey=c("GLSS4", "GLSS5", "GLSS6"),
+  Year=c("1997/98", "2005/06", "2012/13"),
+  Regions=c(10, 10, 10),
+  Districts=c(102, 110, 170),
+  `Sample Size`=c(5998, 8687, 16772),
+  `Sample (valid)`=c(NA, NA, NA),
+  `Urban Hhlds`=c(2199, 3618, 7445),
+  `Urban (valid)`=c(NA, NA, NA),
+  `Rural Hhlds`=c(3799, 5069, 9327),
+  `Rural (valid)`=c(NA, NA, NA)
+)
+
+kable(tmp,
+  justify="ccrrrrrrrr", format.args=list(big.mark=","),
+  caption="Composition of GLSS Survey Samples")
+
+```
+
+
+
+
+
+
