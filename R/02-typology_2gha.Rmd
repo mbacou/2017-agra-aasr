@@ -490,9 +490,16 @@ save.image("./tmp/2017-agra-aasr_GHA.RData")
 
 ```
 
-Relevant sources of household-level micro records for Ghana are the **6 rounds of Ghana Living Standards Surveys** in 1987, 1988, 1991/92, 1998/1999 and 2005/2006 (GLSS5), and 2012/13 (GLSS6). The latest GLSS collected information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture, among others. Like the previous rounds of GLSS, the sixth round of the GLSS had a specific focus on **Labour Force**, with the Labour Force module expanded to include a section on Child Labour.
+Relevant sources of household-level micro records for Ghana are the **6 rounds of Ghana Living Standards Surveys** in 1987, 1988, 1991/92, and:
 
-RIGA aggregates were used to estimate both crop sales and farm vs. non-farm incomes. Generally in the RIGA approach @riga2007doco:
+- 1998/1999 GLSS4
+- 2005/2006 GLSS5
+- 2012/2013 GLSS6
+
+GLSS6 collected information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture. Like the previous rounds of GLSS, the 6th round has a specific focus on **labour force**, with a labour force module expanded to include a section on child labour.
+
+RIGA aggregates were used to estimate both crop sales and farm vs. non-farm income. Generally in the RIGA approach (@riga2007doco):
+
 - All aggregates are estimated at the household level.  
 - All income and expenditures are **annualized**.  
 - All income components are **net of costs**.  
@@ -505,23 +512,25 @@ Because RIGA income aggregates are net of costs, we used the following component
 
 - $cropsales$ derived from $totcropsold$
 - $cropvalue$ derived from $totcropprod$
-- $cropsales_sh = \frac{cropsales}{cropvalue}$ (but can also be derived from $shagprodsold$)
+- $cropsales\_sh$ (but can also be derived from $shagprodsold$)
+  $$ cropsales\_sh = \frac{cropsales}{cropvalue} $$ 
 - $agsales$ derived from $totagsold$
 - $aggross = totagprod + farmrntimp + agr\_wge + selfimp1$
 - $naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr\_wge + selfemp$
-- $totgross = aggross + naggross$
-- $aggross_sh = frac{aggross}{totgross}$
+- $totgross = aggross + naggross$  
+- $aggross\_sh$  
+  $$ aggross\_sh = \frac{aggross}{totgross} $$  
 
 ### Cultivated Area
 
-RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable, but the results look dubious for GLSS4 (see \@ref(tab:tabcultarea_hh) below).
+RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable, but the results look dubious for GLSS4 (see \@ref(tab:tabcultareahh) below).
 
-```{r, tabcultarea_hh, results="asis"}
+```{r, tabcultareahh, results="asis"}
 
 tmp <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(0,1), labels=c("urban", "rural")))]
 
-table_options(HTMLcaption="(#tab:tabcultarea_hh) Proportions of sampled households with any cultivated area across survey years (before imputation)")
-html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*Factor(rural)*Heading()*V1*Heading()*Format(digits=2)*identity, 
+table_options(HTMLcaption="(#tab:tabcultareahh) Proportions of sampled households with any cultivated area across survey years (before imputation)")
+html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*V1*Heading()*Factor(rural)*Heading()*Format(digits=2)*identity, 
   data=tmp))
 
 ```
@@ -533,7 +542,7 @@ We propose to impute annual cultivated area using $croparea=landown-landrent$ in
 tmp <- gha[, 100*sum(rowSums(.SD[, .(landown, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
 
 table_options(HTMLcaption="(#tab:tabcultarea) Proportions of sampled households with any cultivated area across survey years (using land area derived from RIGA)")
-html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*Factor(rural)*Heading()*V1*Heading()*Format(digits=2)*identity, 
+html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*V1*Heading()*Factor(rural)*Heading()*Format(digits=2)*identity, 
   data=tmp))
 
 ```

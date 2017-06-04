@@ -8756,31 +8756,46 @@ Q75
 </div>
 <div id="ghana" class="section level2">
 <h2><span class="header-section-number">3.3</span> Ghana</h2>
-<p>Relevant sources of household-level micro records for Ghana are the <strong>6 rounds of Ghana Living Standards Surveys</strong> in 1987, 1988, 1991/92, 1998/1999 and 2005/2006 (GLSS5), and 2012/13 (GLSS6). The latest GLSS collected information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture, among others. Like the previous rounds of GLSS, the sixth round of the GLSS had a specific focus on <strong>Labour Force</strong>, with the Labour Force module expanded to include a section on Child Labour.</p>
-<p>RIGA aggregates were used to estimate both crop sales and farm vs. non-farm incomes. Generally in the RIGA approach <span class="citation">Carletto, Covarrubias, Davis, Krausova, &amp; Winters (<a href="#ref-riga2007doco">2007</a>)</span>: - All aggregates are estimated at the household level.<br />
-- All income and expenditures are <strong>annualized</strong>.<br />
-- All income components are <strong>net of costs</strong>.<br />
-- Purchases and sales of <strong>durable goods</strong>, investments and windfall gains are excluded from household income and expenditure calculations since these are not transactions undertaken regularly by households and can result in the significant over- or under-stating of permanent income.<br />
-- All aggregates are reported in <strong>local currency units</strong>.<br />
-- For each survey, only the <strong>rural</strong> sample is used (to be verified)<br />
-- An outlier check was imposed after the construction of the income aggregate to deal with extreme income shares that arose following the aggregation of all income components. After estimating the shares of the seven principal income categories (agricultural wages, non-agricultural wages, crop, livestock, self employment, transfer and other) <strong>observations whose share was greater than or less than 3 (indicating a percentage share of +/- 300%) were dropped from the aggregate</strong>.</p>
+<p>Relevant sources of household-level micro records for Ghana are the <strong>6 rounds of Ghana Living Standards Surveys</strong> in 1987, 1988, 1991/92, and:</p>
+<ul>
+<li>1998/1999 GLSS4</li>
+<li>2005/2006 GLSS5</li>
+<li>2012/2013 GLSS6</li>
+</ul>
+<p>GLSS6 collected information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture. Like the previous rounds of GLSS, the 6^th round has a specific focus on <strong>labour force</strong>, with a labour force module expanded to include a section on child labour.</p>
+<p>RIGA aggregates were used to estimate both crop sales and farm vs. non-farm income. Generally in the RIGA approach <span class="citation">Carletto, Covarrubias, Davis, Krausova, &amp; Winters (<a href="#ref-riga2007doco">2007</a>)</span>:</p>
+<ul>
+<li>All aggregates are estimated at the household level.<br />
+</li>
+<li>All income and expenditures are <strong>annualized</strong>.<br />
+</li>
+<li>All income components are <strong>net of costs</strong>.<br />
+</li>
+<li>Purchases and sales of <strong>durable goods</strong>, investments and windfall gains are excluded from household income and expenditure calculations since these are not transactions undertaken regularly by households and can result in the significant over- or under-stating of permanent income.<br />
+</li>
+<li>All aggregates are reported in <strong>local currency units</strong>.<br />
+</li>
+<li>For each survey, only the <strong>rural</strong> sample is used (to be verified)<br />
+</li>
+<li>An outlier check was imposed after the construction of the income aggregate to deal with extreme income shares that arose following the aggregation of all income components. After estimating the shares of the seven principal income categories (agricultural wages, non-agricultural wages, crop, livestock, self employment, transfer and other) <strong>observations whose share was greater than or less than 3 (indicating a percentage share of +/- 300%) were dropped from the aggregate</strong>.</li>
+</ul>
 <p>Because RIGA income aggregates are net of costs, we used the following components instead:</p>
 <ul>
 <li><span class="math inline">\(cropsales\)</span> derived from <span class="math inline">\(totcropsold\)</span></li>
 <li><span class="math inline">\(cropvalue\)</span> derived from <span class="math inline">\(totcropprod\)</span></li>
-<li><span class="math inline">\(cropsales_sh = \frac{cropsales}{cropvalue}\)</span> (but can also be derived from <span class="math inline">\(shagprodsold\)</span>)</li>
+<li><span class="math inline">\(cropsales\_sh\)</span> (but can also be derived from <span class="math inline">\(shagprodsold\)</span>) <span class="math display">\[ cropsales\_sh = \frac{cropsales}{cropvalue} \]</span></li>
 <li><span class="math inline">\(agsales\)</span> derived from <span class="math inline">\(totagsold\)</span></li>
 <li><span class="math inline">\(aggross = totagprod + farmrntimp + agr\_wge + selfimp1\)</span></li>
 <li><span class="math inline">\(naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr\_wge + selfemp\)</span></li>
 <li><span class="math inline">\(totgross = aggross + naggross\)</span></li>
-<li><span class="math inline">\(aggross_sh = frac{aggross}{totgross}\)</span></li>
+<li><span class="math inline">\(aggross\_sh = frac{aggross}{totgross}\)</span></li>
 </ul>
 <div id="cultivated-area" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> Cultivated Area</h3>
-<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable, but the results look dubious for GLSS4 (see @ref(tab:tabcultarea_hh) below).</p>
+<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable, but the results look dubious for GLSS4 (see <a href="3-typology-of-farm-holdings.html#tab:tabcultareahh">3.14</a> below).</p>
 <table class="Rtable">
 <caption>
-(#tab:tabcultarea_hh) Proportions of sampled households with any cultivated area across survey years (before imputation)
+<span id="tab:tabcultareahh">Tab. 3.14: </span> Proportions of sampled households with any cultivated area across survey years (before imputation)
 </caption>
 <thead>
 <tr class="center">
@@ -8872,10 +8887,10 @@ rural
 </tr>
 </tbody>
 </table>
-<p>We propose to impute annual cultivated area using <span class="math inline">\(croparea=landown-landrent\)</span> instead, but this has obvious shortcomings. Using this approach table <a href="3-typology-of-farm-holdings.html#tab:tabcultarea">3.14</a> below shows the proportions of sampled households with any “cultivated area”.</p>
+<p>We propose to impute annual cultivated area using <span class="math inline">\(croparea=landown-landrent\)</span> instead, but this has obvious shortcomings. Using this approach table <a href="3-typology-of-farm-holdings.html#tab:tabcultarea">3.15</a> below shows the proportions of sampled households with any “cultivated area”.</p>
 <table class="Rtable">
 <caption>
-<span id="tab:tabcultarea">Tab. 3.14: </span> Proportions of sampled households with any cultivated area across survey years (using land area derived from RIGA)
+<span id="tab:tabcultarea">Tab. 3.15: </span> Proportions of sampled households with any cultivated area across survey years (using land area derived from RIGA)
 </caption>
 <thead>
 <tr class="center">
@@ -8974,7 +8989,7 @@ urban
 <div id="income-diversification" class="section level3">
 <h3><span class="header-section-number">3.3.3</span> Income Diversification</h3>
 <table>
-<caption><span id="tab:samples">Tab. 3.15: </span>Composition of GLSS Survey Samples</caption>
+<caption><span id="tab:samples">Tab. 3.16: </span>Composition of GLSS Survey Samples</caption>
 <thead>
 <tr class="header">
 <th align="left">Survey</th>
