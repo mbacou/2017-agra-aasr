@@ -579,7 +579,7 @@ All income aggregates are *net* of expenses. For this study however *gross* crop
 
 The following 3 tables show the count of observations in each class for farm households with cultivated area <= 2ha, between 2 and 4ha, and <= 4ha.
 
-```{r counts, results="asis"}
+```{r ngacounts, results="asis"}
 
 table_options(HTMLcaption="(#tab:countsa) Count of Observations across Classes of Farm Households")
 html(tabular(Heading()*noaggross_clas+1~Format(digits=0, big.mark=",")*Heading()*croparea_clas*Heading()*cropsales_clas+1,
@@ -599,7 +599,7 @@ In the next tables we limit categories to farm households **below/above 4ha** (a
 
 Estimated proportions of farm households across classes and categories are shown in the next graph and table.
 
-```{r fig2a, fig.cap="Est. Proportions of Farm Holdings across Categories"}
+```{r nga-fig2a, fig.cap="Est. Proportions of Farm Holdings across Categories"}
 
 par(mfrow=c(1,3), mar=c(3,3,0,.25))
 plot(svytable(~croparea_4ha+cropsales_clas, ghs.svy.shf), main=NA, las=1, col=9,
@@ -612,7 +612,7 @@ plot(svytable(~croparea_4ha+class9, ghs.svy.shf), main=NA, las=1, col=27,
 ```
 
 
-```{r tab1, results="asis"}
+```{r nga-tab1, results="asis"}
 
 tmp <- svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_clas)), ghs.svy.farm, na.rm=T)
 tmp.cv <- confint(tmp)
@@ -647,7 +647,7 @@ html(tabular(Heading()*noaggross_clas*(mean+confint)~Heading()*croparea_4ha*Head
 > <u>Notes</u>: for LCU conversions **1 int$ = 108.23 Naira** (2015)
 
 
-```{r fig1b, fig.cap="Prob. Density of Cultivated Area, Crop Commercialization, and Income Diversification"}
+```{r nga-fig1b, fig.cap="Prob. Density of Cultivated Area, Crop Commercialization, and Income Diversification"}
 
 par(mfrow=c(1,3), font.main=1)
 svyhist(~croparea, ghs.svy.farm, main="Cultivated Area", xlab="croparea (ha)", xlim=c(0,10))
@@ -659,7 +659,7 @@ lines(svysmooth(~I(noaggross_sh*100), ghs.svy.farm, bandwidth=1), lwd=1, col=40)
 
 ```
 
-```{r fig1c, fig.cap="Crop Commercialization and Income Diversification along Cultivated Area"}
+```{r nga-fig1c, fig.cap="Crop Commercialization and Income Diversification along Cultivated Area"}
 
 par(mfrow=c(1,2), cex=.9)
 svyboxplot(I(cropsales_sh*100)~croparea_4ha, ghs.svy.farm,
@@ -670,7 +670,7 @@ svyboxplot(I(noaggross_sh*100)~croparea_4ha, ghs.svy.farm,
 ```
 
 
-```{r tab2, results="asis"}
+```{r nga-tab2, results="asis"}
 
 # Estimated quintiles of `cropsales_sh` for smallholders
 tmp <- svyCrossTab(list(~I(cropsales_sh*100), ~I(cropsales/1000)), ~croparea_4ha,
@@ -694,7 +694,7 @@ html(tabular(
 
 The 9 categories of small farm holdings are further characterized in the following graphs and summary tables.
 
-```{r fig1e, fig.cap="Crop Commercialization by Age and Gender"}
+```{r nga-fig1e, fig.cap="Crop Commercialization by Age and Gender"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
@@ -704,7 +704,7 @@ legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
 
 ```
 
-```{r fig1f, eval=F, fig.cap="Crop Commercialization by Age and Zone"}
+```{r nga-fig1f, eval=F, fig.cap="Crop Commercialization by Age and Zone"}
 
 par(mfrow=c(1,1), cex=.9)
 l <- levels(ghs$zone)
@@ -716,7 +716,7 @@ for (i in seq_along(l)) lines(
 
 ```
 
-```{r fig1g, fig.cap="Income Diversification by Age and Gender"}
+```{r nga-fig1g, fig.cap="Income Diversification by Age and Gender"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
@@ -738,7 +738,7 @@ for (i in seq_along(l)) lines(
 ```
 
 
-```{r fig1h, fig.cap="Crop Commercialization and Income Diversification along Market Access"}
+```{r nga-fig1h, fig.cap="Crop Commercialization and Income Diversification along Market Access"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(cropsales/1000)~dist_market, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Market (km)", ylab="Crop Sales ('000 LCU)")
@@ -746,7 +746,7 @@ svyplot(I(noaggross/1000)~dist_market, ghs.svy.farm, style="transparent", baseco
 
 ```
 
-```{r fig1i, fig.cap="Crop Commercialization and Income Diversification vs. Distance to Nearest Road"}
+```{r nga-fig1i, fig.cap="Crop Commercialization and Income Diversification vs. Distance to Nearest Road"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(cropsales/1000)~dist_road2, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Road (km)", ylab="Crop Sales ('000 LCU)")
@@ -754,7 +754,7 @@ svyplot(I(noaggross/1000)~dist_road2, ghs.svy.farm, style="transparent", basecol
 
 ```
 
-```{r fig3, eval=F, fig.cap="Distribution of Farm Sizes across Categories of Small Farm Holdings (ha)", fig.height=6}
+```{r nga-fig3, eval=F, fig.cap="Distribution of Farm Sizes across Categories of Small Farm Holdings (ha)", fig.height=6}
 
 # farmarea
 svyCrossPlot(~farmarea, ghs.svy.shf, breaks=20, bandwidth=.5, xlim=c(0,4),
@@ -762,7 +762,7 @@ svyCrossPlot(~farmarea, ghs.svy.shf, breaks=20, bandwidth=.5, xlim=c(0,4),
 
 ```
 
-```{r fig4, eval=F, fig.cap="Distribution of Livestock Assets across Categories of Small Farm Holdings (TLU)", fig.height=6}
+```{r nga-fig4, eval=F, fig.cap="Distribution of Livestock Assets across Categories of Small Farm Holdings (TLU)", fig.height=6}
 
 # TLU_total
 svyCrossPlot(~TLU_total, ghs.svy.shf, breaks=20, bandwidth=1, xlim=c(0,30),
@@ -770,7 +770,7 @@ svyCrossPlot(~TLU_total, ghs.svy.shf, breaks=20, bandwidth=1, xlim=c(0,30),
 
 ```
 
-```{r fig5, eval=F, fig.cap="Distribution of Livestock Sales across Categories of Small Farm Holdings ('000 LCU)", fig.height=6}
+```{r nga-fig5, eval=F, fig.cap="Distribution of Livestock Sales across Categories of Small Farm Holdings ('000 LCU)", fig.height=6}
 
 # lstocksold
 svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(0,1500),
@@ -778,7 +778,7 @@ svyCrossPlot(~I(lstocksold/1000), ghs.svy.shf, breaks=20, bandwidth=100, xlim=c(
 
 ```
 
-```{r fig6, eval=F, fig.cap="Share of Farm Income across Categories of Small Farm Holdings (percent)", fig.height=6}
+```{r nga-fig6, eval=F, fig.cap="Share of Farm Income across Categories of Small Farm Holdings (percent)", fig.height=6}
 
 # aggross_sh
 svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
@@ -788,7 +788,7 @@ svyCrossPlot(~I(aggross_sh*100), ghs.svy.shf, breaks=20, bandwidth=1,
 
 Note that all tables below omit standard errors for clarity.
 
-```{r tab3, results="asis"}
+```{r nga-tab3, results="asis"}
 
 # Market access
 tmp <- svyCrossTab(list(~dist_market, ~dist_road2, ~mkt50k, ~mkt100k),
@@ -823,7 +823,7 @@ html(tabular(
 
 ```
 
-```{r tab4, results="asis"}
+```{r nga-tab4, results="asis"}
 
 # Demographics
 tmp <- svyCrossTab(list(~hhsize, ~I(femhead*100), ~agehead, ~I(lithead*100),
@@ -839,7 +839,7 @@ html(tabular(
 ```
 
 
-```{r tab5, results="asis"}
+```{r nga-tab5, results="asis"}
 
 # Input uses
 tmp <- svyCrossTab(list(~parcels, ~I(chempest_farms*100), ~I(chemherb_farms*100),
@@ -853,7 +853,7 @@ html(tabular(
 
 ```
 
-```{r tab6, results="asis"}
+```{r nga-tab6, results="asis"}
 
 # Poverty
 tmp <- svyCrossTab(list(~pcexp_ppp_m, ~foodexp_ppp_m, ~nfoodexp_ppp_m,
