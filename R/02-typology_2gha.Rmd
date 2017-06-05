@@ -443,7 +443,8 @@ load("./tmp/2017-agra-aasr_GHA_2017.06.04.RData")
 # => not there and not in `gha98_usaid.dta` either
 
 # Cultivated area
-gha[, croparea := rowSums(.SD[, .(landown, -landrent), na.rm=T)]
+# See discussion below, we settle for IFPRI for the first 2 waves and RIGA for the last one
+gha[, croparea := rowSums(.SD[, .(landown, landshare, -landrent), na.rm=T)]
 
 
 
@@ -523,26 +524,26 @@ Because RIGA income aggregates are net of costs, we used the following component
 
 ### Cultivated Area
 
-RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced pseudo-panel variables $landcul$ and $landown$ (but the results look a little dubious for GLSS4, see \@ref(tab:tabcultareahh) below). Using operated area derived from RIGA instead (i.e. $croparea=landown-landrent$) does yield higher proportions of households for GLSS5 but lower for GLSS6. In general GLSS4 seems to exhibit poorer data quality.
+RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under sharecropping. IFPRI/HarvestChoice produced pseudo-panel variables $landcul$ and $landown$ (but the results look a little dubious for GLSS4, see \@ref(tab:tabcultareahh) below). Using operated area derived from RIGA instead (i.e. $croparea=landown+landshare-landrent$) does yield higher proportions of households for GLSS5 but lower for GLSS6. In general GLSS4 seems to exhibit poorer data quality.
 
 ```{r, tabcultareahh, results="asis"}
 
 tmpha <- gha.xtra[, 100*sum(landcul>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(1,0), labels=c("rural", "urban")))]
 tmphb <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(1,0), labels=c("rural", "urban")))]
-tmpr <- gha[, 100*sum(rowSums(.SD[, .(landown, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
+tmpr <- gha[, 100*sum(rowSums(.SD[, .(landown, landshare, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
 
 tmpha[, Source := "IFPRI (landcult)"]
 tmphb[, Source := "IFPRI (landown)"]
 tmpr[, Source := "RIGA"]
 tmp <- rbind(tmpha, tmphb, tmpr)
 
-table_options(HTMLcaption="(#tab:tabcultareahh) Proportions of sampled households with any cultivated area across survey years (mutliple sources)")
+table_options(HTMLcaption="(#tab:tabcultareahh) Proportions of sampled households with any cultivated area across survey years (mutliple sources shown)")
 html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Area")*V1*Heading()*Factor(Source)*Heading()*Factor(rural)*Heading()*Format(digits=2)*identity, 
   data=tmp))
 
 ```
 
-```{r, bplota, fig.cap="Cultivated Area (ha) Source: IFPRI"}
+```{r, bplota, fig.cap="Cultivated Area (ha). Source: IFPRI 2016"}
 
 par(mfrow=c(1,3), cex=.9, font.main=1)
 for (i in c("GLSS12", "GLSS05", "GLSS98")) boxplot(landcul~factor(rural, lev=c(1,0), lab=c("rural", "urban")), 
@@ -551,7 +552,7 @@ for (i in c("GLSS12", "GLSS05", "GLSS98")) boxplot(landcul~factor(rural, lev=c(1
 
 ```
 
-```{r, bplotb, fig.cap="Farm Size (ha) Source: IFPRI"}
+```{r, bplotb, fig.cap="Farm Size (ha). Source: IFPRI 2016"}
 
 par(mfrow=c(1,3), cex=.9, font.main=1)
 for (i in c("GLSS12", "GLSS05", "GLSS98")) boxplot(landown~factor(rural, lev=c(1,0), lab=c("rural", "urban")), 
@@ -560,15 +561,16 @@ for (i in c("GLSS12", "GLSS05", "GLSS98")) boxplot(landown~factor(rural, lev=c(1
 
 ```
 
-```{r, bplotc, fig.cap="Operated Area (ha) Source: RIGA"}
+```{r, bplotc, fig.cap="Operated Area (ha). Source: FAO/RIGA"}
 
 par(mfrow=c(1,3), cex=.9, font.main=1)
-for (i in unique(gha$svyCode)) boxplot(rowSums(cbind(landown, -landrent), na.rm=T)~rural, 
+for (i in unique(gha$svyCode)) boxplot(rowSums(cbind(landown, landshare, -landrent), na.rm=T)~rural, 
   gha[svyCode==i], ylim=c(0,6),
   main=i, xlab=NA, ylab="Operated Area (ha)", varwidth=T, outline=F)
 
 ```
 
+In the following classification we use **option #1** (IFPRI cultivated area) for GLSS6 and GLSS5 and **option #3** (FAO/RIGA operated area) for GLSS4.
 
 ### Crop Commercialization
 

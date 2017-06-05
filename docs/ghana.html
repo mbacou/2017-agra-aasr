@@ -163,10 +163,10 @@
 </ul>
 <div id="cultivated-area" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> Cultivated Area</h3>
-<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced pseudo-panel variables <span class="math inline">\(landcul\)</span> and <span class="math inline">\(landown\)</span> (but the results look a little dubious for GLSS4, see <a href="ghana.html#tab:tabcultareahh">3.15</a> below). Using operated area derived from RIGA instead (i.e. <span class="math inline">\(croparea=landown-landrent\)</span>) does yield higher proportions of households for GLSS5 but lower for GLSS6. In general GLSS4 seems to exhibit poorer data quality.</p>
+<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under sharecropping. IFPRI/HarvestChoice produced pseudo-panel variables <span class="math inline">\(landcul\)</span> and <span class="math inline">\(landown\)</span> (but the results look a little dubious for GLSS4, see <a href="ghana.html#tab:tabcultareahh">3.15</a> below). Using operated area derived from RIGA instead (i.e. <span class="math inline">\(croparea=landown+landshare-landrent\)</span>) does yield higher proportions of households for GLSS5 but lower for GLSS6. In general GLSS4 seems to exhibit poorer data quality.</p>
 <table class="Rtable">
 <caption>
-<span id="tab:tabcultareahh">Tab. 3.15: </span> Proportions of sampled households with any cultivated area across survey years (mutliple sources)
+<span id="tab:tabcultareahh">Tab. 3.15: </span> Proportions of sampled households with any cultivated area across survey years (mutliple sources shown)
 </caption>
 <thead>
 <tr class="center">
@@ -357,23 +357,24 @@ urban
 </tbody>
 </table>
 <div class="figure"><span id="fig:bplota"></span>
-<img src="fig/bplota-1.svg" alt="Cultivated Area (ha) Source: IFPRI" width="672" />
+<img src="fig/bplota-1.svg" alt="Cultivated Area (ha). Source: IFPRI 2016" width="672" />
 <p class="caption">
-Fig. 3.8: Cultivated Area (ha) Source: IFPRI
+Fig. 3.8: Cultivated Area (ha). Source: IFPRI 2016
 </p>
 </div>
 <div class="figure"><span id="fig:bplotb"></span>
-<img src="fig/bplotb-1.svg" alt="Farm Size (ha) Source: IFPRI" width="672" />
+<img src="fig/bplotb-1.svg" alt="Farm Size (ha). Source: IFPRI 2016" width="672" />
 <p class="caption">
-Fig. 3.9: Farm Size (ha) Source: IFPRI
+Fig. 3.9: Farm Size (ha). Source: IFPRI 2016
 </p>
 </div>
 <div class="figure"><span id="fig:bplotc"></span>
-<img src="fig/bplotc-1.svg" alt="Operated Area (ha) Source: RIGA" width="672" />
+<img src="fig/bplotc-1.svg" alt="Operated Area (ha). Source: FAO/RIGA" width="672" />
 <p class="caption">
-Fig. 3.10: Operated Area (ha) Source: RIGA
+Fig. 3.10: Operated Area (ha). Source: FAO/RIGA
 </p>
 </div>
+<p>In the following classification we use <strong>option #3</strong> (FAO/RIGA operated area).</p>
 </div>
 <div id="crop-commercialization" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> Crop Commercialization</h3>
