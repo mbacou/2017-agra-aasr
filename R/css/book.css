@@ -2,6 +2,12 @@
 /* Author: BACOU, Melanie                          */
 /* Date:   2017.04.04                              */
 
+/*
+.book.font-family-1, .book .book-header, .book .book-summary {
+  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+*/
+
 .left   { text-align:left; }
 .center { text-align:center; }
 .right  { text-align:right; }
@@ -23,6 +29,10 @@ h5, h6 {
   border-bottom: 3px solid;
 }
 
+.book .book-body .page-wrapper .page-inner section.normal b, .book .book-body .page-wrapper .page-inner section.normal strong {
+    font-weight: 600;
+}
+
 ul.summary > li:first-child {
   font-weight: 600;
   padding-top: 6px;
@@ -33,12 +43,6 @@ ul.summary > li:first-child {
   border-left: 4px solid #FFF3B8;
   background-color: #FFFCED;
 }
-
-/*
-.book.font-family-1, .book .book-header, .book .book-summary {
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-*/
 
 .marginnote {
    word-wrap: break-word;

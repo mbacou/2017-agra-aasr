@@ -163,7 +163,7 @@
 </ul>
 <div id="cultivated-area" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> Cultivated Area</h3>
-<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced a cross-panel harmonized variable (the results look a little dubious for GLSS4, see <a href="ghana.html#tab:tabcultareahh">3.15</a> below). Using land ownership derived from RIGA instead (i.e. <span class="math inline">\(croparea=landown-landrent\)</span>) does yield higher proportions of households for GLSS5 but lower for GLSS6.</p>
+<p>RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under shared cropping. IFPRI/HarvestChoice produced pseudo-panel variables <span class="math inline">\(landcul\)</span> and <span class="math inline">\(landown\)</span> (but the results look a little dubious for GLSS4, see <a href="ghana.html#tab:tabcultareahh">3.15</a> below). Using operated area derived from RIGA instead (i.e. <span class="math inline">\(croparea=landown-landrent\)</span>) does yield higher proportions of households for GLSS5 but lower for GLSS6. In general GLSS4 seems to exhibit poorer data quality.</p>
 <table class="Rtable">
 <caption>
 <span id="tab:tabcultareahh">Tab. 3.15: </span> Proportions of sampled households with any cultivated area across survey years (mutliple sources)
@@ -173,7 +173,7 @@
 <th>
  
 </th>
-<th colspan="4">
+<th colspan="6">
 Percent oh Hhlds with Cultivated Area
 </th>
 </tr>
@@ -182,7 +182,10 @@ Percent oh Hhlds with Cultivated Area
  
 </th>
 <th colspan="2">
-HarvestChoice
+IFPRI (landcult)
+</th>
+<th colspan="2">
+IFPRI (landown)
 </th>
 <th colspan="2">
 RIGA
@@ -204,6 +207,12 @@ rural
 <th>
 urban
 </th>
+<th>
+rural
+</th>
+<th>
+urban
+</th>
 </tr>
 </thead>
 <tbody>
@@ -211,6 +220,12 @@ urban
 <th class="left">
 1998
 </th>
+<td>
+ 13.2
+</td>
+<td>
+  3.7
+</td>
 <td>
  37.1
 </td>
@@ -229,6 +244,12 @@ urban
 1999
 </th>
 <td>
+  9.0
+</td>
+<td>
+  1.1
+</td>
+<td>
  34.0
 </td>
 <td>
@@ -245,6 +266,12 @@ urban
 <th class="left">
 2005
 </th>
+<td>
+ 83.6
+</td>
+<td>
+ 24.4
+</td>
 <td>
  56.9
 </td>
@@ -263,6 +290,12 @@ urban
 2006
 </th>
 <td>
+ 83.6
+</td>
+<td>
+ 19.6
+</td>
+<td>
  51.4
 </td>
 <td>
@@ -279,6 +312,12 @@ urban
 <th class="left">
 2012
 </th>
+<td>
+ 76.7
+</td>
+<td>
+ 23.5
+</td>
 <td>
 100.0
 </td>
@@ -297,6 +336,12 @@ urban
 2013
 </th>
 <td>
+ 78.6
+</td>
+<td>
+ 20.1
+</td>
+<td>
  99.6
 </td>
 <td>
@@ -311,6 +356,24 @@ urban
 </tr>
 </tbody>
 </table>
+<div class="figure"><span id="fig:bplota"></span>
+<img src="fig/bplota-1.svg" alt="Cultivated Area (ha) Source: IFPRI" width="672" />
+<p class="caption">
+Fig. 3.8: Cultivated Area (ha) Source: IFPRI
+</p>
+</div>
+<div class="figure"><span id="fig:bplotb"></span>
+<img src="fig/bplotb-1.svg" alt="Farm Size (ha) Source: IFPRI" width="672" />
+<p class="caption">
+Fig. 3.9: Farm Size (ha) Source: IFPRI
+</p>
+</div>
+<div class="figure"><span id="fig:bplotc"></span>
+<img src="fig/bplotc-1.svg" alt="Operated Area (ha) Source: RIGA" width="672" />
+<p class="caption">
+Fig. 3.10: Operated Area (ha) Source: RIGA
+</p>
+</div>
 </div>
 <div id="crop-commercialization" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> Crop Commercialization</h3>
