@@ -29,12 +29,24 @@ h5, h6 {
   border-bottom: 3px solid;
 }
 
-.book .book-body .page-wrapper .page-inner section.normal b, .book .book-body .page-wrapper .page-inner section.normal strong {
+.book .book-body .page-wrapper .page-inner section.normal b,
+.book .book-body .page-wrapper .page-inner section.normal strong {
     font-weight: 600;
 }
 
-ul.summary > li:first-child {
+.book-summary ul ul {
+  font-size: 13px;
+  line-height: .8em;
+}
+
+.book-summary li b {
+  font-size: .9em;
   font-weight: 600;
+}
+
+ul.summary > li:first-child {
+  font-size: 14px;
+  font-weight: 500;
   padding-top: 6px;
 }
 
