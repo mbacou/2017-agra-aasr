@@ -694,7 +694,7 @@ html(tabular(
 
 The 9 categories of small farm holdings are further characterized in the following graphs and summary tables.
 
-```{r nga-fig1e, fig.cap="Crop Commercialization by Age and Gender"}
+```{r nga-fig1e, fig.cap="Crop Commercialization by Age and Gender", dev="png"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
@@ -716,7 +716,7 @@ for (i in seq_along(l)) lines(
 
 ```
 
-```{r nga-fig1g, fig.cap="Income Diversification by Age and Gender"}
+```{r nga-fig1g, fig.cap="Income Diversification by Age and Gender", dev="png"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(noaggross/1000)~agehead, subset(ghs.svy.farm, femhead==0), style="transparent", basecol=4, xlab="Age of Hhld Head", ylab="Non-Farm Income ('000 LCU)")
@@ -738,7 +738,7 @@ for (i in seq_along(l)) lines(
 ```
 
 
-```{r nga-fig1h, fig.cap="Crop Commercialization and Income Diversification along Market Access"}
+```{r nga-fig1h, fig.cap="Crop Commercialization and Income Diversification along Market Access", dev="png"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(cropsales/1000)~dist_market, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Market (km)", ylab="Crop Sales ('000 LCU)")
@@ -746,7 +746,7 @@ svyplot(I(noaggross/1000)~dist_market, ghs.svy.farm, style="transparent", baseco
 
 ```
 
-```{r nga-fig1i, fig.cap="Crop Commercialization and Income Diversification vs. Distance to Nearest Road"}
+```{r nga-fig1i, fig.cap="Crop Commercialization and Income Diversification vs. Distance to Nearest Road", dev="png"}
 
 par(mfrow=c(1,2), cex=.9)
 svyplot(I(cropsales/1000)~dist_road2, ghs.svy.farm, style="transparent", basecol=4, xlab="Distance to Road (km)", ylab="Crop Sales ('000 LCU)")

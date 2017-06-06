@@ -86,15 +86,22 @@ caption span {
   font-size: .9em;
 }
 
+.book .book-body .page-wrapper .page-inner section.normal table td,
+.book .book-body .page-wrapper .page-inner section.normal table th {
+  border-top-style: dotted;
+  border-bottom-style: dotted;
+  padding: 0 2px;
+  vertical-align: bottom;
+}
+
 .book .book-body .page-wrapper .page-inner section.normal table tr,
 .book .book-body .page-wrapper .page-inner section.normal table thead th {
   border: none;
 }
 
-.book .book-body .page-wrapper .page-inner section.normal table td,
-.book .book-body .page-wrapper .page-inner section.normal table th {
-  padding: 0 2px;
-  vertical-align: bottom;
+.book .book-body .page-wrapper .page-inner section.normal table tr:last-child th,
+.book .book-body .page-wrapper .page-inner section.normal table tr:last-child td {
+  border-bottom: 2px solid #ddd;
 }
 
 .book .book-body .page-wrapper .page-inner section.normal table tbody th:nth-child(2) {
@@ -102,12 +109,15 @@ caption span {
   font-style: italic;
 }
 
-.book .book-body .page-wrapper .page-inner section.normal table thead tr:first-child th {
-  border-top: 1px solid #ddd;
+.book .book-body .page-wrapper .page-inner section.normal table thead tr:last-child th {
+  font-weight: normal;
+  font-style: italic;
 }
 
-.book .book-body .page-wrapper .page-inner section.normal table tr:last-child th {
-  border-bottom: 2px solid #ddd;
+.book .book-body .page-wrapper .page-inner section.normal table thead tr:first-child th {
+  border-top: 1px solid #ddd;
+  font-weight: 600;
+  font-style: normal;
 }
 
 .references p {
