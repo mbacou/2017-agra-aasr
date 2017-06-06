@@ -139,8 +139,14 @@ rm(i, x, hh, prod, inputs, riga, tmp, tmp.dt, micro)
 # - naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr_wge + selfemp (non-farm)
 # - totgross = aggross + naggross
 # - aggross_sh = aggross/totgross
-vars <- c("farmrntimp", "agr_wge", "selfimp1", "transfersgrossimp", "otherincimp", 
-  "nonfarmrntimp", "nonagr_wge", "selfemp") 
+
+vars.char <- c("totcropprod", "totcropsold", "totagprod", "totagsold", "totlvstprod",
+"totlivsold", "agowncons", "agmisc", "shagprodsold", "shagowncons",
+"shagmisc", "shcropsold", "shlvstsold")
+
+vars.inc <- c("farmrntimp", "agr_wge", "selfimp1", "transfersgrossimp", "otherincimp", 
+  "nonfarmrntimp", "nonagr_wge", "selfemp",
+  "cropincome1grossimp", "cropincome2grossimp", "livestockgrossimp") 
 
 ##########################################
 # GLSS6-RIGA
@@ -191,7 +197,7 @@ tmp[, summary(hh)]
 # Merge RIGA incomes
 setkey(tmp, hh)
 setkey(gha12, hhid)
-gha12 <- tmp[, .SD, .SDcols=c("hh", vars)][gha12]
+gha12 <- tmp[, .SD, .SDcols=c("hh", vars.inc)][gha12]
 setnames(gha12, "hh", "hhid")
 
 # Then are we sure that RIGA includes aggregates for urban hhlds?
@@ -254,7 +260,7 @@ tmp[, summary(hh)]
 # Merge RIGA incomes
 setkey(tmp, hh)
 setkey(gha05, hhid)
-gha05 <- tmp[, .SD, .SDcols=c("hh", vars)][gha05]
+gha05 <- tmp[, .SD, .SDcols=c("hh", vars.inc)][gha05]
 setnames(gha05, "hh", "hhid")
 
 # Then are we sure that RIGA includes aggregates for urban hhlds?
@@ -319,7 +325,7 @@ tmp[, summary(hh)]
 # Merge RIGA incomes
 setkey(tmp, hh)
 setkey(gha97, hhid)
-gha97 <- tmp[, .SD, .SDcols=c("hh", vars)][gha97]
+gha97 <- tmp[, .SD, .SDcols=c("hh", vars.inc)][gha97]
 setnames(gha97, "hh", "hhid")
 
 # Then are we sure that RIGA includes aggregates for urban hhlds?
@@ -333,8 +339,9 @@ gha97[, .(
 # => looks okay
 
 
-##########################################
+#####################################################################################
 # Combine all waves
+#####################################################################################
 # Var names should match now across waves so we can easily rbind()
 # `gha97` has fewer vars (87 instead of 92), which ones are missing?
 setdiff(names(gha12), names(gha05))
@@ -385,6 +392,11 @@ gha.xtra.lbl <- data.table(varCode=names(gha.xtra), varLabel=attr(gha.xtra, "var
 gha.xtra <- data.table(gha.xtra)
 gha.xtra <- gha.xtra[ISO3=="GHA"]
 gha.xtra <- gha.xtra[, .SD, .SDcols=1:which(names(gha.xtra)=="privtrans_ppp")]
+
+# Fix a few factor vars
+gha.xtra[, survey := factor(survey, 
+  lev=c("GLSS12", "GLSS05", "GLSS98"), lab=c("gha-glss6", "gha-glss5", "gha-glss4"))]
+gha.xtra[, rural := factor(rural, lev=c(1,0), lab=c("rural", "urban"))]
 
 gha.xtra.lbl[varCode %like% "land"]
 #       varCode                                             varLabel
@@ -677,8 +689,7 @@ gha[, sum(totcropprod>0, na.rm=T), by=croparea_clas]
 # 3:        2-4 ha 3025
 # 4:        > 4 ha 2558
 
-# What is the median `croparea` per ha per survey, region and quintiles of
-# `totcropprod`? Use that to impute `croparea`.
+# What is the median crop production per ha per survey. Use that to impute `croparea`.
 gha[, totcropprod_ha := median(ifelse(totcropprod==0, NA, totcropprod)/croparea, na.rm=T), by=svyCode]
 gha[, croparea_imp := croparea]
 gha[totcropprod>0 & (is.na(croparea) | croparea==0), croparea_imp := totcropprod/totcropprod_ha]
@@ -703,8 +714,8 @@ gha[, sum(shagprodsold>0, na.rm=T), by=croparea_clas]
 # 3:        2-4 ha 4136
 # 4:        > 4 ha 2705
 
-# What is the median `croparea_imp` per survey, per region, and per quintiles of 
-# `shagprodsold`? Use that to re-impute `croparea_imp`.
+# Impute inconsistent `croparea` using median `croparea_imp` per survey and per tercile of
+# `shagprodsold`
 gha[, shagprodsold_na := ifelse(shagprodsold==0, NA, shagprodsold)]
 gha[, shagprodsold_q3 := as.character(cut2(shagprodsold_na, g=3)), by=svyCode]
 gha[, croparea_q1 := median(ifelse(croparea_imp==0, NA, croparea_imp), na.rm=T), by=shagprodsold_q3]
@@ -719,7 +730,7 @@ summary(gha$croparea_clas)
 #   10084    5503    3312   12558 
 # => OK
 
-# Clean up
+# Clean up intermediary vars
 gha[, `:=`(totcropprod_qtl=NULL, shagprodsold_na=NULL, shagprodsold_q3=NULL, 
   croparea_q1=NULL, totcropprod_ha=NULL)]
 
@@ -824,7 +835,7 @@ gha[, summary(ifelse(selfemp < 0, NA, selfemp))]
 boxplot(selfemp~svyCode, gha)
 gha[, naggross := rowSums(.SD[, .(transfersgrossimp, otherincimp, nonfarmrntimp, nonagr_wge, ifelse(selfemp < 0, NA, selfemp))], na.rm=T)]
 gha[, totgross := rowSums(.SD[, .(aggross, naggross)], na.rm=T)]
-gha[, naggross_sh := aggross/totgross]
+gha[, naggross_sh := naggross/totgross]
 gha[, summary(naggross_sh), by=svyCode]
 
 gha[, sum(cropsales_sh>0, na.rm=T), by=croparea_clas]
@@ -841,17 +852,12 @@ gha[, sum(cropsales_sh>0, na.rm=T), by=croparea_clas]
 # 4:        > 4 ha 2705
 
 gha[, sum(naggross_sh>0, na.rm=T), by=croparea_clas]
-#    croparea_clas   V1
-# 1:            NA 6086
-# 2:       <= 2 ha 5049
-# 3:        2-4 ha 3046
-# 4:        > 4 ha 2584
 # => imputed:
-#    croparea_clas   V1
-# 1:            NA  348
-# 2:       <= 2 ha 8536
-# 3:        2-4 ha 4994
-# 4:        > 4 ha 2887
+#    croparea_clas    V1
+# 1:            NA 10244
+# 2:       <= 2 ha  6595
+# 3:        2-4 ha  3343
+# 4:        > 4 ha  1990
 
 ##########################################
 # SHF 4ha dummy `croparea_4ha` (2-class)
@@ -875,7 +881,7 @@ gha[, naggross_clas := NULL]
 gha[, naggross_clas := cut(naggross_sh, c(-1,1/3,2/3,1.1), labels=c("LoD", "MeD", "HiD"), ordered=T, right=F)]
 summary(gha$naggross_clas)
 #   LoD   MeD   HiD  NA's 
-# 16266  1934 10551  2706 
+# 10549  1934 16268  2706 
 
 ##########################################
 # Classification dummy `` (9-class)
@@ -885,7 +891,7 @@ gha[, class9 := NULL]
 gha[, class9 := factor(paste0(cropsales_clas, naggross_clas), levels=class9)]
 summary(gha$class9)
 # LoCLoD LoCMeD LoCHiD MeCLoD MeCMeD MeCHiD HiCLoD HiCMeD HiCHiD   NA's 
-#  13453    500   2401   1313    752   4387   1500    682   3763   2706 
+#   2400    500  13454   4387    752   1313   3762    682   1501   2706 
 
 
 ```
@@ -898,7 +904,8 @@ summary(gha$class9)
 #save.image("./tmp/2017-agra-aasr_GHA_waves.RData")
 
 # Keep only combined datasets
-#save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars, file="./tmp/2017-agra-aasr_GHA_merged.RData")
+save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars.inc, vars.char,
+  file="./tmp/2017-agra-aasr_GHA_merged.RData")
 
 # Save workspace
 rm(tmp, tmp.lbl, i, x)
@@ -914,7 +921,7 @@ Relevant sources of household-level micro records for Ghana are the **6 rounds o
 
 In contrast to the latest 2 waves GLSS4 is only representative for 3 (ecology) x 2 (rural/urban) zones.
 
-GLSS collect information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture, with a specific focus on **labour force**, with a labour force module expanded in the GLSS6 to include a section on child labour.
+GLSS collect information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture, with a specific focus on **labour force**, with a labour force module expanded in GLSS6 to include a section on child labour.
 
 ```{r, gha-samples}
 
@@ -962,8 +969,8 @@ RIGA does not provide annual cultivated area, instead we have measures of land o
 
 ```{r gha-cultarea, results="asis"}
 
-tmpha <- gha.xtra[, 100*sum(landcul>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(1,0), labels=c("rural", "urban")))]
-tmphb <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural=factor(rural, levels=c(1,0), labels=c("rural", "urban")))]
+tmpha <- gha.xtra[, 100*sum(landcul>0, na.rm=T)/.N, keyby=.(year, rural)]
+tmphb <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural)]
 tmpr <- gha[, 100*sum(rowSums(.SD[, .(landown, landshare, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
 
 tmpha[, Source := "IFPRI (landcult)"]
@@ -979,28 +986,31 @@ html(tabular((`Year`=Factor(year))~Heading("Percent oh Hhlds with Cultivated Are
 
 ```{r gha-bplota, fig.cap="Cultivated Area (ha). Source: IFPRI 2016"}
 
-par(mfrow=c(1,3), cex=.9, font.main=1)
-for (i in c("GLSS12", "GLSS05", "GLSS98")) boxplot(landcul~factor(rural, lev=c(1,0), lab=c("rural", "urban")), 
-  gha.xtra[survey==i], ylim=c(0,7),
-  main=i, xlab=NA, ylab="Cultivated Area (ha)", varwidth=T, outline=F)
+par(mfrow=c(1,2), cex=.9, font.main=1)
+for (i in levels(gha.xtra$rural)) boxplot(landcul~survey, gha.xtra[rural==i], 
+  main=i, ylim=c(0,7), varwidth=T, outline=F,
+  xlab=paste0(gha.xtra[rural==i, round(100*sum(is.na(landcul)|landcul==0)/.N)], "% missing or null"),
+  ylab="Cultivated Area (ha)")
 
 ```
 
 ```{r gha-bplotb, fig.cap="Farm Size (ha). Source: IFPRI 2016"}
 
-par(mfrow=c(1,3), cex=.9, font.main=1)
-for (i in c("GLSS12", "GLSS05", "GLSS98")) boxplot(landown~factor(rural, lev=c(1,0), lab=c("rural", "urban")), 
-  gha.xtra[survey==i], ylim=c(0,6),
-  main=i, xlab=NA, ylab="Farm Size (ha)", varwidth=T, outline=F)
+par(mfrow=c(1,2), cex=.9, font.main=1)
+for (i in levels(gha.xtra$rural)) boxplot(landown~survey, gha.xtra[rural==i], 
+  main=i, ylim=c(0,6), varwidth=T, outline=F,
+  xlab=paste0(gha[rural==i, round(100*sum(is.na(landown)|landown==0)/.N)], "% missing or null"),   
+  ylab="Farm Size (ha)")
 
 ```
 
 ```{r gha-bplotc, fig.cap="Operated Area (ha). Source: FAO/RIGA"}
 
-par(mfrow=c(1,3), cex=.9, font.main=1)
-for (i in unique(gha$svyCode)) boxplot(rowSums(cbind(landown, landshare, -landrent), na.rm=T)~rural, 
-  gha[svyCode==i], ylim=c(0,6),
-  main=i, xlab=NA, ylab="Operated Area (ha)", varwidth=T, outline=F)
+par(mfrow=c(1,2), cex=.9, font.main=1)
+for (i in levels(gha$rural)) boxplot(rowSums(cbind(landown, landshare, -landrent), na.rm=T)~svyCode, gha[rural==i], 
+  main=i, ylim=c(0,7.4), varwidth=T, outline=F,
+  xlab=paste0(gha[rural==i, round(100*sum(is.na(croparea)|croparea==0)/.N)], "% missing or null"), 
+  ylab="Operated Area (ha)")
 
 ```
 
@@ -1022,9 +1032,78 @@ html(tabular(Heading()*svyCode+1~Format(digits=0, big.mark=",")*(Heading()*cropa
 
 ```
 
+We further impute cultivated area for households with some amount of crop production and crop sales to ensure internal consistency in the sample (over 5,700 households reported crop sales but no cultivated area). Figure \@ref(fig:gha-bplotareaimputed) below show cultivated area post-imputation.
+
+```{r gha-bplotareaimputed, fig.cap="Cultivated Area (ha) (post-imputation)"}
+
+par(mfrow=c(1,2), cex=.9, font.main=1)
+for (i in levels(gha$rural)) boxplot(croparea_imp~svyCode, 
+  gha[rural==i], ylim=c(0,7.4), main=i, varwidth=T, outline=F,
+  xlab=paste0(gha[rural==i, round(100*sum(is.na(croparea_imp)|croparea_imp==0)/.N)], "% missing or null"), 
+  ylab="Operated Area (ha, imputed)")
+
+```
+
+
 ### Crop Commercialization
 
-[doco TBD]. Used RIGA share of agricultural products sold instead of crop sales.
+We evaluate multiple sources (and/or proxies) of aggregate household crop sales (again from FAO/RIGA and separately from IFPRI). Generally RIGA reports *gross* crop production, crop sales, and share of  crop production sold in $totcropprod$, $totcropsold$, and $shcropsold$ respectively. All other relevant variables are listed here:
+
+- $totcropprod$ -- value of total annual crop production
+- $totcropsold$ -- value total annual crop production sold
+- $totagprod$ -- value total annual agricultural production
+- $totagsold$ -- value total annual agricultural production sold
+- $totlvstprod$ -- value of total annual livestock production
+- $totlivsold$ -- value total annual livestock production sold
+- $agowncons$ -- value total annual agricultural production consumed
+- $agmisc$ -- value total annual agricultural production- miscellaneous uses
+- $shagprodsold$ -- share of annual agricultural production sold in total agricultural production
+- $shagowncons$ -- share of annual agricultural production consumed in total agricultural productio
+- $shagmisc$ -- share of annual agricultural production misc in total agricultural production
+- $shcropsold$ -- share of total annual crop production sold in total crop production
+- $shlvstsold$ -- share of total annual livestock production sold in total livestock production
+- $cropincome1gross(imp)$ -- gross crop income (crop1)
+- $cropincome2gross(imp)$ -- gross crop income (crop2)
+- $livestockgross(imp)$ -- gross livestock income
+
+However the quality of these constructed variables for Ghana tends to vary widely across survey years.
+
+```{r gha-bplotsales, fig.cap="Sources of Crop Commercialization (RIGA, IFPRI, author)"}
+
+par(mfrow=c(1,3), cex=.9, font.main=1, cex.lab=.8)
+boxplot(I(100*totcropsold/totcropprod)~svyCode, 
+  gha[rural=="rural"], ylim=c(0,100), main="rural", varwidth=T, outline=F,
+  xlab=paste0(gha[rural=="rural", round(100*sum(is.na(totcropsold/totcropprod)|totcropsold==0)/.N)], "% missing or null"), 
+  ylab="Share of Crop Production Sold (%), author")
+
+boxplot(I(100*shcropsold)~svyCode, 
+  gha[rural=="rural"], ylim=c(0,100), main="rural", varwidth=T, outline=F,
+  xlab=paste0(gha[rural=="rural", round(100*sum(is.na(shcropsold)|shcropsold==0)/.N)], "% missing or null"), 
+  ylab="Share of Crop Production Sold (%), RIGA")
+
+boxplot(I(100*shagprodsold)~svyCode, 
+  gha[rural=="rural"], ylim=c(0,100), main="rural", varwidth=T, outline=F,
+  xlab=paste0(gha[rural=="rural", round(100*sum(is.na(shagprodsold)|shagprodsold==0)/.N)], "% missing or null"), 
+  ylab="Share of Ag. Production Sold (%), RIGA")
+
+boxplot(I(100*totcropsold/totcropprod)~svyCode, 
+  gha[rural=="urban"], ylim=c(0,100), main="urban", varwidth=T, outline=F,
+  xlab=paste0(gha[rural=="urban", round(100*sum(is.na(totcropsold/totcropprod)|totcropsold==0)/.N)], "% missing or null"), 
+  ylab="Share of Crop Production Sold (%), author")
+
+boxplot(I(100*shcropsold)~svyCode, 
+  gha[rural=="urban"], ylim=c(0,10), main="urban", varwidth=T, outline=F,
+  xlab=paste0(gha[rural=="urban", round(100*sum(is.na(shcropsold)|shcropsold==0)/.N)], "% missing or null"), 
+  ylab="Share of Crop Production Sold (%), RIGA")
+
+boxplot(I(100*shagprodsold)~svyCode, 
+  gha[rural=="urban"], ylim=c(0,10), main="urban", varwidth=T, outline=F,
+  xlab=paste0(gha[rural=="urban", round(100*sum(is.na(shagprodsold)|shagprodsold==0)/.N)], "% missing or null"),
+  ylab="Share of Ag. Production Sold (%), RIGA")
+
+```
+
+In the following we use RIGA share of crop products sold $shagprodsold$ instead of crop sales.
 
 
 ### Income Diversification
