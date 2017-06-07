@@ -2,7 +2,6 @@
 
 ```{r, include=F}
 
-library(yarrr)
 load("../tmp/2017-agra-aasr_GHA.RData")
 
 ```
@@ -20,14 +19,16 @@ load("./tmp/2017-agra-aasr_GHA.RData")
 
 #####################################################################################
 # Helper - Pirate Plot Defaults
-pplot <- function(..., note=NA, alpha=.1) {
+pplot <- function(..., note=NULL, alpha=.1) {
+  require(yarrr)
   pirateplot(..., pal="black", jitter.val=.07,
     cex.names=.8, cex.axis=.8, gl.lty=3, back.col=gray(.97),
     point.o=min(alpha, .1), point.pch=16, point.cex=.5,
     bean.f.col="white", bean.lwd=.2,
     inf.lwd=.2, inf.f.col="blue", inf.f.o=.3,
+    quant=.5, quant.col="limegreen", quant.lwd=1.2, quant.length=.9,
     avg.line.col="red", avg.line.lwd=1.2)
-  title(main=sprintf("Missing or null: %4.0f%%", note), 
+  if(!missing(note)) title(main=sprintf("Missing or null: %4.0f%%", note), 
     adj=.99, col.main="grey10", cex.main=.8, font.main=1, line=.5)
 }
 
@@ -754,7 +755,7 @@ summary(gha$croparea_clas)
 gha[, `:=`(totcropprod_qtl=NULL, shagprodsold_na=NULL, shagprodsold_q3=NULL, 
   croparea_q1=NULL, totcropprod_ha=NULL)]
 
-# HHlds with crop share but no/null aggross?
+# HHlds with ag share but no/null aggross?
 gha[shagprodsold>0, .N, by=aggross>0]
 #    aggross     N
 # 1:    TRUE 13332
@@ -764,6 +765,20 @@ gha[aggross>0, .N, by=shagprodsold>0]
 #    shagprodsold     N
 # 1:         TRUE 13332
 # 2:        FALSE  3433
+
+# Other internal consistency checks
+# HHlds with crop share but no/null croparea?
+gha[, sum(shcropsold>0, na.rm=T), by=croparea_clas]
+#    croparea_clas   V1
+# 1:            NA    0
+# 2:       <= 2 ha 5265
+# 3:        2-4 ha 3804
+# 4:        > 4 ha 2592
+# => OK
+
+pplot(shcropsold~survey, gha)
+pplot(shcropsold~survey+croparea_4ha, gha)
+pplot(shagprodsold~survey+croparea_4ha, gha)
 
 ##########################################
 # Construct other missing typology vars, using RIGA components:
@@ -802,7 +817,9 @@ gha[, median(totcropprod, na.rm=T), by=croparea_clas]
 # 4:        > 4 ha 9092.4375
 gha[, cropvalue := totcropprod]
 
+
 # CROP SALES
+# Options #1
 summary(gha$totcropsold)
 gha[, median(totcropsold, na.rm=T), by=croparea_clas]
 #    croparea_clas   V1
@@ -822,8 +839,45 @@ gha[, summary(shagprodsold)]
 # => probably just more 0
 gha[cropsales_sh>0, .N, by=svyCode]
 gha[shagprodsold>0, .N, by=svyCode]
-# => more positive obs if using `shagprodsold`
+# Option #2 more positive obs if using `shagprodsold`
 gha[, cropsales_sh := shagprodsold]
+# Option #3 `shcropsold` (might have been imputed by RIGA)
+#gha[, cropsales_sh := shcropsold]
+
+gha[, 100*sum(aggross>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural        V1
+# 1: 2012/13 urban  1.799866
+# 2: 2012/13 rural 85.804653
+# 3: 2005/06 urban  2.515202
+# 4: 2005/06 rural 87.433419
+# 5: 1998/99 rural 86.733351
+# 6: 1998/99 urban 36.834925
+
+gha[, 100*sum(shcropsold>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural       V1
+# 1: 2012/13 urban  0.00000
+# 2: 2012/13 rural 58.80776
+# 3: 2005/06 urban  0.00000
+# 4: 2005/06 rural 64.54922
+# 5: 1998/99 rural 64.80653
+# 6: 1998/99 urban 20.10005
+
+gha[, 100*sum(shagprodsold>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural       V1
+# 1: 2012/13 urban  0.00000
+# 2: 2012/13 rural 68.53222
+# 3: 2005/06 urban  0.00000
+# 4: 2005/06 rural 73.58453
+# 5: 1998/99 rural 70.65017
+# 6: 1998/99 urban 23.91996
+
+gha[shagprodsold>0, 100*sum(shcropsold>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural       V1
+# 1: 2012/13 rural 85.81039
+# 2: 2005/06 rural 87.72118
+# 3: 1998/99 rural 91.72876
+# 4: 1998/99 urban 84.03042
+
 
 # TOTAL AG SALES
 summary(gha$totagsold)
@@ -892,8 +946,14 @@ summary(gha$croparea_4ha)
 gha[, cropsales_clas := NULL]
 gha[, cropsales_clas := cut(cropsales_sh, c(-1,.05,.5,1.1), labels=c("LoC", "MeC", "HiC"), ordered=T, right=F)]
 summary(gha$cropsales_clas)
+# -- shagprodsold
 #   LoC   MeC   HiC  NA's 
 # 18750  6452  5945   310 
+# -- shcropsold
+#  LoC   MeC   HiC  NA's 
+# 9288  5579  5330 11260 
+# => there's a big difference in the number of NA's
+
 
 ##########################################
 # Income diversification dummy `noaggross_clas` (3-class)
@@ -928,7 +988,7 @@ save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars.inc, vars.char, pplot,
   file="./tmp/2017-agra-aasr_GHA_merged.RData")
 
 # Save workspace
-rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr)
+rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, summaryname)
 save.image("./tmp/2017-agra-aasr_GHA.RData")
 
 ```
@@ -1080,23 +1140,59 @@ We evaluate multiple sources (and/or proxies) of aggregate household crop sales 
 
 However the quality of these constructed variables for Ghana tends to vary widely across survey years.
 
-```{r gha-bplotsales, fig.cap="Sources of Crop Commercialization (RIGA, IFPRI, author)", fig.height=4.5, dev="png"}
+```{r gha-bplotsalesa, fig.cap="Sources of Crop Commercialization (FAO/RIGA $totcropsold$)", fig.height=4.5, dev="png"}
 
-pplot(I(100*totcropsold/totcropprod)~survey+rural, gha, ylim=c(0,100), alpha=.01,
-  ylab="Share of Crop Production Sold (%) Source: author",
+pplot(I(100*totcropsold/totcropprod)~survey+rural, gha, alpha=.02,
+  ylab="Share of Crop Production Sold (%) Source: RIGA",
   note=gha[, 100*sum(is.na(totcropsold/totcropprod)|totcropsold==0)/.N])
 
-pplot(I(100*shcropsold)~survey+rural, gha, ylim=c(0,100), alpha=.01,
+```
+
+```{r gha-bplotsalesb, fig.cap="Sources of Crop Commercialization (FAO/RIGA $shcropsold$)", fig.height=4.5, dev="png"}
+
+pplot(I(100*shcropsold)~survey+rural, gha, alpha=.02,
   ylab="Share of Crop Production Sold (%) Source: RIGA",
   note=gha[, 100*sum(is.na(shcropsold)|shcropsold==0)/.N])
 
-pplot(I(100*shagprodsold)~survey+rural, gha, ylim=c(0,100), alpha=.01,
-  ylab="Share of Ag. Production Sold (%)Source: RIGA",
+```
+
+```{r gha-bplotsalesc, fig.cap="Sources of Crop Commercialization (FAO/RIGA $shagprodsold$)", fig.height=4.5, dev="png"}
+
+pplot(I(100*shagprodsold)~survey+rural, gha, alpha=.02,
+  ylab="Share of Ag. Production Sold (%) Source: RIGA",
   note=gha[, 100*sum(is.na(shagprodsold)|shagprodsold==0)/.N])
 
 ```
 
-In the following we use RIGA share of crop products sold $shagprodsold$ instead of crop sales.
+Looking at the pirate plots above (and tables below), sales from agricultural products for urban households seem to have been excluded from RIGA aggregates (though that's not the case for GLSS4).
+
+```{r gha-tblsales, results="asis"}
+
+tmp1 <- gha[, .(
+  `Hhlds with Gross Ag Income` = 100*sum(aggross > 0, na.rm=T)/.N, 
+  `Hhlds with Ag. Sales` = 100*sum(shagprodsold > 0, na.rm=T)/.N, 
+  `HHlds with Crop Sales` = 100*sum(shcropsold > 0, na.rm=T)/.N
+), keyby=.(survey, rural)]
+tmp2 <- gha[shagprodsold>0, .(
+    `Share of Crop Sales in Ag Sales` = 100*sum(shcropsold>0, na.rm=T)/.N
+    ), keyby=.(survey, rural)]
+tmp <- tmp2[tmp1]
+
+table_options(HTMLcaption="(#tab:ghatblsales) Sales of Crops and Agricultural Products (source: FAO/RIGA")
+html(tabular((`Wave`=survey)~Format(digits=2)*All(tmp)*Heading()*rural*Heading()*identity, 
+  data=tmp))
+
+```
+
+In the rest of the analysis we use FAO/RIGA share of agricultutal products sold $shagprodsold$ as a *proxy* measure of **crop commercialization**.
+
+```{r gha-bplotsales4ha, fig.cap="Crop Commercialization in Farms below/above 4ha of Cultivated Area (FAO/RIGA $shagprodsold$)", fig.height=4.5, dev="png"}
+
+pplot(I(100*shagprodsold)~survey+croparea_4ha, gha, alpha=.02,
+  ylab="Crop Commercialization (%) Source: RIGA",
+  note=gha[!is.na(croparea_4ha), 100*sum(is.na(shagprodsold)|shagprodsold==0)/.N])
+
+```
 
 
 ### Income Diversification
@@ -1104,6 +1200,8 @@ In the following we use RIGA share of crop products sold $shagprodsold$ instead 
 [doco TBD]. 
 
 ### Classification of Small Farm Holdings
+
+Note that a breakdown by urban/rural location would yield a few urban categories with no household.
 
 
 ```{r gha-counts-clas, results="asis"}

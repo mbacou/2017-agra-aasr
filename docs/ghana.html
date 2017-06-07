@@ -715,25 +715,174 @@ Fig. 3.11: Cultivated Area (ha) (post-imputation)
 <li><span class="math inline">\(livestockgross(imp)\)</span> – gross livestock income</li>
 </ul>
 <p>However the quality of these constructed variables for Ghana tends to vary widely across survey years.</p>
-<div class="figure"><span id="fig:gha-bplotsales"></span>
-<img src="fig/gha-bplotsales-1.png" alt="Sources of Crop Commercialization (RIGA, IFPRI, author)" width="1050" />
+<div class="figure"><span id="fig:gha-bplotsalesa"></span>
+<img src="fig/gha-bplotsalesa-1.png" alt="Sources of Crop Commercialization (FAO/RIGA $totcropsold$)" width="1050" />
 <p class="caption">
-Fig. 3.12: Sources of Crop Commercialization (RIGA, IFPRI, author)
+Fig. 3.12: Sources of Crop Commercialization (FAO/RIGA <span class="math inline">\(totcropsold\)</span>)
 </p>
 </div>
-<div class="figure"><span id="fig:gha-bplotsales"></span>
-<img src="fig/gha-bplotsales-2.png" alt="Sources of Crop Commercialization (RIGA, IFPRI, author)" width="1050" />
+<div class="figure"><span id="fig:gha-bplotsalesb"></span>
+<img src="fig/gha-bplotsalesb-1.png" alt="Sources of Crop Commercialization (FAO/RIGA $shcropsold$)" width="1050" />
 <p class="caption">
-Fig. 3.12: Sources of Crop Commercialization (RIGA, IFPRI, author)
+Fig. 3.13: Sources of Crop Commercialization (FAO/RIGA <span class="math inline">\(shcropsold\)</span>)
 </p>
 </div>
-<div class="figure"><span id="fig:gha-bplotsales"></span>
-<img src="fig/gha-bplotsales-3.png" alt="Sources of Crop Commercialization (RIGA, IFPRI, author)" width="1050" />
+<div class="figure"><span id="fig:gha-bplotsalesc"></span>
+<img src="fig/gha-bplotsalesc-1.png" alt="Sources of Crop Commercialization (FAO/RIGA $shagprodsold$)" width="1050" />
 <p class="caption">
-Fig. 3.12: Sources of Crop Commercialization (RIGA, IFPRI, author)
+Fig. 3.14: Sources of Crop Commercialization (FAO/RIGA <span class="math inline">\(shagprodsold\)</span>)
 </p>
 </div>
-<p>In the following we use RIGA share of crop products sold <span class="math inline">\(shagprodsold\)</span> instead of crop sales.</p>
+<p>Looking at the pirate plots above (and tables below), sales from agricultural products for urban households seem to have been excluded from RIGA aggregates (though that’s not the case for GLSS4).</p>
+<table class="Rtable">
+<caption>
+<span id="tab:ghatblsales">Tab. 3.20: </span> Sales of Crops and Agricultural Products (source: FAO/RIGA
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th colspan="2">
+Share of Crop Sales in Ag Sales
+</th>
+<th colspan="2">
+Hhlds with Gross Ag Income
+</th>
+<th colspan="2">
+Hhlds with Ag. Sales
+</th>
+<th colspan="2">
+HHlds with Crop Sales
+</th>
+</tr>
+<tr class="center">
+<th>
+Wave
+</th>
+<th>
+rural
+</th>
+<th>
+urban
+</th>
+<th>
+rural
+</th>
+<th>
+urban
+</th>
+<th>
+rural
+</th>
+<th>
+urban
+</th>
+<th>
+rural
+</th>
+<th>
+urban
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+2012/13
+</th>
+<td>
+85.8
+</td>
+<td>
+  NA
+</td>
+<td>
+85.8
+</td>
+<td>
+ 1.8
+</td>
+<td>
+68.5
+</td>
+<td>
+ 0.0
+</td>
+<td>
+58.8
+</td>
+<td>
+ 0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+2005/06
+</th>
+<td>
+87.7
+</td>
+<td>
+  NA
+</td>
+<td>
+87.4
+</td>
+<td>
+ 2.5
+</td>
+<td>
+73.6
+</td>
+<td>
+ 0.0
+</td>
+<td>
+64.5
+</td>
+<td>
+ 0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+1998/99
+</th>
+<td>
+91.7
+</td>
+<td>
+84.0
+</td>
+<td>
+86.7
+</td>
+<td>
+36.8
+</td>
+<td>
+70.7
+</td>
+<td>
+23.9
+</td>
+<td>
+64.8
+</td>
+<td>
+20.1
+</td>
+</tr>
+</tbody>
+</table>
+<p>In the rest of the analysis we use FAO/RIGA share of agricultutal products sold <span class="math inline">\(shagprodsold\)</span> as a proxy measure of crop commercialization.</p>
+<div class="figure"><span id="fig:gha-bplotsales4ha"></span>
+<img src="fig/gha-bplotsales4ha-1.png" alt="Crop Commercialization in Farms below/above 4ha of Cultivated Area (FAO/RIGA $shagprodsold$)" width="1050" />
+<p class="caption">
+Fig. 3.15: Crop Commercialization in Farms below/above 4ha of Cultivated Area (FAO/RIGA <span class="math inline">\(shagprodsold\)</span>)
+</p>
+</div>
 </div>
 <div id="income-diversification" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> Income Diversification</h3>
@@ -2310,7 +2459,7 @@ All
 <p>In the next tables we limit categories to farm households <strong>below/above 4ha</strong> (as this approach produces classes with larger counts of observations).</p>
 <table class="Rtable">
 <caption>
-<span id="tab:countsd">Tab. 3.20: </span> Count of Observations across Classes of Farm Households (farms above/below 4 ha)
+<span id="tab:countsd">Tab. 3.21: </span> Count of Observations across Classes of Farm Households (farms above/below 4 ha)
 </caption>
 <thead>
 <tr class="center">
@@ -2712,7 +2861,7 @@ All
 </table>
 <table class="Rtable">
 <caption>
-<span id="tab:countse">Tab. 3.21: </span> Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of full survey sample)
+<span id="tab:countse">Tab. 3.22: </span> Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of full survey sample)
 </caption>
 <thead>
 <tr class="center">
@@ -3192,7 +3341,7 @@ All
 </table>
 <table class="Rtable">
 <caption>
-<span id="tab:countsf">Tab. 3.22: </span> Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of selected farm households)
+<span id="tab:countsf">Tab. 3.23: </span> Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of selected farm households)
 </caption>
 <thead>
 <tr class="center">
