@@ -913,12 +913,107 @@ Fig. 3.15: Crop Commercialization in Farms below/above 4ha of Cultivated Area (F
 </div>
 <div id="income-diversification" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> Income Diversification</h3>
-<p>RIGA aggregates.</p>
-<p>[doco TBD].</p>
+<p>Non-farm income was derived from gross RIGA components as:</p>
+<p><span class="math display">\[ naggross=transfersgrossimp+otherincimp+nonfarmrntimp+nonagr\_wge+selfemp \]</span></p>
+<p><span class="math inline">\(selfemp\)</span> was imputed to omit negative values. The final distribution of non-farm income in the survey samples is shown below for both rural and urban households</p>
+<div class="figure"><span id="fig:gha-bplotinccropa"></span>
+<img src="fig/gha-bplotinccropa-1.png" alt="Gross Rural Non-Farm Income across Survey Waves (percent, $naggrosssh$) Source: FAO/RIGA" width="1050" />
+<p class="caption">
+Fig. 3.16: Gross Rural Non-Farm Income across Survey Waves (percent, <span class="math inline">\(naggrosssh\)</span>) Source: FAO/RIGA
+</p>
+</div>
+<div class="figure"><span id="fig:gha-bplotinccropb"></span>
+<img src="fig/gha-bplotinccropb-1.png" alt="Gross Urban Non-Farm Income across Survey Waves (percent, $naggrosssh$) Source: FAO/RIGA" width="1050" />
+<p class="caption">
+Fig. 3.17: Gross Urban Non-Farm Income across Survey Waves (percent, <span class="math inline">\(naggrosssh\)</span>) Source: FAO/RIGA
+</p>
+</div>
 </div>
 <div id="classification-of-small-and-medium-farm-holdings" class="section level3">
 <h3><span class="header-section-number">3.2.4</span> Classification of Small and Medium Farm Holdings</h3>
-<p>Note that a breakdown by urban/rural location would yield a few urban categories with no household.</p>
+<blockquote>
+<p>Within the sub-sample of <em>farm households</em> we look at the distribution of households across these three key (“threshold”) variables:</p>
+<ul>
+<li>Cultivated/operated area <span class="math inline">\(cropareaimp\)</span> (using breaks at <strong>2 ha</strong> and/or <strong>4 ha</strong> and <strong>excluding farm households with no <span class="math inline">\(cropareaimp\)</span></strong>)</li>
+<li>Crop commercialization <span class="math inline">\(cropsales\_sh\)</span> (using breaks at <strong>5%</strong> and <strong>50%</strong> of crop production)</li>
+<li>Share of off-farm income in total hhld income <span class="math inline">\(naggross\_sh\)</span> (using breaks at <strong>1/3</strong> and <strong>2/3</strong> of total gross household income)</li>
+</ul>
+</blockquote>
+<p>The resulting classes of farm households are labeled as follows:</p>
+<table class="Rtable">
+<caption>
+<span id="tab:tabclas">Tab. 3.1: </span> Household Classification
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th colspan="3">
+Crop Commercialization
+</th>
+</tr>
+<tr class="center">
+<th>
+Income Diversification
+</th>
+<th>
+low
+</th>
+<th>
+medium
+</th>
+<th>
+high
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+low
+</th>
+<td>
+LoCLoD
+</td>
+<td>
+MeCLoD
+</td>
+<td>
+HiCLoD
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+medium
+</th>
+<td>
+LoCMeD
+</td>
+<td>
+MeCMeD
+</td>
+<td>
+HiCMeD
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+high
+</th>
+<td>
+LoCHiD
+</td>
+<td>
+MeCHiD
+</td>
+<td>
+HiCHiD
+</td>
+</tr>
+</tbody>
+</table>
+<p>The tables below show this classification, as proportions of the entire survey samples, and of the selected farm samples.</p>
 <table class="Rtable">
 <caption>
 <span id="tab:countsa">Tab. 3.3: </span> Count of Observations across Classes of Farm Households

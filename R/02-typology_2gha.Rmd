@@ -942,6 +942,8 @@ gha[, sum(naggross_sh>0, na.rm=T), by=croparea_clas]
 # 3:        2-4 ha  3343
 # 4:        > 4 ha  1990
 
+
+
 ##########################################
 # SHF 4ha dummy `croparea_4ha` (2-class)
 gha[, croparea_4ha := NULL]
@@ -1199,7 +1201,7 @@ In the rest of the analysis we use FAO/RIGA share of agricultutal products sold 
 
 ```{r gha-bplotsales4ha, fig.cap="Crop Commercialization in Farms below/above 4ha of Cultivated Area (FAO/RIGA $shagprodsold$)", fig.height=4.5, dev="png"}
 
-pplot(I(100*shagprodsold)~survey+croparea_4ha, gha, alpha=.02,
+pplot(I(100*shagprodsold)~survey+croparea_clas, gha, alpha=.02,
   ylab="Crop Commercialization (%) Source: RIGA",
   note=gha[!is.na(croparea_4ha), 100*sum(is.na(shagprodsold)|shagprodsold==0)/.N])
 
@@ -1208,13 +1210,52 @@ pplot(I(100*shagprodsold)~survey+croparea_4ha, gha, alpha=.02,
 
 ### Income Diversification
 
-RIGA aggregates.
+Non-farm income was derived from gross RIGA components as: 
 
-[doco TBD]. 
+$$ naggross=transfersgrossimp+otherincimp+nonfarmrntimp+nonagr\_wge+selfemp $$
+
+$selfemp$ was imputed to omit negative values. The final distribution of non-farm income in the survey samples is shown below for both rural and urban households
+
+
+```{r gha-bplotinccropa, fig.cap="Gross Rural Non-Farm Income across Survey Waves (percent, $naggrosssh$) Source: FAO/RIGA", fig.height=4.5, dev="png"}
+
+pplot(I(100*naggross_sh)~survey+croparea_clas, gha[rural=="rural"], alpha=.02,
+  ylab="Gross Non-Farm Income, Rural Hhlds (%)",
+  note=gha[rural=="rural", 100*sum(is.na(naggross_sh)|naggross==0)/.N])
+
+```
+
+```{r gha-bplotinccropb, fig.cap="Gross Urban Non-Farm Income across Survey Waves (percent, $naggrosssh$) Source: FAO/RIGA", fig.height=4.5, dev="png"}
+
+pplot(I(100*naggross_sh)~survey+croparea_clas, gha[rural=="urban"], alpha=.02,
+  ylab="Gross Non-Farm Income, Urban Hhlds (%)",
+  note=gha[rural=="urban", 100*sum(is.na(naggross_sh)|naggross==0)/.N])
+
+```
+
 
 ### Classification of Small and Medium Farm Holdings
 
-Note that a breakdown by urban/rural location would yield a few urban categories with no household.
+> Within the sub-sample of *farm households* we look at the distribution of households across these three key ("threshold") variables:
+> 
+> * Cultivated/operated area $cropareaimp$ (using breaks at **2 ha** and/or **4 ha** and **excluding farm households with no $cropareaimp$**)
+> * Crop commercialization $cropsales\_sh$ (using breaks at **5%** and **50%** of crop production)
+> * Share of off-farm income in total hhld income $naggross\_sh$ (using breaks at **1/3** and **2/3** of total gross household income)
+
+The resulting classes of farm households are labeled as follows:  
+
+```{r ghatabclas, results="asis"}
+
+tmp <- factor(c("low", "medium", "high"), levels=c("low", "medium", "high"))
+tmp <- data.frame(clas=class9, C=rep(tmp, each=3), D=rep(tmp, 3))
+
+table_options(HTMLcaption="(#tab:tabclas) Household Classification")
+html(tabular((`Income Diversification`=D)~(`Crop Commercialization`=C)*Heading()*identity*Heading()*(as.character(clas)), 
+  data=tmp))
+
+```
+
+The tables below show this classification, as proportions of the entire survey samples, and of the selected farm samples.
 
 
 ```{r gha-counts-clas, results="asis"}
