@@ -33,9 +33,8 @@ pplot <- function(..., note=NULL, alpha=.1) {
 }
 
 #####################################################################################
-
 # Pull complete sets from each wave, extract and describe:
-# - cro pproduction
+# - crop production
 # - crop sales
 # - off and on-farm income
 # - cultivated area
@@ -43,7 +42,6 @@ pplot <- function(..., note=NULL, alpha=.1) {
 # - urban/rural
 # Them combine all 3 waves once results make sense.
 
-#####################################################################################
 # GLSS6
 gha12.hh <- read.dta("~/Projects/hc-data/GHA-GLSS6/raw/PARTA/g6loc_edt.dta")
 gha12.hh.lbl <- data.table(varCode=names(gha12.hh), varLabel=attr(gha12.hh, "var.labels"))
@@ -55,7 +53,7 @@ gha12.inc.lbl <- data.table(varCode=names(gha12.inc), varLabel=attr(gha12.inc, "
 gha12.inc <- data.table(gha12.inc)
 
 
-#####################################################################################
+##########################################
 # GLSS5
 # Quick inventory of existing data extracts
 glss5.input <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/GHA_GLSS5-08_inputs.12.dta")
@@ -86,7 +84,7 @@ gha05.inc.lbl <- data.table(varCode=names(gha05.inc), varLabel=attr(gha05.inc, "
 gha05.inc <- data.table(gha05.inc)
 
 
-#####################################################################################
+##########################################
 # GLSS4
 load("~/Projects/hc-data/GHA-GLSS4/temp/GHA-GLSS4.RData")
 gha97.lbl <- lapply(names(micro), function(x) data.table(varCode=names(micro[[x]]), source=x))
@@ -471,6 +469,10 @@ gha[, summary(weight)]
 # 0.127  113.600  338.000  386.100  571.900 3476.000 
 # => OK
 
+```
+
+```{r gha-geo, eval=FALSE}
+
 #####################################################################################
 # Geographic Stratification
 #####################################################################################
@@ -662,6 +664,9 @@ spplot(g2[g2$svyCode=="gha-glss5",], zcol="ez")
 spplot(g2[g2$svyCode=="gha-glss6",], zcol="ez")
 # => OK
 
+```
+
+```{r gha-typo, eval=FALSE}
 
 ##################################################################################### 
 # Farm Typology 
@@ -802,7 +807,7 @@ gha.lbl[varCode %in% c("selfimp1", "selfemp"), varLabel]
 # [1] "Net HH Income from Non-Ag Business- Agr, Fishing, Imptd" => ignore completely
 # [2] "Annual net nonfarm self employment income, imputed" => impute negative to NA
 
-
+##########################################
 # CROP PRODUCTION
 summary(gha$totcropprod)
 # => too many missing!!
@@ -817,7 +822,7 @@ gha[, median(totcropprod, na.rm=T), by=croparea_clas]
 # 4:        > 4 ha 9092.4375
 gha[, cropvalue := totcropprod]
 
-
+##########################################
 # CROP SALES
 # Options #1
 summary(gha$totcropsold)
@@ -878,7 +883,6 @@ gha[shagprodsold>0, 100*sum(shcropsold>0, na.rm=T)/.N, by=.(survey, rural)]
 # 3: 1998/99 rural 91.72876
 # 4: 1998/99 urban 84.03042
 
-
 # TOTAL AG SALES
 summary(gha$totagsold)
 gha[, median(totagsold, na.rm=T), by=croparea_clas]
@@ -890,6 +894,11 @@ gha[, median(totagsold, na.rm=T), by=croparea_clas]
 gha[, agsales := totagsold]
 gha[agsales>0, .N, by=svyCode]
 
+# TODO Check to see if IFPRI constructed sales for urban hhlds
+
+
+
+##########################################
 # GROSS FARM INCOME
 summary(gha$farmrntimp)
 summary(gha$agr_wge)
@@ -1034,10 +1043,10 @@ Because RIGA income aggregates are *net of costs*, we used the following compone
 
 - $cropsales$ derived from $totcropsold$
 - $cropvalue$ derived from $totcropprod$
-- $cropsales\_sh$ (but can also be derived from $shagprodsold$)
+- $cropsales\_sh$ (but can also be derived from $shcropsold$ and $shagprodsold$)
   $$ cropsales\_sh = \frac{cropsales}{cropvalue} $$ 
 - $agsales$ derived from $totagsold$
-- $aggross = totagprod + farmrntimp + agr\_wge + selfimp1$
+- $aggross = totagprod + farmrntimp + agr\_wge (+ selfimp1)$
 - $naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr\_wge + selfemp$
 - $totgross = aggross + naggross$  
 - $aggross\_sh$  
@@ -1164,12 +1173,13 @@ pplot(I(100*shagprodsold)~survey+rural, gha, alpha=.02,
 
 ```
 
-Looking at the pirate plots above (and tables below), sales from agricultural products for urban households seem to have been excluded from RIGA aggregates (though that's not the case for GLSS4).
+Looking at the pirate plots above (and tables below), sales from agricultural products for urban households seem to have been excluded from RIGA aggregates (though that's not the case for GLSS4) OR urban households have largely abandoned farming over the past 12 years (also possible).
 
 ```{r gha-tblsales, results="asis"}
 
 tmp1 <- gha[, .(
   `Hhlds with Gross Ag Income` = 100*sum(aggross > 0, na.rm=T)/.N, 
+  `Hhlds with no Revenue from Farming` = 100*sum(aggross==0, na.rm=T)/.N, 
   `Hhlds with Ag. Sales` = 100*sum(shagprodsold > 0, na.rm=T)/.N, 
   `HHlds with Crop Sales` = 100*sum(shcropsold > 0, na.rm=T)/.N
 ), keyby=.(survey, rural)]
@@ -1177,8 +1187,9 @@ tmp2 <- gha[shagprodsold>0, .(
     `Share of Crop Sales in Ag Sales` = 100*sum(shcropsold>0, na.rm=T)/.N
     ), keyby=.(survey, rural)]
 tmp <- tmp2[tmp1]
+setcolorder(tmp, c(1:2,4:7,3))
 
-table_options(HTMLcaption="(#tab:ghatblsales) Sales of Crops and Agricultural Products (source: FAO/RIGA")
+table_options(HTMLcaption="(#tab:ghatblsales) Sales of Crops and Agricultural Products (percent of sampled households) Source: FAO/RIGA)")
 html(tabular((`Wave`=survey)~Format(digits=2)*All(tmp)*Heading()*rural*Heading()*identity, 
   data=tmp))
 
@@ -1197,9 +1208,11 @@ pplot(I(100*shagprodsold)~survey+croparea_4ha, gha, alpha=.02,
 
 ### Income Diversification
 
+RIGA aggregates.
+
 [doco TBD]. 
 
-### Classification of Small Farm Holdings
+### Classification of Small and Medium Farm Holdings
 
 Note that a breakdown by urban/rural location would yield a few urban categories with no household.
 
@@ -1229,11 +1242,11 @@ html(tabular(Heading("Wave")*survey*Heading()*(naggross_clas+(`All`=1))~Format(d
   data=gha))
 
 table_options(HTMLcaption="(#tab:countse) Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of full survey sample)")
-html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_4ha*Heading()*(cropsales_clas+1)+1)*Heading()*Format(digits=0, big.mark=",")*Percent(Equal(survey)),
+html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_4ha*Heading()*(cropsales_clas+1)+1)*Heading()*Format(digits=0, nsmall=1, big.mark=",")*Percent(Equal(survey)),
   data=gha))
 
 table_options(HTMLcaption="(#tab:countsf) Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of selected farm households)")
-html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_4ha*Heading()*(cropsales_clas+1)+1)*Heading()*Format(digits=0, big.mark=",")*Percent(Equal(survey)),
+html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_4ha*Heading()*(cropsales_clas+1)+1)*Heading()*Format(digits=0, nsmall=1, big.mark=",")*Percent(Equal(survey)),
   data=gha[!is.na(croparea_4ha) & !is.na(class9)]))
 
 ```
