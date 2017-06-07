@@ -1242,19 +1242,6 @@ pplot(I(100*naggross_sh)~survey+croparea_clas, gha[rural=="urban"], alpha=.02,
 > * Crop commercialization $cropsales\_sh$ (using breaks at **5%** and **50%** of crop production)
 > * Share of off-farm income in total hhld income $naggross\_sh$ (using breaks at **1/3** and **2/3** of total gross household income)
 
-The resulting classes of farm households are labeled as follows:  
-
-```{r ghatabclas, results="asis"}
-
-tmp <- factor(c("low", "medium", "high"), levels=c("low", "medium", "high"))
-tmp <- data.frame(clas=class9, C=rep(tmp, each=3), D=rep(tmp, 3))
-
-table_options(HTMLcaption="(#tab:tabclas) Household Classification")
-html(tabular((`Income Diversification`=D)~(`Crop Commercialization`=C)*Heading()*identity*Heading()*(as.character(clas)), 
-  data=tmp))
-
-```
-
 The tables below show this classification, as proportions of the entire survey samples, and of the selected farm samples.
 
 
