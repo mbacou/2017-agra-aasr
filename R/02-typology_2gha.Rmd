@@ -1,6 +1,6 @@
 ## Ghana
 
-```{r, include=F}
+```{r, include=FALSE}
 
 load("../tmp/2017-agra-aasr_GHA.RData")
 
@@ -664,6 +664,9 @@ spplot(g2[g2$svyCode=="gha-glss5",], zcol="ez")
 spplot(g2[g2$svyCode=="gha-glss6",], zcol="ez")
 # => OK
 
+# Save for SpatialDev
+shapefile(g2[g2$svyCode=="gha-glss6",], "~/Data/GHA-GLSS6/maps/gha-glss6-glss5_L2.shp")
+
 ```
 
 ```{r gha-typo, eval=FALSE}
@@ -987,6 +990,228 @@ summary(gha$class9)
 
 ```
 
+```{r gha-est, eval=FALSE}
+
+# - GLSS4: EAs were first stratified into 3 ecological zones (Coastal, Forest,
+# Savannah), and then within each zone further stratification was done into rural or
+# urban areas 
+# - GLSS5: EAs were first stratified into 10 administrative regions;
+# within each region EAs were further sub-divided into rural or urban areas; EAs were
+# also classified into  ecological zones and inclusion of Accra (GAMA) so that the
+# survey results may be presented across 1) Coastal, 2) Forest, and 3) Northern
+# Savannah, and 4) Accra. 
+# - GLSS6: EAs were allocated into 10 regions using
+# probability proportional to population size (PPS), then further divided into urban
+# and rural localities.
+#
+# GLSS4 (from doco): to obtain national estimates, the sample figures have to be
+# grossed up by the appropriate factor. The 5998 households covered in the GLSS 4
+# contained 25,694 individuals and an average household size of 4.3. Using the 1984
+# population figure of 12.1 million (mid-March 1984) and the official growth rate of
+# 2.6 the projected March 1999 population is about 18.3 million. This gives a grossing
+# up multiplier of 712 (18.3 million divided by 25,964). The corresponding multiplier,
+# when the weights are applied, is 708.
+
+# TODO => looks to me like weights need to be scaled (see doco)
+gha[survey=="1998/99", weight := weight*708]
+
+# Define 2-stage stratified survey designs, one for each wave
+gha.svy <- list(
+  `gha4` = svydesign(~clust+hhid, strata=~rural, w=~weight, nest=T,
+    data=gha[survey=="1998/99"]),
+  `gha5` =  svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2005/06"]),
+  `gha6` = svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2012/13"])
+)
+
+# Same using IFPRI's data (note vars `cluster` and `ez` are missing from this dataset)
+# so measures of errors will be slightly off
+gha.xtra.svy <- list (
+  `gha4` = svydesign(~hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha.xtra[survey=="1998/99"]),
+  `gha5` = svydesign(~hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha.xtra[survey=="2005/06"]),
+  `gha6` = svydesign(~hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha.xtra[survey=="2012/13"])
+)
+
+# Verify sampling designs
+summary(gha.svy[[1]])
+# Stratified 2 - level Cluster Sampling design (with replacement)
+# With (300, 5998) clusters.
+# svydesign(~clust + hhid, strata = ~rural, w = ~weight, nest = T, 
+#     data = gha[survey == "1998/99"])
+# Probabilities:
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# 0.0002348 0.0012440 0.0016620 0.0019600 0.0022330 0.0111600 
+# First-level Stratum Sizes: 
+#            rural urban
+# obs         3799  2199
+# design.PSU   190   110
+# actual.PSU   190   110
+
+summary(gha.svy[[2]])
+summary(gha.svy[[3]])
+
+# Subset survey sample to farms
+gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
+
+# Subset survey sample to only SHF (note that they exclude farms with no `croparea`)
+gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
+
+# Verify sampling design (e.g. total population)
+for (i in gha.svy) print(svytotal(~hhsize_imp, i, na.rm=T)/1E6)
+#             total     SE
+# hhsize_imp 18.215 749774
+#             total     SE
+# hhsize_imp 22.075 410936
+#             total     SE
+# hhsize_imp 26.107 573636
+
+gha[survey=="1998/99", summary(weight)]
+gha[survey=="2005/06", sum(weight), by=rural]
+
+gha[survey=="1998/99", sum(is.na(hhsize))]
+# => a few missing `hhsize` in GLSS4, should impute with region median
+tmp <- gha[, median(hhsize, na.rm=T), keyby=.(survey, region)]
+setkey(gha, survey, region)
+gha[tmp, hhsize_imp := ifelse(is.na(hhsize), V1, hhsize)]
+
+for (i in gha.svy) print(svytotal(~I(!is.na(croparea_clas)), i, na.rm=T)/1E6)
+#                                total     SE
+# I(!is.na(croparea_clas))FALSE 1.4425 121648
+# I(!is.na(croparea_clas))TRUE  2.8032 122597
+#                                total    SE
+# I(!is.na(croparea_clas))FALSE 2.2696 86031
+# I(!is.na(croparea_clas))TRUE  3.2685 89771
+#                                total     SE
+# I(!is.na(croparea_clas))FALSE 3.5728 123995
+# I(!is.na(croparea_clas))TRUE  3.0287  88303
+
+for (i in gha.svy.farm) svymean(~croparea_4ha, gha.svy.farm, na.rm=T)
+#                         mean     SE
+# croparea_4ha<= 4 ha 0.971845 0.0034
+# croparea_4ha> 4 ha  0.028155 0.0034
+
+svytotal(~hhsize, gha.svy.shf, na.rm=T)
+#            total      SE
+# hhsize 106349144 4497228
+
+svymean(~cropsales_sh, gha.svy.farm, na.rm=T)
+#                mean     SE
+# cropsales_sh 0.1141 0.0087
+
+svyby(~cropsales_sh, ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
+#         croparea_4ha cropsales_sh         se
+# <= 4 ha      <= 4 ha    0.1220143 0.00648625
+# > 4 ha        > 4 ha    0.1768049 0.04914111
+
+svyby(~cropsales_sh, ~croparea_4ha, gha.svy.farm, svyquantile, quantiles=.5, ci=T, na.rm=T)*100
+#         croparea_4ha cropsales_sh          se
+# <= 4 ha           NA    0.0771759 0.009096591
+# > 4 ha            NA    0.2983541 0.297538378
+
+svyby(~agsalespc, ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
+#         croparea_4ha agsalespc       se
+# <= 4 ha      <= 4 ha   87756.2 13964.07
+# > 4 ha        > 4 ha  140465.3 44667.0
+
+svymean(~I(noaggross_sh*100), subset(gha.svy.farm, !is.na(croparea)), na.rm=T)
+#                         mean     SE
+# I(noaggross_sh * 100) 22.044 0.0127
+# I(noaggross_sh * 100) 17.446 1.1725
+
+svyquantile(~I(noaggross_sh*100), gha.svy.farm, .5, na.rm=T)
+#                             0.5
+# I(noaggross_sh * 100) 0.8265929
+
+svyby(~I(noaggross_sh*100), ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
+#         croparea_4ha I(noaggross_sh * 100)       se
+# <= 4 ha      <= 4 ha              17.58628 1.190880
+# > 4 ha        > 4 ha              12.53712 3.285989
+
+svyby(~I(noaggross_sh*100), ~croparea_4ha, gha.svy.farm, svyquantile, .5, ci=T, na.rm=T)
+#         croparea_4ha I(noaggross_sh * 100)         se
+# <= 4 ha      <= 4 ha             0.6300151 0.08870994
+# > 4 ha        > 4 ha             0.3270542 0.12108961
+
+```
+
+```{r clustering, eval=FALSE}
+
+## Clustering
+library(mclust)
+tmp <- gha[wave=="wave 6" & croparea_imp>0, .(cropsales_sh, naggross_sh)]
+tmp <- na.omit(tmp)
+d <- dist(tmp, method="euclidean")
+fit <- hclust(d, method="ward.D")
+plot(fit, hang=-1)
+groups <- cutree(fit, k=4) # cut tree into 5 clusters
+# draw dendogram with red borders around the 5 clusters 
+rect.hclust(fit, k=4, border="red")
+
+fit.any <- fit
+fit.3 <- Mclust(tmp, G=3)
+summary(fit.3) # display the best model
+
+plot(fit.3, what="BIC")
+plot(fit.3, what="classification")
+plot(fit.3, what="density", type="image", col="dodgerblue3", grid=100)
+
+table(fit.3$classification)
+# -- with croparea_imp 
+#   1    2    3 
+# 695 3927 2827 
+# -- without croparea_imp
+#    1    2    3 
+# 3155  681 3613 
+# -- croparea_imp > 0
+#    1    2    3 
+# 3740  832 4539 
+
+tmp <- gha[wave=="wave 6" & croparea_imp>0]
+tmp <- tmp[!is.na(croparea_imp) & !is.na(naggross_sh) & !is.na(cropsales_sh) & croparea_imp>0]
+tmp[, class := fit.3$classification]
+
+tmp.svy <- svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=tmp)
+
+tmp.tab <- svyCrossTab(list(~croparea_imp, ~naggross_sh, ~cropsales_sh), ~class, tmp.svy, quantiles=c(.25,.5,.75))
+
+svyby(~croparea_imp+naggross_sh+cropsales_sh, ~class, tmp.svy, svyquantile, .5, ci=T)
+# -- with croparea
+#                 mean     SE
+# croparea_imp 1.36304 0.0246
+# naggross_sh  0.50632 0.0133
+# cropsales_sh 0.37114 0.0109
+# -- without croparea
+
+# -- with croparea
+#   class croparea_imp naggross_sh cropsales_sh se.croparea_imp se.naggross_sh se.cropsales_sh
+# 1     1    0.2023428   1.0000000    0.0000000      0.01571201    0.000000000      0.00000000
+# 2     2    1.2201491   0.0000000    0.4986546      0.05872927    0.000000000      0.01687941
+# 3     3    1.2376537   0.9786308    0.2236789      0.10323799    0.003734157      0.04560543
+# -- without croparea
+#   class croparea_imp naggross_sh cropsales_sh se.croparea_imp se.naggross_sh se.cropsales_sh
+# 1     1    0.2023428   1.0000000    0.0000000      0.01571201    0.000000000      0.00000000
+# 2     2    1.2201491   0.0000000    0.4986546      0.05872927    0.000000000      0.01687941
+# 3     3    1.2376537   0.9786308    0.2236789      0.10323799    0.003734157      0.04560543
+# -- croparea_imp > 0
+#   class croparea_imp naggross_sh cropsales_sh se.croparea_imp se.naggross_sh se.cropsales_sh
+# 1     1     1.214057   0.9924091    0.0000000      0.08401792    0.001991042     0.007052341
+# 2     2     1.618742   0.4548548    0.5119305      0.12154692    0.008955172     0.035752809
+# 3     3     1.618742   0.0000000    0.5225783      0.10104747    0.000000000     0.014631279
+
+svyby(~croparea_imp+naggross_sh+cropsales_sh, ~class, tmp.svy, svymean, na.rm=T)
+#   class croparea_imp naggross_sh cropsales_sh se.croparea_imp se.naggross_sh se.cropsales_sh
+# 1     1     2.123869  0.95205101    0.2709402      0.07795532    0.002294182      0.01383612
+# 2     2     2.513138  0.46917690    0.4815426      0.16263990    0.006067555      0.01969218
+# 3     3     2.591977  0.02566287    0.4931233      0.10819529    0.001442684      0.01067543
+
+```
+
+
 
 ```{r gha-save, eval=FALSE}
 
@@ -996,11 +1221,13 @@ summary(gha$class9)
 
 # Keep only combined datasets
 save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars.inc, vars.char, pplot,
+  gha.svy, gha.svy.farm, gha.svy.shf,
   file="./tmp/2017-agra-aasr_GHA_merged.RData")
 
 # Save workspace
-rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, summaryname)
+rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, summaryname, svyCrossTab)
 save.image("./tmp/2017-agra-aasr_GHA.RData")
+
 
 ```
 
@@ -1309,9 +1536,9 @@ plot(svytable(~croparea_4ha+class9, gha.svy.shf), main=NA, las=1, col=27,
 ```
 
 
-```{r tab1, eval=F, results="asis"}
+```{r gha-tab1, results="asis"}
 
-tmp <- svymean(~I(interaction(croparea_4ha, cropsales_clas, noaggross_clas)), gha.svy.farm, na.rm=T)
+tmp <- svymean(~I(interaction(cropsales_clas, naggross_clas)), subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), na.rm=T)
 tmp.cv <- confint(tmp)
 tmp <- cbind(as.data.table(tmp*100), as.data.table(tmp.cv*100))
 tmp[`2.5 %`<0, `2.5 %` := 0]
@@ -1319,16 +1546,82 @@ tmp <- tmp[, lapply(.SD, function(x) format(x, digits=0, nsmall=1, scientific=F)
 tmp[, confint := paste(`2.5 %`, `97.5 %`, sep=" - ")]
 
 tmp[, `:=`(
-  croparea_4ha = factor(rep(levels(gha$croparea_4ha), 9)),
-  cropsales_clas = factor(rep(levels(gha$cropsales_clas), each=2, 3), levels=c("LoC", "MeC", "HiC")),
-  noaggross_clas = factor(rep(levels(gha$noaggross_clas), each=6, 1), levels=c("LoD", "MeD", "HiD"))
+  cropsales_clas = factor(rep(levels(gha$cropsales_clas), each=1, 3), levels=c("LoC", "MeC", "HiC")),
+  naggross_clas = factor(rep(levels(gha$naggross_clas), each=3, 1), levels=c("LoD", "MeD", "HiD"))
   )]
 
-table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories (percent)")
-html(tabular(Heading()*noaggross_clas*(mean+confint)~Heading()*croparea_4ha*Heading()*cropsales_clas*Heading()*identity,
-  data=tmp), rmarkdown=T, 
-  caption="(#tab:tab1) Est. Proportions of Farm Holdings across Categories (percent)")
+table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings below 4 ha across Categories (percent)")
+html(tabular(Heading("Income Diversification")*naggross_clas*(mean+confint)~Heading("Crop Commercialization")*cropsales_clas*Heading()*identity,
+  data=tmp), rmarkdown=T)
 
 ```
+
+```{r gha-tab2, results="asis"}
+
+tmp <- svyCrossTab(list(
+  ~hhsize_imp, 
+  ~I(100*femhead),
+  ~hhlabor,
+  ~I(100*naggross_sh), 
+  ~I(100*cropsales_sh)  
+  ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab2) Est. Characteristics of Farm Holdings below 4 ha across Categories (percent)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+tmp <- svyCrossTab(list(
+  ~aggross, 
+  ~totgross, 
+  ~cropvalue, 
+  ~cropsales,
+  ~totlvstprod,
+  ~totlivsold
+  ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3) Est. Characteristics of Farm Holdings below 4 ha across Categories (percent)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+```
+
+
+```{r gha-scratch, eval=FALSE}
+
+tmp <- svyby(~totgross, ~naggross_clas+cropsales_clas, subset(gha.svy[[2]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
+
+tmp <- svyby(~totgross, ~naggross_clas+cropsales_clas, subset(gha.svy[[3]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
+
+tmp <- svyby(~cellphone, ~naggross_clas+cropsales_clas, subset(gha.svy[[2]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
+
+tmp <- svyCrossTab(list(~distroad, ~distpost), ~class9, subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), quantiles=c(.25,.5,.75))
+
+tmp <- svyCrossTab(list(~cellphone, ~runwater), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+par(mfrow=c(1,2), cex=.8)
+svyplot(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha" & rural=="rural"), style="grayhex", basecol="grey10",
+  sample.size=1000, xlab="Income Diversification", ylab="Crop Sales ('000 LCU)")
+
+svyplot(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], rural=="urban"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)")
+
+tmp <- svysmooth(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"))
+lines(tmp, col="red", lwd=2)
+
+svyplot(cropsales~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)", ylim=c(0, 4E6))
+
+svyplot(cropsales~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)", ylim=c(0, 4E6))
+
+tmp <- svysmooth(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"))
+lines(tmp, col="red", lwd=2)
+
+legend("topright", lty=c(1,1), col=c(4), legend=c("Male"), bty="n")
+svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="hex", basecol=41, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
+
+```
+
 
 
