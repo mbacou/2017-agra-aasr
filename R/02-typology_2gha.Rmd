@@ -1255,7 +1255,8 @@ save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars.inc, vars.char, pplot,
   file="./tmp/2017-agra-aasr_GHA_merged.RData")
 
 # Save workspace
-rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, summaryname, svyCrossTab)
+rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, 
+  summaryname, svyCrossTab, svyCrossPlot)
 save.image("./tmp/2017-agra-aasr_GHA.RData")
 
 
@@ -1557,22 +1558,22 @@ Estimated proportions of farm households across classes and categories are shown
 ```
 
 
-```{r ghafig2a, eval=F, fig.cap="Est. Proportions of Farm Holdings across Categories"}
+```{r ghafig2a, fig.cap="Est. Proportions of Farm Holdings across Cultivated Area and Categories"}
 
 par(mfrow=c(1,3), mar=c(3,3,0,.25))
-plot(svytable(~croparea_4ha+cropsales_clas, gha.svy.shf), main=NA, las=1, col=9,
-  ylab="Cultivated Area", xlab="Crop Commercialization 3-class")
-plot(svytable(~croparea_4ha+noaggross_clas, gha.svy.shf), main=NA, las=1, col=36,
-  ylab="Cultivated Area", xlab="Non-Farm Income 3-class")
-plot(svytable(~croparea_4ha+class9, gha.svy.shf), main=NA, las=1, col=27,
-  ylab="Cultivated Area", xlab="Typology 9-class")
+plot(svytable(~croparea_4ha+cropsales_clas, gha.svy[[1]]), main=NA, las=1, col=9,
+  ylab=NA, xlab="Crop Commercialization 3-class")
+plot(svytable(~croparea_4ha+naggross_clas, gha.svy[[1]]), main=NA, las=1, col=36,
+  ylab=NA, xlab="Non-Farm Income 3-class")
+plot(svytable(~croparea_4ha+class9, gha.svy[[1]]), main=NA, las=1, col=27,
+  ylab=NA, xlab="Typology 9-class")
 
 ```
 
 
 ```{r gha-tab1, results="asis"}
 
-tmp <- svymean(~I(interaction(cropsales_clas, naggross_clas)), subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), na.rm=T)
+tmp <- svymean(~I(interaction(cropsales_clas, naggross_clas)), gha.svy.shf[[1]], na.rm=T)
 tmp.cv <- confint(tmp)
 tmp <- cbind(as.data.table(tmp*100), as.data.table(tmp.cv*100))
 tmp[`2.5 %`<0, `2.5 %` := 0]
@@ -1584,7 +1585,7 @@ tmp[, `:=`(
   naggross_clas = factor(rep(levels(gha$naggross_clas), each=3, 1), levels=c("LoD", "MeD", "HiD"))
   )]
 
-table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings below 4 ha across Categories (percent)")
+table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings below 4 ha across Categories (2012/13, percent)")
 html(tabular(Heading("Income Diversification")*naggross_clas*(mean+confint)~Heading("Crop Commercialization")*cropsales_clas*Heading()*identity,
   data=tmp), rmarkdown=T)
 
@@ -1598,9 +1599,9 @@ tmp <- svyCrossTab(list(
   ~hhlabor,
   ~I(100*naggross_sh), 
   ~I(100*cropsales_sh)  
-  ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+  ), ~class9, gha.svy.shf[[1]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab2) Est. Characteristics of Farm Holdings below 4 ha across Categories (percent)")
+table_options(HTMLcaption="(#tab:tab2) Est. Characteristics of Farm Holdings below 4 ha across Categories (2012/13, percent)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
@@ -1609,9 +1610,9 @@ tmp <- svyCrossTab(list(
   #~landshare,
   ~landrent,
   ~croparea_imp
-  ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+  ), ~class9, gha.svy.shf[[1]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha across Categories (ha)")
+table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha across Categories (2012/13, ha)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
@@ -1622,9 +1623,9 @@ tmp <- svyCrossTab(list(
   ~cropsales,
   ~totlvstprod,
   ~totlivsold
-  ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+  ), ~class9, gha.svy.shf[[1]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (Cedis)")
+table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (2012/13, Cedis)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
@@ -1632,26 +1633,26 @@ html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*i
 
 Estimated distributions of key characteristics for farms below 4 ha.
 
-```{r gha-bplot2a, fig.cap="Est. Farm Sizes of Farm Holdings below 4 ha across Categories"}
+```{r gha-bplot2a, fig.cap="Est. Farm Sizes of Farm Holdings below 4 ha across Categories (2012/13, ha)"}
 
 par(cex=.8)
-svyboxplot(landown~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
+svyboxplot(landown~class9, gha.svy.shf[[1]],
   ylab="Est. Land Owned (ha)", ylim=c(0,2), varwidth=T)
 
 ```
 
-```{r gha-bplot2b, fig.cap="Est. Cultivated Area of Farm Holdings below 4 ha across Categories"}
+```{r gha-bplot2b, fig.cap="Est. Cultivated Area of Farm Holdings below 4 ha across Categories (2012/13, ha)"}
 
 par(cex=.8)
-svyboxplot(croparea_imp~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
+svyboxplot(croparea_imp~class9, gha.svy.shf[[1]],
   ylab="Est. Cultivated Area (ha)", ylim=c(0,4), varwidth=T)
 
 ```
 
-```{r gha-bplot2c, fig.cap="Est. Gross Farm Income of Farm Holdings below 4 ha across Categories"}
+```{r gha-bplot2c, fig.cap="Est. Gross Farm Income of Farm Holdings below 4 ha across Categories (2012/13, '000 Cedis)"}
 
 par(cex=.8)
-svyboxplot(I(aggross/1000)~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
+svyboxplot(I(aggross/1000)~class9, gha.svy.shf[[1]],
   ylab="Est. Gross Farm Income ('000 Cedis)", ylim=c(0,8000), varwidth=T)
 
 ```
