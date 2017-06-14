@@ -1590,7 +1590,7 @@ tmp <- svyCrossTab(list(
   ~totlivsold
   ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab4) Est. Production and Income of Farm Holdings below 4 ha across Categories (percent)")
+table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (Cedis)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
@@ -1602,7 +1602,7 @@ Estimated distributions of key characteristics for farms below 4 ha.
 
 par(cex=.8)
 svyboxplot(landown~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
-  ylab="Est. Land Owned (ha)", ylim=c(0,4))
+  ylab="Est. Land Owned (ha)", ylim=c(0,2))
 
 ```
 
