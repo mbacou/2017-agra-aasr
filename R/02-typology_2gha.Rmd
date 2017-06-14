@@ -469,6 +469,36 @@ gha[, summary(weight)]
 # 0.127  113.600  338.000  386.100  571.900 3476.000 
 # => OK
 
+
+#####################################################################################
+# GLSS5 and GLSS6 - Input Uses
+#####################################################################################
+# Received from Eduardo on 2017/06/10 at
+# `~/Data/GHA-GLSS6/temp/maggie_reduced_march10_2017.dta`
+tmp <- read.dta("~/Data/GHA-GLSS6/temp/maggie_reduced_march10_2017.12.dta")
+gha.lbl <- rbind(gha.lbl, data.table(
+  varCode=names(tmp),
+  varLabel=attr(tmp, "var.labels"),
+  source="maggie_reduced_march10_2017.dta"), fill=T)
+
+tmp <- data.table(tmp)
+tmp[, .N, keyby=surveyr]
+#    surveyr     N
+# 1:    2005  8687
+# 2:    2013 16772
+
+tmp[surveyr==2013, summary(hhid)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000  
+
+gha[survey=="2012/13", summary(hhid)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000 
+# => seems OK
+
+
+
+
 ```
 
 ```{r gha-geo, eval=FALSE}
@@ -665,7 +695,7 @@ spplot(g2[g2$svyCode=="gha-glss6",], zcol="ez")
 # => OK
 
 # Save for SpatialDev
-shapefile(g2[g2$svyCode=="gha-glss6",], "~/Data/GHA-GLSS6/maps/gha-glss6-glss5_L2.shp")
+shapefile(g2[g2$svyCode=="gha-glss6",], "~/Data/GHA-GLSS6/maps/gha-glss6-svyMap_L2.shp")
 
 ```
 
@@ -1512,15 +1542,19 @@ Estimated proportions of farm households across classes and categories are shown
 
 ### Key Results
 
-> Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
-> 
-> * there are **33M** households in Ghana
-> * **58.8%** (**19.2M**) generate a revenue from farming (wages, rents, crops, livestock, and/or fish)
-> * **97%** (**16M**) of farm holdings are *small*
-> * corresponding to a beneficiary population of **107M**
-> * crop commercialization is low at **12.2%** for smallholdings (below 4 ha) and **17.7%** for larger holdings (over 4 ha) on average. Median rates are much smaller however with **0.07%** for smallholdings and **0.30%** for larger holdings.
-> * income diversification in farm households is **17%** on average (**18%** for smallholdings and **13%** for larger holdings) (i.e. off-farm income is 17% on average), but medians off-farm incomes are negligible at **0.83%** (**0.63%** for smallholdings and **0.33%** for larger holdings).
-> 
+```{r, eval=F}
+
+# > Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
+# > 
+# > * there are **33M** households in Ghana
+# > * **58.8%** (**19.2M**) generate a revenue from farming (wages, rents, crops, livestock, and/or fish)
+# > * **97%** (**16M**) of farm holdings are *small*
+# > * corresponding to a beneficiary population of **107M**
+# > * crop commercialization is low at **12.2%** for smallholdings (below 4 ha) and **17.7%** for larger holdings (over 4 ha) on average. Median rates are much smaller however with **0.07%** for smallholdings and **0.30%** for larger holdings.
+# > * income diversification in farm households is **17%** on average (**18%** for smallholdings and **13%** for larger holdings) (i.e. off-farm income is 17% on average), but medians off-farm incomes are negligible at **0.83%** (**0.63%** for smallholdings and **0.33%** for larger holdings).
+# > 
+  
+```
 
 
 ```{r ghafig2a, eval=F, fig.cap="Est. Proportions of Farm Holdings across Categories"}
