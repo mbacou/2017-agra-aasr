@@ -1636,7 +1636,7 @@ Estimated distributions of key characteristics for farms below 4 ha.
 
 par(cex=.8)
 svyboxplot(landown~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
-  ylab="Est. Land Owned (ha)", ylim=c(0,2))
+  ylab="Est. Land Owned (ha)", ylim=c(0,2), varwidth=T)
 
 ```
 
@@ -1644,7 +1644,7 @@ svyboxplot(landown~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
 
 par(cex=.8)
 svyboxplot(croparea_imp~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
-  ylab="Est. Cultivated Area (ha)", ylim=c(0,4))
+  ylab="Est. Cultivated Area (ha)", ylim=c(0,4), varwidth=T)
 
 ```
 
@@ -1652,7 +1652,7 @@ svyboxplot(croparea_imp~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
 
 par(cex=.8)
 svyboxplot(I(aggross/1000)~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
-  ylab="Est. Gross Farm Income ('000 Cedis)", ylim=c(0,8000))
+  ylab="Est. Gross Farm Income ('000 Cedis)", ylim=c(0,8000), varwidth=T)
 
 ```
 
