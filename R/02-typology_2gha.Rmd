@@ -1586,7 +1586,7 @@ tmp[, `:=`(
   )]
 
 table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings below 4 ha across Categories (2012/13, percent)")
-html(tabular(Heading("Income Diversification")*naggross_clas*(mean+confint)~Heading("Crop Commercialization")*cropsales_clas*Heading()*identity,
+html(tabular(Heading("Income Diversification")*naggross_clas*(mean+`95% CI`=confint)~Heading("Crop Commercialization")*cropsales_clas*Heading()*identity,
   data=tmp), rmarkdown=T)
 
 ```
