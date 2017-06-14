@@ -1571,6 +1571,17 @@ html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*i
   data=tmp), rmarkdown=T)
 
 tmp <- svyCrossTab(list(
+  ~landown,
+  #~landshare,
+  ~landrent,
+  ~croparea_imp
+  ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha across Categories (ha)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+tmp <- svyCrossTab(list(
   ~aggross, 
   ~totgross, 
   ~cropvalue, 
@@ -1579,9 +1590,35 @@ tmp <- svyCrossTab(list(
   ~totlivsold
   ), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab3) Est. Characteristics of Farm Holdings below 4 ha across Categories (percent)")
+table_options(HTMLcaption="(#tab:tab4) Est. Production and Income of Farm Holdings below 4 ha across Categories (percent)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
+
+```
+
+Estimated distributions of key characteristics for farms below 4 ha.
+
+```{r gha-bplot2a, fig.cap="Est. Farm Sizes of Farm Holdings below 4 ha across Categories"}
+
+par(cex=.8)
+svyboxplot(landown~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
+  ylab="Est. Land Owned (ha)", ylim=c(0,4))
+
+```
+
+```{r gha-bplot2b, fig.cap="Est. Cultivated Area of Farm Holdings below 4 ha across Categories"}
+
+par(cex=.8)
+svyboxplot(croparea_imp~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
+  ylab="Est. Cultivated Area (ha)", ylim=c(0,4))
+
+```
+
+```{r gha-bplot2c, fig.cap="Est. Gross Farm Income of Farm Holdings below 4 ha across Categories"}
+
+par(cex=.8)
+svyboxplot(I(aggross/1000)~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"),
+  ylab="Est. Gross Farm Income ('000 Cedis)", ylim=c(0,8000))
 
 ```
 

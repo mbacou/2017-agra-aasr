@@ -74,7 +74,7 @@ svyCrossPlot <- function(formula, design, breaks="Sturges", bandwidth=NULL, ...)
   
   require(survey)
   
-  n <- levels(ghs$class9)
+  n <- class9
   par(mfrow=c(length(n), 2))
   for (i in n) {
     svyhist(formula, subset(design, class9==i), breaks=breaks,
