@@ -233,7 +233,7 @@ Note that India is missing multiple years of agricultural employment statistics.
 # 
 # ggsave("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", width=6, heigh=4, units="in")
 
-include_graphics("./figs/agg-rutt-1.png")
+include_graphics("./fig/agg-rutt-1.png")
 
 ```
 
