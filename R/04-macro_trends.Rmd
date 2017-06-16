@@ -42,6 +42,7 @@ library(data.table)
 library(ggplot2)
 library(stringr)
 library(viridis)
+library(imputeTS)
 
 reg <- WDI_data[[2]]
 reg <- data.table(reg)
@@ -84,6 +85,7 @@ ggplot(dt[year<2015], aes(year, value, color=Region)) + geom_line() +
 
 ggsave("./out/MB/2017-agra-aasr_WDI_ts.png", width=7, heigh=9, units="in")
 
+#####################################################################################
 # => noticed that `SSA` and `SSA (excluded high income)` are messed up groupings
 # so we need to regenerate regional aggregates by hand, using the correct formulas:
 # - yield = sum(yield*production)/sum(production)
@@ -117,9 +119,10 @@ vars <- c("AG.YLD.CREL.KG", "AG.PRD.CREL.MT",
   "NY.GDP.MKTP.PP.CD", "SP.POP.TOTL",
   #"NV.AGR.TOTL.ZS", "NV.SRV.TETC.ZS", "NV.IND.TOTL.ZS",
   "NV.AGR.TOTL.KD", "NV.SRV.TETC.KD", "NV.IND.TOTL.KD", "NY.GDP.MKTP.KD",
-  "EA.PRD.AGRI.KD",
-  "SL.AGR.EMPL.ZS", "SL.TLF.TOTL.IN")
+  #"EA.PRD.AGRI.KD",
+  "AG.LND.AGRI.K2", "SL.AGR.EMPL.ZS", "SL.TLF.TOTL.IN")
 
+WDIsearch("value added")
 dt = WDI(indicator=vars, country=reg[!is.na(group), unique(iso2c)], start=1990, end=2015)
 dt <- data.table(dt)
 
@@ -136,17 +139,29 @@ dt.group <- dt[, .(
   NV.AGR.TOTL.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.AGR.TOTL.KD), na.rm=T)/sum(ifelse(is.na(NV.AGR.TOTL.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
   NV.SRV.TETC.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.SRV.TETC.KD), na.rm=T)/sum(ifelse(is.na(NV.SRV.TETC.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
   NV.IND.TOTL.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.IND.TOTL.KD), na.rm=T)/sum(ifelse(is.na(NV.IND.TOTL.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
-  EA.PRD.AGRI.KD = sum(, na.rm=T)/sum(, na.rm=T)
+  lABOR.AG.PROD = sum(NV.AGR.TOTL.KD, na.rm=T)/sum(ifelse(is.na(NV.AGR.TOTL.KD), NA, (SL.AGR.EMPL.ZS/100)*SL.TLF.TOTL.IN), na.rm=T),
+  lAND.AG.PROD = sum(NV.AGR.TOTL.KD, na.rm=T)/sum(ifelse(is.na(NV.AGR.TOTL.KD), NA, AG.LND.AGRI.K2), na.rm=T)
 ), by=.(Region, year)]
 
-dt.group <- melt(dt.group, id.vars=1:2)
+# Replace Inf with NA
+dt.group <- dt.group[, lapply(.SD, function(x) ifelse(x==Inf, NA, x))]
+
+# Impute missing by country, by indicator using linear interpolation
+setorder(dt.group, Region, year)
+dt.group.imp <- dt.group[, lapply(.SD, na.interpolation, option="linear"), 
+  .SDcols=-c(1:2), by=Region]
+dt.group.imp <- cbind(year=dt.group$year, dt.group.imp)
+
+dt.group <- melt(dt.group.imp, id.vars=1:2)
 levels(dt.group$variable)
-dt.group[, varLabel := factor(variable, levels=levels(variable), labels=c(
+dt.group[, varLabel := factor(variable, labels=c(
   "Cereal Yield\n(kg/ha)",
   "GDP per Capita\n(PPP, current int. $)",
   "Agriculture\n(value added, % of GDP)",
   "Services\n(value added, % of GDP)",
-  "Industry\n(value added, % of GDP)"))]
+  "Industry\n(value added, % of GDP)",
+  "Agricultural Value Added per Worker",
+  "Agricultural Value Added per Hectare"))]
 
 dt.group[, Region := factor(Region, levels=c(
   "South Africa", "Rest of sub-Saharan Africa (excl. high income)",
@@ -158,7 +173,7 @@ ggplot(dt.group[!varLabel %like% "value added"],
   geom_line() + xlab("") + ylab("") +
   facet_wrap(~str_replace(varLabel, fixed(" ("), "\n("), ncol=1, scales="free_y") +
   scale_color_manual(values=viridis_pal()(6)) +
-  theme_light()
+  theme_bw() + theme(legend.position="bottom")
 
 ggsave("./out/MB/2017-agra-aasr_WDI_ts (corrected).png", width=6.4, heigh=6, units="in")
 
@@ -169,9 +184,27 @@ ggplot(dt.group[varLabel %like% "value added" & Region %like% "Africa"],
   scale_color_manual(name="",
     values=c("darkgreen", "orange", "red"),
     labels=str_replace(levels(dt.group$varLabel)[3:5], fixed(")"), ")\n")) +
-  theme_light()
+  theme_bw() + theme(legend.position="bottom")
 
 ggsave("./out/MB/2017-agra-aasr_WDI_GDP_ts (corrected).png", width=7, heigh=3, units="in")
+
+# Ruttanograms
+dt.rutt <- dcast(dt.group[year %between% c(2000, 2014) & variable %like% ".AG.PROD"], Region+year~variable)
+setnames(dt.rutt, 3:4, c("labor", "land"))
+setorder(dt.rutt, Region, year)
+dt.rutt[, yearLabel := NULL]
+dt.rutt[, yearLabel := ifelse(year==min(year) | year==max(year), year, NA), by=Region]
+
+ggplot(dt.rutt,
+  aes(labor/1000, land/1000, color=Region, group=Region, label=yearLabel)) +
+  geom_path() +
+  geom_point(size=.5) + geom_label(label.size=.1, nudge_x=2, nudge_y=6, show.legend=F) +  
+  xlab("Ag. Value Added per Worker (constant 2000 '000 US$)") + 
+  ylab("Ag. Value Added per Hectare (constant 2000 '000 US$)") +
+  scale_color_manual(values=viridis_pal()(6)) +
+  theme_bw() + theme(legend.position="bottom")
+
+ggsave("./out/MB/2017-agra-aasr_RUTT_ts (corrected).png", width=6, heigh=6, units="in")
 
 # Save data
 fwrite(dt.group, "./out/MB/2017-agra-aasr_WDI_ts (corrected).csv")
@@ -184,9 +217,9 @@ save.image("./tmp/2017-agra-aasr_WDI.RData")
 
 Long-term time series of macro-economic indicators across regions. Note that these series are aggregated using WDI country-level indicators.
 
-```{r agg-ag, fig.cap="Regional Trends in GDP per Capita and Cereal Yield (1990-2015) Source: WDI.", out.height="400px", out.width="790px"}
+```{r agg-ag, fig.cap="Regional Trends in GDP per Capita and Cereal Yield (1990-2015) Source: WDI.", fig.height=4, fig.width=6, dev="png"}
 
-ggplot(dt.group[!varLabel %like% "value added"],
+ggplot(dt.group[varLabel %in% levels(varLabel)[1:2]],
   aes(year, value, color=Region)) +
   geom_line() + xlab("") + ylab("") +
   facet_wrap(~varLabel, nrow=1, scales="free_y") +
@@ -197,7 +230,7 @@ ggplot(dt.group[!varLabel %like% "value added"],
 
 ```
 
-```{r agg-gdp, fig.cap="Regional Trends in Sectoral Value Added (1990-2015) Source: WDI.", out.height="400px", out.width="790px", dev="png"}
+```{r agg-gdp, fig.cap="Regional Trends in Sectoral Value Added (1990-2015) Source: WDI.", fig.height=4, fig.width=6, dev="png"}
 
 ggplot(dt.group[varLabel %like% "value added" & Region %like% "Africa"],
   aes(year, value, color=varLabel)) +
@@ -210,3 +243,20 @@ ggplot(dt.group[varLabel %like% "value added" & Region %like% "Africa"],
 
 ```
 
+Note that India is missing multiple years of agricultural employment statistics. Simple linear interpolation is used to impute these missing values.
+
+```{r agg-rutt, fig.cap="Trends in Land and Labor Productivity (2000-2014). Source: WDI.", fig.height=4, fig.width=6, dev="png"}
+
+ggplot(dt.rutt,
+  aes(labor/1000, land/1000, color=Region, group=Region, label=yearLabel)) +
+  geom_point(size=.5) + geom_label(size=2, nudge_x=1, nudge_y=6, show.legend=F) +  
+  geom_path(na.rm=T) + ylim(0,170) +
+  xlab("Ag. Value Added per Ag. Worker ('000 constant 2000 US$)") + 
+  ylab("Ag. Value Added per Hectare ('000 constant 2000 US$)") +
+  scale_color_manual(name="", 
+    labels=str_replace(levels(dt.group$Region), fixed("("), "\n("),
+    values=viridis_pal()(6)) +
+  theme_bw(base_size=9) + theme(legend.position="right")
+
+
+```
