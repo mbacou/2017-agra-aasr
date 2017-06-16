@@ -2,7 +2,7 @@
 
 ```{r, include=FALSE}
 
-library(plotly)
+library(ggplot2)
 library(stringr)
 library(viridis)
 
@@ -116,7 +116,9 @@ vars <- c("AG.YLD.CREL.KG", "AG.PRD.CREL.MT",
   #"NY.GDP.PCAP.PP.CD",
   "NY.GDP.MKTP.PP.CD", "SP.POP.TOTL",
   #"NV.AGR.TOTL.ZS", "NV.SRV.TETC.ZS", "NV.IND.TOTL.ZS",
-  "NV.AGR.TOTL.KD", "NV.SRV.TETC.KD", "NV.IND.TOTL.KD", "NY.GDP.MKTP.KD")
+  "NV.AGR.TOTL.KD", "NV.SRV.TETC.KD", "NV.IND.TOTL.KD", "NY.GDP.MKTP.KD",
+  "EA.PRD.AGRI.KD",
+  "")
 
 dt = WDI(indicator=vars, country=reg[!is.na(group), unique(iso2c)], start=1990, end=2015)
 dt <- data.table(dt)
@@ -133,7 +135,8 @@ dt.group <- dt[, .(
   NY.GDP.PCAP.PP.CD = sum(ifelse(is.na(SP.POP.TOTL), NA, NY.GDP.MKTP.PP.CD), na.rm=T)/sum(ifelse(is.na(NY.GDP.MKTP.PP.CD), NA, SP.POP.TOTL), na.rm=T),
   NV.AGR.TOTL.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.AGR.TOTL.KD), na.rm=T)/sum(ifelse(is.na(NV.AGR.TOTL.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
   NV.SRV.TETC.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.SRV.TETC.KD), na.rm=T)/sum(ifelse(is.na(NV.SRV.TETC.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
-  NV.IND.TOTL.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.IND.TOTL.KD), na.rm=T)/sum(ifelse(is.na(NV.IND.TOTL.KD), NA, NY.GDP.MKTP.KD), na.rm=T)
+  NV.IND.TOTL.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.IND.TOTL.KD), na.rm=T)/sum(ifelse(is.na(NV.IND.TOTL.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
+  EA.PRD.AGRI.KD = sum(, na.rm=T)/sum(, na.rm=T)
 ), by=.(Region, year)]
 
 dt.group <- melt(dt.group, id.vars=1:2)
@@ -181,33 +184,29 @@ save.image("./tmp/2017-agra-aasr_WDI.RData")
 
 Long-term time series of macro-economic indicators across regions. Note that these series are aggregated using WDI country-level indicators.
 
-```{r agg-ag, fig.cap="Regional Trends in GDP per Capita and Cereal Yield (1990-2015) Source: WDI.", out.height="600px", out.width="600px"}
+```{r agg-ag, fig.cap="Regional Trends in GDP per Capita and Cereal Yield (1990-2015) Source: WDI.", out.height="400px", out.width="790px"}
 
-p <- ggplot(dt.group[!varLabel %like% "value added"],
+ggplot(dt.group[!varLabel %like% "value added"],
   aes(year, value, color=Region)) +
   geom_line() + xlab("") + ylab("") +
-  facet_wrap(~str_sub(varLabel, 1, 13), ncol=1, scales="free_y") +
+  facet_wrap(~varLabel, nrow=1, scales="free_y") +
   scale_color_manual(name="",
     values=viridis_pal()(6),
     labels=str_replace(levels(dt.group$Region), fixed(" ("), "\n(")) +
-  theme_light()
-
-ggplotly(p, height=600, width=700)
+  theme_bw() + theme(legend.position="bottom")
 
 ```
 
-```{r agg-gdp, fig.cap="Regional Trends in Sectoral Value Added (1990-2015) Source: WDI.", out.height="300px", out.width="600px"}
+```{r agg-gdp, fig.cap="Regional Trends in Sectoral Value Added (1990-2015) Source: WDI.", out.height="400px", out.width="790px", dev="png"}
 
-p <- ggplot(dt.group[varLabel %like% "value added" & Region %like% "Africa"],
+ggplot(dt.group[varLabel %like% "value added" & Region %like% "Africa"],
   aes(year, value, color=varLabel)) +
   geom_line() + xlab("") + ylab("") +
   facet_wrap(~str_sub(Region, 1, 26), nrow=1) +
   scale_color_manual(name="",
     values=c("darkgreen", "orange", "red"),
     labels=str_replace(levels(dt.group$varLabel)[3:5], fixed(")"), ")\n")) +
-  theme_light()
-
-ggplotly(p, height=300, width=790)
+  theme_bw() + theme(legend.position="bottom")
 
 ```
 
