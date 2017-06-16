@@ -118,7 +118,7 @@ vars <- c("AG.YLD.CREL.KG", "AG.PRD.CREL.MT",
   #"NV.AGR.TOTL.ZS", "NV.SRV.TETC.ZS", "NV.IND.TOTL.ZS",
   "NV.AGR.TOTL.KD", "NV.SRV.TETC.KD", "NV.IND.TOTL.KD", "NY.GDP.MKTP.KD",
   "EA.PRD.AGRI.KD",
-  "")
+  "SL.AGR.EMPL.ZS", "SL.TLF.TOTL.IN")
 
 dt = WDI(indicator=vars, country=reg[!is.na(group), unique(iso2c)], start=1990, end=2015)
 dt <- data.table(dt)
