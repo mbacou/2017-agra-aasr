@@ -243,7 +243,6 @@ tmp <- tmp[, lapply(.SD, weighted.mean, wt_w2v1), keyby=.(seg_lvl_6, gender, var
 ```
 
 
-
-## Ethiopia
+## Ghana
 
 [TBD]

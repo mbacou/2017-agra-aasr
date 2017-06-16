@@ -1,0 +1,651 @@
+iso2c,Region,year,variable,value,varLabel
+4E,East Asia & Pacific (excluding high income),1990,AG.YLD.CREL.KG,3793.78488305036,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1991,AG.YLD.CREL.KG,3775.26922558897,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1992,AG.YLD.CREL.KG,3867.07682380831,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1993,AG.YLD.CREL.KG,4020.2342926957,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1994,AG.YLD.CREL.KG,3984.02409900134,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1995,AG.YLD.CREL.KG,4066.04381623254,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1996,AG.YLD.CREL.KG,4241.50864921892,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1997,AG.YLD.CREL.KG,4193.95479089131,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1998,AG.YLD.CREL.KG,4294.52541018554,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1999,AG.YLD.CREL.KG,4288.04043756567,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2000,AG.YLD.CREL.KG,4198.40123216146,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2001,AG.YLD.CREL.KG,4241.34942458264,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2002,AG.YLD.CREL.KG,4327.47732017456,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2003,AG.YLD.CREL.KG,4328.56137175333,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2004,AG.YLD.CREL.KG,4561.67694985976,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2005,AG.YLD.CREL.KG,4604.70095799016,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2006,AG.YLD.CREL.KG,4744.30884956617,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2007,AG.YLD.CREL.KG,4719.03986227165,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2008,AG.YLD.CREL.KG,4893.73755826886,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2009,AG.YLD.CREL.KG,4850.07922203089,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2010,AG.YLD.CREL.KG,4907.91716645438,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2011,AG.YLD.CREL.KG,5050.73373225466,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2012,AG.YLD.CREL.KG,5171.77840504764,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2013,AG.YLD.CREL.KG,5220.8080719174,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2014,AG.YLD.CREL.KG,5257.19108828393,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),2015,AG.YLD.CREL.KG,,Cereal Yield (kg/ha)
+CN,China,1990,AG.YLD.CREL.KG,4320.9,Cereal Yield (kg/ha)
+CN,China,1991,AG.YLD.CREL.KG,4226.8,Cereal Yield (kg/ha)
+CN,China,1992,AG.YLD.CREL.KG,4361.6,Cereal Yield (kg/ha)
+CN,China,1993,AG.YLD.CREL.KG,4562.1,Cereal Yield (kg/ha)
+CN,China,1994,AG.YLD.CREL.KG,4504.9,Cereal Yield (kg/ha)
+CN,China,1995,AG.YLD.CREL.KG,4659.3,Cereal Yield (kg/ha)
+CN,China,1996,AG.YLD.CREL.KG,4891.5,Cereal Yield (kg/ha)
+CN,China,1997,AG.YLD.CREL.KG,4814.1,Cereal Yield (kg/ha)
+CN,China,1998,AG.YLD.CREL.KG,4952.8,Cereal Yield (kg/ha)
+CN,China,1999,AG.YLD.CREL.KG,4944.9,Cereal Yield (kg/ha)
+CN,China,2000,AG.YLD.CREL.KG,4752.6,Cereal Yield (kg/ha)
+CN,China,2001,AG.YLD.CREL.KG,4800.3,Cereal Yield (kg/ha)
+CN,China,2002,AG.YLD.CREL.KG,4869.1,Cereal Yield (kg/ha)
+CN,China,2003,AG.YLD.CREL.KG,4872.9,Cereal Yield (kg/ha)
+CN,China,2004,AG.YLD.CREL.KG,5186.8,Cereal Yield (kg/ha)
+CN,China,2005,AG.YLD.CREL.KG,5224.6,Cereal Yield (kg/ha)
+CN,China,2006,AG.YLD.CREL.KG,5424.3,Cereal Yield (kg/ha)
+CN,China,2007,AG.YLD.CREL.KG,5319.9,Cereal Yield (kg/ha)
+CN,China,2008,AG.YLD.CREL.KG,5547.6,Cereal Yield (kg/ha)
+CN,China,2009,AG.YLD.CREL.KG,5447.5,Cereal Yield (kg/ha)
+CN,China,2010,AG.YLD.CREL.KG,5526.7,Cereal Yield (kg/ha)
+CN,China,2011,AG.YLD.CREL.KG,5707,Cereal Yield (kg/ha)
+CN,China,2012,AG.YLD.CREL.KG,5828.4,Cereal Yield (kg/ha)
+CN,China,2013,AG.YLD.CREL.KG,5889.4,Cereal Yield (kg/ha)
+CN,China,2014,AG.YLD.CREL.KG,5886.4,Cereal Yield (kg/ha)
+CN,China,2015,AG.YLD.CREL.KG,,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1990,AG.YLD.CREL.KG,3674.85854326202,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1991,AG.YLD.CREL.KG,3662.9264137807,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1992,AG.YLD.CREL.KG,3756.09534324211,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1993,AG.YLD.CREL.KG,3867.00432381111,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1994,AG.YLD.CREL.KG,3829.526118537,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1995,AG.YLD.CREL.KG,3911.33905196179,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1996,AG.YLD.CREL.KG,4073.46609455757,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1997,AG.YLD.CREL.KG,4022.72954835272,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1998,AG.YLD.CREL.KG,4094.38805492575,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,1999,AG.YLD.CREL.KG,4108.87092079246,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2000,AG.YLD.CREL.KG,4000.9127143603,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2001,AG.YLD.CREL.KG,4061.92467484881,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2002,AG.YLD.CREL.KG,4004.26176174895,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2003,AG.YLD.CREL.KG,4070.463819277,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2004,AG.YLD.CREL.KG,4229.47108652998,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2005,AG.YLD.CREL.KG,4340.04527938455,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2006,AG.YLD.CREL.KG,4351.70663794153,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2007,AG.YLD.CREL.KG,4331.17612680073,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2008,AG.YLD.CREL.KG,4529.27264945807,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2009,AG.YLD.CREL.KG,4504.31221188674,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2010,AG.YLD.CREL.KG,4573.61398593585,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2011,AG.YLD.CREL.KG,4748.69892150474,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2012,AG.YLD.CREL.KG,4868.26787853188,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2013,AG.YLD.CREL.KG,4913.54996515769,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2014,AG.YLD.CREL.KG,4958.45610424284,Cereal Yield (kg/ha)
+Z4,East Asia & Pacific,2015,AG.YLD.CREL.KG,,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1990,AG.YLD.CREL.KG,1053.16249842989,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1991,AG.YLD.CREL.KG,1063.94105816092,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1992,AG.YLD.CREL.KG,904.863454896268,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1993,AG.YLD.CREL.KG,1060.13650405155,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1994,AG.YLD.CREL.KG,1043.9971160861,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1995,AG.YLD.CREL.KG,990.877661855247,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1996,AG.YLD.CREL.KG,1137.37774244715,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1997,AG.YLD.CREL.KG,1053.55432062741,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1998,AG.YLD.CREL.KG,1071.63575275432,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),1999,AG.YLD.CREL.KG,1108.99545554343,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2000,AG.YLD.CREL.KG,1130.84220782606,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2001,AG.YLD.CREL.KG,1129.46979941784,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2002,AG.YLD.CREL.KG,1134.53138341335,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2003,AG.YLD.CREL.KG,1112.20298027853,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2004,AG.YLD.CREL.KG,1175.10821222809,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2005,AG.YLD.CREL.KG,1166.40464446959,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2006,AG.YLD.CREL.KG,1236.65092864867,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2007,AG.YLD.CREL.KG,1216.766038126,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2008,AG.YLD.CREL.KG,1299.02854759603,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2009,AG.YLD.CREL.KG,1308.30725093156,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2010,AG.YLD.CREL.KG,1385.17628476584,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2011,AG.YLD.CREL.KG,1293.27652137532,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2012,AG.YLD.CREL.KG,1412.78924937293,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2013,AG.YLD.CREL.KG,1344.6517342217,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2014,AG.YLD.CREL.KG,1451.69798032468,Cereal Yield (kg/ha)
+ZF,Sub-Saharan Africa (excluding high income),2015,AG.YLD.CREL.KG,,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1990,AG.YLD.CREL.KG,1053.16249842989,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1991,AG.YLD.CREL.KG,1063.94105816092,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1992,AG.YLD.CREL.KG,904.863454896268,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1993,AG.YLD.CREL.KG,1060.13650405155,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1994,AG.YLD.CREL.KG,1043.9971160861,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1995,AG.YLD.CREL.KG,990.877661855247,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1996,AG.YLD.CREL.KG,1137.37774244715,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1997,AG.YLD.CREL.KG,1053.55432062741,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1998,AG.YLD.CREL.KG,1071.63575275432,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,1999,AG.YLD.CREL.KG,1108.99545554343,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2000,AG.YLD.CREL.KG,1130.84220782606,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2001,AG.YLD.CREL.KG,1129.46979941784,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2002,AG.YLD.CREL.KG,1134.53138341335,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2003,AG.YLD.CREL.KG,1112.20298027853,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2004,AG.YLD.CREL.KG,1175.10821222809,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2005,AG.YLD.CREL.KG,1166.40464446959,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2006,AG.YLD.CREL.KG,1236.65092864867,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2007,AG.YLD.CREL.KG,1216.766038126,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2008,AG.YLD.CREL.KG,1299.02854759603,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2009,AG.YLD.CREL.KG,1308.30725093156,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2010,AG.YLD.CREL.KG,1385.17628476584,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2011,AG.YLD.CREL.KG,1293.27652137532,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2012,AG.YLD.CREL.KG,1412.78924937293,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2013,AG.YLD.CREL.KG,1344.6517342217,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2014,AG.YLD.CREL.KG,1451.69798032468,Cereal Yield (kg/ha)
+ZG,Sub-Saharan Africa,2015,AG.YLD.CREL.KG,,Cereal Yield (kg/ha)
+4E,East Asia & Pacific (excluding high income),1990,NY.GDP.PCAP.PP.CD,1436.08119227347,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1991,NY.GDP.PCAP.PP.CD,1574.53441210375,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1992,NY.GDP.PCAP.PP.CD,1751.52136449247,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1993,NY.GDP.PCAP.PP.CD,1954.22865305789,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1994,NY.GDP.PCAP.PP.CD,2175.86937648466,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1995,NY.GDP.PCAP.PP.CD,2403.66566690122,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1996,NY.GDP.PCAP.PP.CD,2630.35928203197,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1997,NY.GDP.PCAP.PP.CD,2821.61165102037,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1998,NY.GDP.PCAP.PP.CD,2844.63978194365,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1999,NY.GDP.PCAP.PP.CD,3024.83330590026,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2000,NY.GDP.PCAP.PP.CD,3288.28594565251,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2001,NY.GDP.PCAP.PP.CD,3547.98148694653,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2002,NY.GDP.PCAP.PP.CD,3844.09995491211,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2003,NY.GDP.PCAP.PP.CD,4218.75976339391,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2004,NY.GDP.PCAP.PP.CD,4674.67200256468,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2005,NY.GDP.PCAP.PP.CD,5237.95007362467,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2006,NY.GDP.PCAP.PP.CD,5916.35506175937,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2007,NY.GDP.PCAP.PP.CD,6748.16291995304,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2008,NY.GDP.PCAP.PP.CD,7390.02370000612,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2009,NY.GDP.PCAP.PP.CD,7939.92595736263,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2010,NY.GDP.PCAP.PP.CD,8746.59924161899,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2011,NY.GDP.PCAP.PP.CD,9596.87278943295,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2012,NY.GDP.PCAP.PP.CD,10426.6974360028,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2013,NY.GDP.PCAP.PP.CD,11266.6986745183,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2014,NY.GDP.PCAP.PP.CD,12143.459296606,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),2015,NY.GDP.PCAP.PP.CD,12967.7166525144,"GDP per Capita (PPP, current int. $)"
+CN,China,1990,NY.GDP.PCAP.PP.CD,986.568444389243,"GDP per Capita (PPP, current int. $)"
+CN,China,1991,NY.GDP.PCAP.PP.CD,1099.05230396832,"GDP per Capita (PPP, current int. $)"
+CN,China,1992,NY.GDP.PCAP.PP.CD,1268.27170757021,"GDP per Capita (PPP, current int. $)"
+CN,China,1993,NY.GDP.PCAP.PP.CD,1461.61044744351,"GDP per Capita (PPP, current int. $)"
+CN,China,1994,NY.GDP.PCAP.PP.CD,1668.58075717199,"GDP per Capita (PPP, current int. $)"
+CN,China,1995,NY.GDP.PCAP.PP.CD,1869.46644952724,"GDP per Capita (PPP, current int. $)"
+CN,China,1996,NY.GDP.PCAP.PP.CD,2070.77175198216,"GDP per Capita (PPP, current int. $)"
+CN,China,1997,NY.GDP.PCAP.PP.CD,2277.20700886889,"GDP per Capita (PPP, current int. $)"
+CN,China,1998,NY.GDP.PCAP.PP.CD,2458.63083103441,"GDP per Capita (PPP, current int. $)"
+CN,China,1999,NY.GDP.PCAP.PP.CD,2664.48521542596,"GDP per Capita (PPP, current int. $)"
+CN,China,2000,NY.GDP.PCAP.PP.CD,2933.31501967982,"GDP per Capita (PPP, current int. $)"
+CN,China,2001,NY.GDP.PCAP.PP.CD,3226.84867956197,"GDP per Capita (PPP, current int. $)"
+CN,China,2002,NY.GDP.PCAP.PP.CD,3551.66389746997,"GDP per Capita (PPP, current int. $)"
+CN,China,2003,NY.GDP.PCAP.PP.CD,3961.2741668221,"GDP per Capita (PPP, current int. $)"
+CN,China,2004,NY.GDP.PCAP.PP.CD,4455.20532967429,"GDP per Capita (PPP, current int. $)"
+CN,China,2005,NY.GDP.PCAP.PP.CD,5092.56018929034,"GDP per Capita (PPP, current int. $)"
+CN,China,2006,NY.GDP.PCAP.PP.CD,5883.7197840162,"GDP per Capita (PPP, current int. $)"
+CN,China,2007,NY.GDP.PCAP.PP.CD,6863.98222925066,"GDP per Capita (PPP, current int. $)"
+CN,China,2008,NY.GDP.PCAP.PP.CD,7635.07313882711,"GDP per Capita (PPP, current int. $)"
+CN,China,2009,NY.GDP.PCAP.PP.CD,8374.43285013331,"GDP per Capita (PPP, current int. $)"
+CN,China,2010,NY.GDP.PCAP.PP.CD,9333.12488219983,"GDP per Capita (PPP, current int. $)"
+CN,China,2011,NY.GDP.PCAP.PP.CD,10384.367316917,"GDP per Capita (PPP, current int. $)"
+CN,China,2012,NY.GDP.PCAP.PP.CD,11351.0628425059,"GDP per Capita (PPP, current int. $)"
+CN,China,2013,NY.GDP.PCAP.PP.CD,12367.965864317,"GDP per Capita (PPP, current int. $)"
+CN,China,2014,NY.GDP.PCAP.PP.CD,13439.9076421309,"GDP per Capita (PPP, current int. $)"
+CN,China,2015,NY.GDP.PCAP.PP.CD,14450.7162233394,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1990,NY.GDP.PCAP.PP.CD,3179.49190039514,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1991,NY.GDP.PCAP.PP.CD,3420.85655897095,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1992,NY.GDP.PCAP.PP.CD,3642.76645010507,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1993,NY.GDP.PCAP.PP.CD,3891.72486765793,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1994,NY.GDP.PCAP.PP.CD,4189.12136170935,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1995,NY.GDP.PCAP.PP.CD,4506.52907010616,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1996,NY.GDP.PCAP.PP.CD,4825.5409603951,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1997,NY.GDP.PCAP.PP.CD,5074.52965186286,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1998,NY.GDP.PCAP.PP.CD,5072.36039967579,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,1999,NY.GDP.PCAP.PP.CD,5310.80386966081,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2000,NY.GDP.PCAP.PP.CD,5708.15442086604,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2001,NY.GDP.PCAP.PP.CD,6012.07288663751,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2002,NY.GDP.PCAP.PP.CD,6380.53460133571,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2003,NY.GDP.PCAP.PP.CD,6796.85806191679,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2004,NY.GDP.PCAP.PP.CD,7382.85933330374,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2005,NY.GDP.PCAP.PP.CD,8035.72440588163,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2006,NY.GDP.PCAP.PP.CD,8823.22628504056,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2007,NY.GDP.PCAP.PP.CD,9766.99001086468,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2008,NY.GDP.PCAP.PP.CD,10393.2975246418,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2009,NY.GDP.PCAP.PP.CD,10788.2121030146,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2010,NY.GDP.PCAP.PP.CD,11726.0631231424,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2011,NY.GDP.PCAP.PP.CD,12617.050738921,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2012,NY.GDP.PCAP.PP.CD,13487.7128890902,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2013,NY.GDP.PCAP.PP.CD,14414.5005268083,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2014,NY.GDP.PCAP.PP.CD,15281.0037575526,"GDP per Capita (PPP, current int. $)"
+Z4,East Asia & Pacific,2015,NY.GDP.PCAP.PP.CD,16106.1326987363,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1990,NY.GDP.PCAP.PP.CD,1641.55528607313,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1991,NY.GDP.PCAP.PP.CD,1652.23471643353,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1992,NY.GDP.PCAP.PP.CD,1623.09767064805,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1993,NY.GDP.PCAP.PP.CD,1621.70061728838,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1994,NY.GDP.PCAP.PP.CD,1639.93423262637,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1995,NY.GDP.PCAP.PP.CD,1681.52773535008,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1996,NY.GDP.PCAP.PP.CD,1756.23424756509,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1997,NY.GDP.PCAP.PP.CD,1802.95682837588,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1998,NY.GDP.PCAP.PP.CD,1821.66746730261,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),1999,NY.GDP.PCAP.PP.CD,1843.51743874265,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2000,NY.GDP.PCAP.PP.CD,1903.15674989675,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2001,NY.GDP.PCAP.PP.CD,1975.40987090149,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2002,NY.GDP.PCAP.PP.CD,2012.47852879981,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2003,NY.GDP.PCAP.PP.CD,2100.85033720066,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2004,NY.GDP.PCAP.PP.CD,2358.78929265507,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2005,NY.GDP.PCAP.PP.CD,2500.95002059249,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2006,NY.GDP.PCAP.PP.CD,2686.31534057899,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2007,NY.GDP.PCAP.PP.CD,2873.08821725901,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2008,NY.GDP.PCAP.PP.CD,3007.81946574769,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2009,NY.GDP.PCAP.PP.CD,3046.29591303358,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2010,NY.GDP.PCAP.PP.CD,3171.18842946289,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2011,NY.GDP.PCAP.PP.CD,3291.03426477505,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2012,NY.GDP.PCAP.PP.CD,3385.74488946747,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2013,NY.GDP.PCAP.PP.CD,3516.12856977195,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2014,NY.GDP.PCAP.PP.CD,3653.6877728161,"GDP per Capita (PPP, current int. $)"
+ZF,Sub-Saharan Africa (excluding high income),2015,NY.GDP.PCAP.PP.CD,3711.8719810932,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1990,NY.GDP.PCAP.PP.CD,1642.58457481629,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1991,NY.GDP.PCAP.PP.CD,1653.30696126017,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1992,NY.GDP.PCAP.PP.CD,1624.26572431191,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1993,NY.GDP.PCAP.PP.CD,1622.95052968514,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1994,NY.GDP.PCAP.PP.CD,1641.16042742015,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1995,NY.GDP.PCAP.PP.CD,1682.72937098583,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1996,NY.GDP.PCAP.PP.CD,1757.48585420737,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1997,NY.GDP.PCAP.PP.CD,1804.36835016908,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1998,NY.GDP.PCAP.PP.CD,1823.18978522968,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,1999,NY.GDP.PCAP.PP.CD,1845.05179157362,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2000,NY.GDP.PCAP.PP.CD,1904.70743665904,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2001,NY.GDP.PCAP.PP.CD,1976.91014990101,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2002,NY.GDP.PCAP.PP.CD,2013.97493175256,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2003,NY.GDP.PCAP.PP.CD,2102.23038691285,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2004,NY.GDP.PCAP.PP.CD,2360.09947665353,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2005,NY.GDP.PCAP.PP.CD,2502.40132436672,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2006,NY.GDP.PCAP.PP.CD,2687.91715048579,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2007,NY.GDP.PCAP.PP.CD,2874.87282376643,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2008,NY.GDP.PCAP.PP.CD,3009.52845788749,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2009,NY.GDP.PCAP.PP.CD,3047.94660195278,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2010,NY.GDP.PCAP.PP.CD,3172.91166799737,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2011,NY.GDP.PCAP.PP.CD,3292.90939287315,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2012,NY.GDP.PCAP.PP.CD,3387.7408350271,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2013,NY.GDP.PCAP.PP.CD,3518.22807202521,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2014,NY.GDP.PCAP.PP.CD,3655.83545881855,"GDP per Capita (PPP, current int. $)"
+ZG,Sub-Saharan Africa,2015,NY.GDP.PCAP.PP.CD,3714.06153074115,"GDP per Capita (PPP, current int. $)"
+4E,East Asia & Pacific (excluding high income),1990,NV.AGR.TOTL.ZS,25.0402469069412,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1991,NV.AGR.TOTL.ZS,22.7723678633599,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1992,NV.AGR.TOTL.ZS,20.6343101655701,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1993,NV.AGR.TOTL.ZS,18.7024327537441,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1994,NV.AGR.TOTL.ZS,18.8295958962735,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1995,NV.AGR.TOTL.ZS,18.9043267472247,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1996,NV.AGR.TOTL.ZS,18.5657736813894,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1997,NV.AGR.TOTL.ZS,17.2900848425678,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1998,NV.AGR.TOTL.ZS,16.8467392720916,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1999,NV.AGR.TOTL.ZS,15.9772654557862,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2000,NV.AGR.TOTL.ZS,14.6915179366478,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2001,NV.AGR.TOTL.ZS,14.0618350697849,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2002,NV.AGR.TOTL.ZS,13.5476420506604,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2003,NV.AGR.TOTL.ZS,12.7671229931459,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2004,NV.AGR.TOTL.ZS,13.135556097581,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2005,NV.AGR.TOTL.ZS,11.9186774321782,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2006,NV.AGR.TOTL.ZS,11.0859935184173,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2007,NV.AGR.TOTL.ZS,10.9175888955615,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2008,NV.AGR.TOTL.ZS,10.9927291207418,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2009,NV.AGR.TOTL.ZS,10.6322162681572,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2010,NV.AGR.TOTL.ZS,10.4894938193568,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2011,NV.AGR.TOTL.ZS,10.4641983454734,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2012,NV.AGR.TOTL.ZS,10.3288054341954,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2013,NV.AGR.TOTL.ZS,10.1528135980691,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2014,NV.AGR.TOTL.ZS,9.89187555541007,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2015,NV.AGR.TOTL.ZS,9.60453671018801,"Agriculture (value added, % of GDP)"
+CN,China,1990,NV.AGR.TOTL.ZS,26.5841497597084,"Agriculture (value added, % of GDP)"
+CN,China,1991,NV.AGR.TOTL.ZS,24.0338822845094,"Agriculture (value added, % of GDP)"
+CN,China,1992,NV.AGR.TOTL.ZS,21.3289451911232,"Agriculture (value added, % of GDP)"
+CN,China,1993,NV.AGR.TOTL.ZS,19.3074913380353,"Agriculture (value added, % of GDP)"
+CN,China,1994,NV.AGR.TOTL.ZS,19.4742739655616,"Agriculture (value added, % of GDP)"
+CN,China,1995,NV.AGR.TOTL.ZS,19.5965431961904,"Agriculture (value added, % of GDP)"
+CN,China,1996,NV.AGR.TOTL.ZS,19.3254481045373,"Agriculture (value added, % of GDP)"
+CN,China,1997,NV.AGR.TOTL.ZS,17.895251834661,"Agriculture (value added, % of GDP)"
+CN,China,1998,NV.AGR.TOTL.ZS,17.1590048770182,"Agriculture (value added, % of GDP)"
+CN,China,1999,NV.AGR.TOTL.ZS,16.0648113386717,"Agriculture (value added, % of GDP)"
+CN,China,2000,NV.AGR.TOTL.ZS,14.6762917069289,"Agriculture (value added, % of GDP)"
+CN,China,2001,NV.AGR.TOTL.ZS,13.9834624866164,"Agriculture (value added, % of GDP)"
+CN,China,2002,NV.AGR.TOTL.ZS,13.3014671690325,"Agriculture (value added, % of GDP)"
+CN,China,2003,NV.AGR.TOTL.ZS,12.3489688696133,"Agriculture (value added, % of GDP)"
+CN,China,2004,NV.AGR.TOTL.ZS,12.9166301079707,"Agriculture (value added, % of GDP)"
+CN,China,2005,NV.AGR.TOTL.ZS,11.6414841214635,"Agriculture (value added, % of GDP)"
+CN,China,2006,NV.AGR.TOTL.ZS,10.6257561913702,"Agriculture (value added, % of GDP)"
+CN,China,2007,NV.AGR.TOTL.ZS,10.2830046593246,"Agriculture (value added, % of GDP)"
+CN,China,2008,NV.AGR.TOTL.ZS,10.2508954964626,"Agriculture (value added, % of GDP)"
+CN,China,2009,NV.AGR.TOTL.ZS,9.78619886364613,"Agriculture (value added, % of GDP)"
+CN,China,2010,NV.AGR.TOTL.ZS,9.53019669501245,"Agriculture (value added, % of GDP)"
+CN,China,2011,NV.AGR.TOTL.ZS,9.4345071311991,"Agriculture (value added, % of GDP)"
+CN,China,2012,NV.AGR.TOTL.ZS,9.41994280187887,"Agriculture (value added, % of GDP)"
+CN,China,2013,NV.AGR.TOTL.ZS,9.29519034534386,"Agriculture (value added, % of GDP)"
+CN,China,2014,NV.AGR.TOTL.ZS,9.0599154624255,"Agriculture (value added, % of GDP)"
+CN,China,2015,NV.AGR.TOTL.ZS,8.83272960531281,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1990,NV.AGR.TOTL.ZS,13.3978321052799,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1991,NV.AGR.TOTL.ZS,12.1375971526224,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1992,NV.AGR.TOTL.ZS,11.0855379964701,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1993,NV.AGR.TOTL.ZS,10.1087281357414,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1994,NV.AGR.TOTL.ZS,10.2250919843518,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1995,NV.AGR.TOTL.ZS,10.1266171828387,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1996,NV.AGR.TOTL.ZS,9.96738599725238,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1997,NV.AGR.TOTL.ZS,9.26783248149037,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1998,NV.AGR.TOTL.ZS,9.04916744444765,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,1999,NV.AGR.TOTL.ZS,8.65210016026912,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2000,NV.AGR.TOTL.ZS,7.90675654872455,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2001,NV.AGR.TOTL.ZS,7.58064530254667,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2002,NV.AGR.TOTL.ZS,7.33551681956973,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2003,NV.AGR.TOTL.ZS,6.85877802024663,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2004,NV.AGR.TOTL.ZS,7.01465138094531,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2005,NV.AGR.TOTL.ZS,6.37020674593835,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2006,NV.AGR.TOTL.ZS,5.95670747879434,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2007,NV.AGR.TOTL.ZS,5.81904097499423,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2008,NV.AGR.TOTL.ZS,5.83924469957898,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2009,NV.AGR.TOTL.ZS,5.69182100514796,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2010,NV.AGR.TOTL.ZS,5.65801460493396,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2011,NV.AGR.TOTL.ZS,5.64760712254444,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2012,NV.AGR.TOTL.ZS,5.59148513601795,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2013,NV.AGR.TOTL.ZS,5.49912131896691,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2014,NV.AGR.TOTL.ZS,5.3672957042448,"Agriculture (value added, % of GDP)"
+Z4,East Asia & Pacific,2015,NV.AGR.TOTL.ZS,,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1990,NV.AGR.TOTL.ZS,23.4627521645448,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1991,NV.AGR.TOTL.ZS,24.3782973943808,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1992,NV.AGR.TOTL.ZS,22.3525259456706,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1993,NV.AGR.TOTL.ZS,24.1487539549618,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1994,NV.AGR.TOTL.ZS,24.1100456304723,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1995,NV.AGR.TOTL.ZS,22.7130144075599,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1996,NV.AGR.TOTL.ZS,22.5220022920474,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1997,NV.AGR.TOTL.ZS,23.6072237344758,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1998,NV.AGR.TOTL.ZS,24.4767744094399,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1999,NV.AGR.TOTL.ZS,22.7632009128932,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2000,NV.AGR.TOTL.ZS,19.6039888986162,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2001,NV.AGR.TOTL.ZS,21.2923152440959,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2002,NV.AGR.TOTL.ZS,25.457593176591,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2003,NV.AGR.TOTL.ZS,23.6312970551263,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2004,NV.AGR.TOTL.ZS,21.1237615897956,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2005,NV.AGR.TOTL.ZS,20.9390906837183,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2006,NV.AGR.TOTL.ZS,20.1130703827482,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2007,NV.AGR.TOTL.ZS,19.958565591729,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2008,NV.AGR.TOTL.ZS,20.4283206447473,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2009,NV.AGR.TOTL.ZS,21.5088148514118,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2010,NV.AGR.TOTL.ZS,17.9996924639531,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2011,NV.AGR.TOTL.ZS,17.4122530520378,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2012,NV.AGR.TOTL.ZS,18.3122043894994,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2013,NV.AGR.TOTL.ZS,17.929329189333,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2014,NV.AGR.TOTL.ZS,17.4703012195138,"Agriculture (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2015,NV.AGR.TOTL.ZS,17.6024857233501,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1990,NV.AGR.TOTL.ZS,23.4478255138971,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1991,NV.AGR.TOTL.ZS,24.3624079324261,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1992,NV.AGR.TOTL.ZS,22.3374845616058,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1993,NV.AGR.TOTL.ZS,24.1326778412743,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1994,NV.AGR.TOTL.ZS,24.0933750596011,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1995,NV.AGR.TOTL.ZS,22.6974163784465,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1996,NV.AGR.TOTL.ZS,22.5062846537881,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1997,NV.AGR.TOTL.ZS,23.5901281594179,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1998,NV.AGR.TOTL.ZS,24.4580643339319,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1999,NV.AGR.TOTL.ZS,22.7463951234186,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2000,NV.AGR.TOTL.ZS,19.5899351843272,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2001,NV.AGR.TOTL.ZS,21.2769716357313,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2002,NV.AGR.TOTL.ZS,25.4371919839223,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2003,NV.AGR.TOTL.ZS,23.6125293027959,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2004,NV.AGR.TOTL.ZS,21.1081169973448,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2005,NV.AGR.TOTL.ZS,20.9233785444616,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2006,NV.AGR.TOTL.ZS,20.0979050860726,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2007,NV.AGR.TOTL.ZS,19.9432592449914,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2008,NV.AGR.TOTL.ZS,20.4124413718424,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2009,NV.AGR.TOTL.ZS,21.4916527977612,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2010,NV.AGR.TOTL.ZS,17.9857484944788,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2011,NV.AGR.TOTL.ZS,17.3988167562398,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2012,NV.AGR.TOTL.ZS,18.2976409321666,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2013,NV.AGR.TOTL.ZS,17.915971100319,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2014,NV.AGR.TOTL.ZS,17.4570801974236,"Agriculture (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2015,NV.AGR.TOTL.ZS,17.60248572335,"Agriculture (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1990,NV.SRV.TETC.ZS,34.472080311308,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1991,NV.SRV.TETC.ZS,36.1603836428015,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1992,NV.SRV.TETC.ZS,37.2071810632528,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1993,NV.SRV.TETC.ZS,36.8471147764156,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1994,NV.SRV.TETC.ZS,36.6538132127379,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1995,NV.SRV.TETC.ZS,35.9703545141472,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1996,NV.SRV.TETC.ZS,35.8255202032341,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1997,NV.SRV.TETC.ZS,37.0185638423881,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1998,NV.SRV.TETC.ZS,38.3904847363111,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1999,NV.SRV.TETC.ZS,39.7147219187958,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2000,NV.SRV.TETC.ZS,40.7807477769545,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2001,NV.SRV.TETC.ZS,42.0306943289276,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2002,NV.SRV.TETC.ZS,42.9746508122765,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2003,NV.SRV.TETC.ZS,42.7837771079083,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2004,NV.SRV.TETC.ZS,42.0677333196318,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2005,NV.SRV.TETC.ZS,42.2679655907912,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2006,NV.SRV.TETC.ZS,42.6017329881224,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2007,NV.SRV.TETC.ZS,43.4558123796091,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2008,NV.SRV.TETC.ZS,43.188554625587,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2009,NV.SRV.TETC.ZS,44.6256745756569,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2010,NV.SRV.TETC.ZS,44.8076250907738,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2011,NV.SRV.TETC.ZS,44.8429515758998,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2012,NV.SRV.TETC.ZS,45.8885173953379,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2013,NV.SRV.TETC.ZS,47.1746626264565,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2014,NV.SRV.TETC.ZS,48.1909076273283,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2015,NV.SRV.TETC.ZS,50.4048798161544,"Services (valude added, % of GDP)"
+CN,China,1990,NV.SRV.TETC.ZS,32.3818808980072,"Services (valude added, % of GDP)"
+CN,China,1991,NV.SRV.TETC.ZS,34.4775875231759,"Services (valude added, % of GDP)"
+CN,China,1992,NV.SRV.TETC.ZS,35.5546158230525,"Services (valude added, % of GDP)"
+CN,China,1993,NV.SRV.TETC.ZS,34.5149860399403,"Services (valude added, % of GDP)"
+CN,China,1994,NV.SRV.TETC.ZS,34.3613466975071,"Services (valude added, % of GDP)"
+CN,China,1995,NV.SRV.TETC.ZS,33.6516688158931,"Services (valude added, % of GDP)"
+CN,China,1996,NV.SRV.TETC.ZS,33.5691289672151,"Services (valude added, % of GDP)"
+CN,China,1997,NV.SRV.TETC.ZS,35.0044533651132,"Services (valude added, % of GDP)"
+CN,China,1998,NV.SRV.TETC.ZS,37.0422146709627,"Services (valude added, % of GDP)"
+CN,China,1999,NV.SRV.TETC.ZS,38.5742079669274,"Services (valude added, % of GDP)"
+CN,China,2000,NV.SRV.TETC.ZS,39.7864581307757,"Services (valude added, % of GDP)"
+CN,China,2001,NV.SRV.TETC.ZS,41.2220116522089,"Services (valude added, % of GDP)"
+CN,China,2002,NV.SRV.TETC.ZS,42.246794624269,"Services (valude added, % of GDP)"
+CN,China,2003,NV.SRV.TETC.ZS,42.0270407940504,"Services (valude added, % of GDP)"
+CN,China,2004,NV.SRV.TETC.ZS,41.1819189546231,"Services (valude added, % of GDP)"
+CN,China,2005,NV.SRV.TETC.ZS,41.3347505243731,"Services (valude added, % of GDP)"
+CN,China,2006,NV.SRV.TETC.ZS,41.8156795639781,"Services (valude added, % of GDP)"
+CN,China,2007,NV.SRV.TETC.ZS,42.8559798366072,"Services (valude added, % of GDP)"
+CN,China,2008,NV.SRV.TETC.ZS,42.8166395683464,"Services (valude added, % of GDP)"
+CN,China,2009,NV.SRV.TETC.ZS,44.3300330524628,"Services (valude added, % of GDP)"
+CN,China,2010,NV.SRV.TETC.ZS,44.0737398684794,"Services (valude added, % of GDP)"
+CN,China,2011,NV.SRV.TETC.ZS,44.1648140223004,"Services (valude added, % of GDP)"
+CN,China,2012,NV.SRV.TETC.ZS,45.3065451394736,"Services (valude added, % of GDP)"
+CN,China,2013,NV.SRV.TETC.ZS,46.6966509890727,"Services (valude added, % of GDP)"
+CN,China,2014,NV.SRV.TETC.ZS,47.8371331761841,"Services (valude added, % of GDP)"
+CN,China,2015,NV.SRV.TETC.ZS,50.2356571057046,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1990,NV.SRV.TETC.ZS,47.8326689410197,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1991,NV.SRV.TETC.ZS,48.9801007559035,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1992,NV.SRV.TETC.ZS,50.1093838882892,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1993,NV.SRV.TETC.ZS,50.5329036638394,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1994,NV.SRV.TETC.ZS,51.2060077680747,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1995,NV.SRV.TETC.ZS,51.3871530766421,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1996,NV.SRV.TETC.ZS,51.5394321958983,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1997,NV.SRV.TETC.ZS,52.3046949306294,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1998,NV.SRV.TETC.ZS,53.3315980743901,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,1999,NV.SRV.TETC.ZS,54.1854463329529,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2000,NV.SRV.TETC.ZS,55.1877350988113,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2001,NV.SRV.TETC.ZS,56.6455227583344,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2002,NV.SRV.TETC.ZS,57.3180572076692,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2003,NV.SRV.TETC.ZS,57.3190211860503,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2004,NV.SRV.TETC.ZS,56.9107291941541,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2005,NV.SRV.TETC.ZS,57.2751737216266,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2006,NV.SRV.TETC.ZS,57.4439492111597,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2007,NV.SRV.TETC.ZS,57.8618428603299,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2008,NV.SRV.TETC.ZS,58.1440177029752,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2009,NV.SRV.TETC.ZS,59.1946376387167,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2010,NV.SRV.TETC.ZS,58.6186821904914,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2011,NV.SRV.TETC.ZS,59.0340746501397,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2012,NV.SRV.TETC.ZS,59.5881366474474,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2013,NV.SRV.TETC.ZS,60.094596217194,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2014,NV.SRV.TETC.ZS,60.415960646416,"Services (valude added, % of GDP)"
+Z4,East Asia & Pacific,2015,NV.SRV.TETC.ZS,,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1990,NV.SRV.TETC.ZS,41.6905144964496,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1991,NV.SRV.TETC.ZS,42.5000724959052,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1992,NV.SRV.TETC.ZS,42.7636925597376,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1993,NV.SRV.TETC.ZS,43.3147123349046,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1994,NV.SRV.TETC.ZS,44.5149301950753,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1995,NV.SRV.TETC.ZS,43.2613656853661,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1996,NV.SRV.TETC.ZS,42.5048571369721,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1997,NV.SRV.TETC.ZS,43.1411285542197,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1998,NV.SRV.TETC.ZS,45.2471814490922,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1999,NV.SRV.TETC.ZS,44.6771813281749,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2000,NV.SRV.TETC.ZS,43.8622218421335,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2001,NV.SRV.TETC.ZS,44.8842581774759,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2002,NV.SRV.TETC.ZS,45.5021659479242,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2003,NV.SRV.TETC.ZS,46.3503937596129,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2004,NV.SRV.TETC.ZS,47.2246690422874,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2005,NV.SRV.TETC.ZS,47.3122835915336,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2006,NV.SRV.TETC.ZS,48.4083271713437,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2007,NV.SRV.TETC.ZS,48.7438792440264,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2008,NV.SRV.TETC.ZS,47.4979209139815,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2009,NV.SRV.TETC.ZS,49.5071861056469,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2010,NV.SRV.TETC.ZS,54.7100021430685,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2011,NV.SRV.TETC.ZS,54.1309736838172,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2012,NV.SRV.TETC.ZS,54.9611485391573,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2013,NV.SRV.TETC.ZS,55.5925127668671,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2014,NV.SRV.TETC.ZS,56.3976004415288,"Services (valude added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2015,NV.SRV.TETC.ZS,58.0512318789317,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1990,NV.SRV.TETC.ZS,41.7442898558809,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1991,NV.SRV.TETC.ZS,42.5492353046252,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1992,NV.SRV.TETC.ZS,42.8159834550223,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1993,NV.SRV.TETC.ZS,43.3677626216534,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1994,NV.SRV.TETC.ZS,44.555467968684,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1995,NV.SRV.TETC.ZS,43.2964159818048,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1996,NV.SRV.TETC.ZS,42.5395834652719,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1997,NV.SRV.TETC.ZS,43.1743968125638,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1998,NV.SRV.TETC.ZS,45.2776306978118,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,1999,NV.SRV.TETC.ZS,44.7054107817775,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2000,NV.SRV.TETC.ZS,43.8962638894134,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2001,NV.SRV.TETC.ZS,44.9177586264083,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2002,NV.SRV.TETC.ZS,45.53586714483,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2003,NV.SRV.TETC.ZS,46.3926569408138,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2004,NV.SRV.TETC.ZS,47.2526955823675,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2005,NV.SRV.TETC.ZS,47.3390440405248,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2006,NV.SRV.TETC.ZS,48.4348138658528,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2007,NV.SRV.TETC.ZS,48.7708211931339,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2008,NV.SRV.TETC.ZS,47.5264231727481,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2009,NV.SRV.TETC.ZS,49.5356566489212,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2010,NV.SRV.TETC.ZS,54.7334749484071,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2011,NV.SRV.TETC.ZS,54.1552515141755,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2012,NV.SRV.TETC.ZS,54.985542017994,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2013,NV.SRV.TETC.ZS,55.6160449395778,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2014,NV.SRV.TETC.ZS,56.4213500073474,"Services (valude added, % of GDP)"
+ZG,Sub-Saharan Africa,2015,NV.SRV.TETC.ZS,58.0512318789317,"Services (valude added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1990,NV.IND.TOTL.ZS,40.4876727187018,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1991,NV.IND.TOTL.ZS,41.0672485990694,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1992,NV.IND.TOTL.ZS,42.1585087218149,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1993,NV.IND.TOTL.ZS,44.4506765444233,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1994,NV.IND.TOTL.ZS,44.5164265456825,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1995,NV.IND.TOTL.ZS,45.1253187495993,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1996,NV.IND.TOTL.ZS,45.608788661806,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1997,NV.IND.TOTL.ZS,45.6913513061505,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1998,NV.IND.TOTL.ZS,44.7627768837318,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),1999,NV.IND.TOTL.ZS,44.3080134058912,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2000,NV.IND.TOTL.ZS,44.5277342982484,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2001,NV.IND.TOTL.ZS,43.9075421431183,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2002,NV.IND.TOTL.ZS,43.4776958416531,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2003,NV.IND.TOTL.ZS,44.4490856400777,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2004,NV.IND.TOTL.ZS,44.7966615774408,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2005,NV.IND.TOTL.ZS,45.81335536243,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2006,NV.IND.TOTL.ZS,46.3122771648314,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2007,NV.IND.TOTL.ZS,45.6265938918824,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2008,NV.IND.TOTL.ZS,45.8187517401126,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2009,NV.IND.TOTL.ZS,44.7421076768723,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2010,NV.IND.TOTL.ZS,44.7028812399857,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2011,NV.IND.TOTL.ZS,44.6928500786268,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2012,NV.IND.TOTL.ZS,43.7826772962688,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2013,NV.IND.TOTL.ZS,42.6725237729281,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2014,NV.IND.TOTL.ZS,41.9172166949698,"Industry (value added, % of GDP)"
+4E,East Asia & Pacific (excluding high income),2015,NV.IND.TOTL.ZS,39.9906061887072,"Industry (value added, % of GDP)"
+CN,China,1990,NV.IND.TOTL.ZS,41.0339693422844,"Industry (value added, % of GDP)"
+CN,China,1991,NV.IND.TOTL.ZS,41.4885301923147,"Industry (value added, % of GDP)"
+CN,China,1992,NV.IND.TOTL.ZS,43.1164389858243,"Industry (value added, % of GDP)"
+CN,China,1993,NV.IND.TOTL.ZS,46.1778029445074,"Industry (value added, % of GDP)"
+CN,China,1994,NV.IND.TOTL.ZS,46.1641737342585,"Industry (value added, % of GDP)"
+CN,China,1995,NV.IND.TOTL.ZS,46.7517879879165,"Industry (value added, % of GDP)"
+CN,China,1996,NV.IND.TOTL.ZS,47.1054229282476,"Industry (value added, % of GDP)"
+CN,China,1997,NV.IND.TOTL.ZS,47.1002948002258,"Industry (value added, % of GDP)"
+CN,China,1998,NV.IND.TOTL.ZS,45.7987804520192,"Industry (value added, % of GDP)"
+CN,China,1999,NV.IND.TOTL.ZS,45.3609806944009,"Industry (value added, % of GDP)"
+CN,China,2000,NV.IND.TOTL.ZS,45.5372501622954,"Industry (value added, % of GDP)"
+CN,China,2001,NV.IND.TOTL.ZS,44.7946160625131,"Industry (value added, % of GDP)"
+CN,China,2002,NV.IND.TOTL.ZS,44.4517382066985,"Industry (value added, % of GDP)"
+CN,China,2003,NV.IND.TOTL.ZS,45.6239903363362,"Industry (value added, % of GDP)"
+CN,China,2004,NV.IND.TOTL.ZS,45.9013891480609,"Industry (value added, % of GDP)"
+CN,China,2005,NV.IND.TOTL.ZS,47.0237653541634,"Industry (value added, % of GDP)"
+CN,China,2006,NV.IND.TOTL.ZS,47.5585642446517,"Industry (value added, % of GDP)"
+CN,China,2007,NV.IND.TOTL.ZS,46.8610155040682,"Industry (value added, % of GDP)"
+CN,China,2008,NV.IND.TOTL.ZS,46.9324962325771,"Industry (value added, % of GDP)"
+CN,China,2009,NV.IND.TOTL.ZS,45.883768083891,"Industry (value added, % of GDP)"
+CN,China,2010,NV.IND.TOTL.ZS,46.3960634365082,"Industry (value added, % of GDP)"
+CN,China,2011,NV.IND.TOTL.ZS,46.4006788465005,"Industry (value added, % of GDP)"
+CN,China,2012,NV.IND.TOTL.ZS,45.2735120586475,"Industry (value added, % of GDP)"
+CN,China,2013,NV.IND.TOTL.ZS,44.0081586655834,"Industry (value added, % of GDP)"
+CN,China,2014,NV.IND.TOTL.ZS,43.1029513613904,"Industry (value added, % of GDP)"
+CN,China,2015,NV.IND.TOTL.ZS,40.9316423143681,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1990,NV.IND.TOTL.ZS,38.6326939594726,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1991,NV.IND.TOTL.ZS,38.7500475974248,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1992,NV.IND.TOTL.ZS,38.6629418949054,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1993,NV.IND.TOTL.ZS,39.2146425849622,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1994,NV.IND.TOTL.ZS,38.4281035201333,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1995,NV.IND.TOTL.ZS,38.3508723973371,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1996,NV.IND.TOTL.ZS,38.3757317465545,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1997,NV.IND.TOTL.ZS,38.3139015725793,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1998,NV.IND.TOTL.ZS,37.5134750850914,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,1999,NV.IND.TOTL.ZS,37.0652635644868,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2000,NV.IND.TOTL.ZS,36.8119154509556,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2001,NV.IND.TOTL.ZS,35.6906239575369,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2002,NV.IND.TOTL.ZS,35.2603181702805,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2003,NV.IND.TOTL.ZS,35.7362262205955,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2004,NV.IND.TOTL.ZS,35.9876246790369,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2005,NV.IND.TOTL.ZS,36.2697127187136,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2006,NV.IND.TOTL.ZS,36.5179207087709,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2007,NV.IND.TOTL.ZS,36.2390978789748,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2008,NV.IND.TOTL.ZS,35.9369263703947,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2009,NV.IND.TOTL.ZS,35.039369522658,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2010,NV.IND.TOTL.ZS,35.6400894900825,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2011,NV.IND.TOTL.ZS,35.2313691792127,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2012,NV.IND.TOTL.ZS,34.7364454791924,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2013,NV.IND.TOTL.ZS,34.3196613414508,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2014,NV.IND.TOTL.ZS,34.1282386365116,"Industry (value added, % of GDP)"
+Z4,East Asia & Pacific,2015,NV.IND.TOTL.ZS,,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1990,NV.IND.TOTL.ZS,33.722163021086,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1991,NV.IND.TOTL.ZS,33.1216318585436,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1992,NV.IND.TOTL.ZS,35.1825542004734,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1993,NV.IND.TOTL.ZS,32.5365337381619,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1994,NV.IND.TOTL.ZS,31.3750243419132,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1995,NV.IND.TOTL.ZS,34.0256200328681,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1996,NV.IND.TOTL.ZS,34.9731405927288,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1997,NV.IND.TOTL.ZS,33.2516476390394,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1998,NV.IND.TOTL.ZS,30.2760441683122,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),1999,NV.IND.TOTL.ZS,32.5596177383851,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2000,NV.IND.TOTL.ZS,36.5247486842479,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2001,NV.IND.TOTL.ZS,33.7557802436811,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2002,NV.IND.TOTL.ZS,28.9076218904442,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2003,NV.IND.TOTL.ZS,29.9147220629765,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2004,NV.IND.TOTL.ZS,31.6036895311687,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2005,NV.IND.TOTL.ZS,31.7432286918126,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2006,NV.IND.TOTL.ZS,31.475816289793,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2007,NV.IND.TOTL.ZS,31.3355021154272,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2008,NV.IND.TOTL.ZS,32.1145594945686,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2009,NV.IND.TOTL.ZS,29.0470946913136,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2010,NV.IND.TOTL.ZS,27.3519774249638,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2011,NV.IND.TOTL.ZS,28.5181995067155,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2012,NV.IND.TOTL.ZS,26.760296454155,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2013,NV.IND.TOTL.ZS,26.4269675306315,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2014,NV.IND.TOTL.ZS,26.1044835816489,"Industry (value added, % of GDP)"
+ZF,Sub-Saharan Africa (excluding high income),2015,NV.IND.TOTL.ZS,24.5154686864822,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1990,NV.IND.TOTL.ZS,33.7113532709315,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1991,NV.IND.TOTL.ZS,33.112994809472,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1992,NV.IND.TOTL.ZS,35.1727869977881,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1993,NV.IND.TOTL.ZS,32.5303747793777,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1994,NV.IND.TOTL.ZS,31.3679948095372,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1995,NV.IND.TOTL.ZS,34.0185564983625,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1996,NV.IND.TOTL.ZS,34.9662674930784,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1997,NV.IND.TOTL.ZS,33.2466248715924,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1998,NV.IND.TOTL.ZS,30.2749303099993,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,1999,NV.IND.TOTL.ZS,32.5573954614352,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2000,NV.IND.TOTL.ZS,36.5236242611337,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2001,NV.IND.TOTL.ZS,33.7559943911747,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2002,NV.IND.TOTL.ZS,28.9151015823168,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2003,NV.IND.TOTL.ZS,29.9202624070506,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2004,NV.IND.TOTL.ZS,31.5913520598147,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2005,NV.IND.TOTL.ZS,31.7321853646786,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2006,NV.IND.TOTL.ZS,31.4644974356211,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2007,NV.IND.TOTL.ZS,31.3238319265751,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2008,NV.IND.TOTL.ZS,32.1018993480832,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2009,NV.IND.TOTL.ZS,29.0357287356821,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2010,NV.IND.TOTL.ZS,27.3423923193062,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2011,NV.IND.TOTL.ZS,28.5073019266211,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2012,NV.IND.TOTL.ZS,26.7504357308279,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2013,NV.IND.TOTL.ZS,26.4168390429408,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2014,NV.IND.TOTL.ZS,26.0939796560088,"Industry (value added, % of GDP)"
+ZG,Sub-Saharan Africa,2015,NV.IND.TOTL.ZS,24.5154686864822,"Industry (value added, % of GDP)"

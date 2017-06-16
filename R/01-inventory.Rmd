@@ -147,7 +147,10 @@ dt4var <- rhandsontable(hh4.lbl, rowHeaders=NULL, height=600, width="auto") %>%
 
 ## Cross-Country Harmonized Variables
 
-Inventory of recent versions of IFPRI's harmonized househol-level variables for sub-Saharan Africa. Some of these variables are also available (summarized) across districts and/or regions and/or gender. Released datasets may be found on [IFPRI Dataverse](https://dataverse.harvard.edu/dataverse/harvestchoice).
+Inventory of recent versions of IFPRI's harmonized household-level variables for
+sub-Saharan Africa. Some of these variables are also available (summarized)
+across districts and/or regions and/or gender. Released datasets may be found on
+[IFPRI Dataverse](https://dataverse.harvard.edu/dataverse/harvestchoice).
 
 ### Dataset #1 (Poverty, Land, Climate paper)
 

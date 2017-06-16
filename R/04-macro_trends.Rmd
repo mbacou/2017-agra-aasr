@@ -1,0 +1,213 @@
+# Trends in Macro Indicators
+
+```{r, include=FALSE}
+
+library(plotly)
+library(stringr)
+library(viridis)
+
+load("../tmp/2017-agra-aasr_WDI.RData")
+
+```
+
+
+```{r wdi, eval=FALSE}
+
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr_WDI.RData")
+
+#####################################################################################
+# 2017.06.15 WDI Time Series for Peter
+#####################################################################################
+# We need:
+# - cereal yields in kg/ha for SSA, with/without ZAF, China, South Asia (not China) for 2000-2015
+# - GDP per capita for SSA, with/without ZAF
+# - GDP shares by sector (ag, services, industry) SSA with/without ZAF
+# WDI variables are:
+# - AG.YLD.CREL.KG
+# - NY.GDP.PCAP.PP.CD
+# - NV.AGR.TOTL.ZS
+# - NV.SRV.TETC.ZS
+# - NV.IND.TOTL.ZS
+
+# SSF ZG Sub-Saharan Africa (all income levels) Aggregates
+# SSA ZF Sub-Saharan Africa (developing only) Aggregates
+# ECS Z7 Europe & Central Asia (all income levels) Aggregates
+# ECA 7E Europe & Central Asia (developing only) Aggregates
+# EAS Z4 East Asia & Pacific (all income levels) Aggregates
+# EAP 4E East Asia & Pacific (developing only) Aggregates
+
+library(WDI)
+library(data.table)
+library(ggplot2)
+library(stringr)
+library(viridis)
+
+reg <- WDI_data[[2]]
+reg <- data.table(reg)
+reg[region %like% "Sub-Saharan Africa", .N, keyby=country]
+
+# We need mean cereal yield weighted by cereal production I assume
+vars <- c("AG.YLD.CREL.KG", "NY.GDP.PCAP.PP.CD",
+  "NV.AGR.TOTL.ZS", "NV.SRV.TETC.ZS", "NV.IND.TOTL.ZS")
+
+dt = WDI(indicator=vars, country=c("ZG", "ZF", "Z4", "4E", "CN"), start=1990, end=2015)
+dt <- data.table(dt)
+dt <- melt(dt, id.vars=1:3)
+
+levels(dt$variable)
+dt[, varLabel := factor(variable, labels=c(
+  "Cereal Yield\n(kg/ha)",
+  "GDP per Capita\n(PPP, current int. $)",
+  "Agriculture\n(value added, % of GDP)",
+  "Services\n(valude added, % of GDP)",
+  "Industry\n(value added, % of GDP)"))]
+
+setnames(dt, "country", "Region")
+dt[, Region := factor(Region)]
+
+ggplot(dt[year<2015 & Region=="Sub-Saharan Africa"], aes(year, value, color=Region)) + geom_line() +
+  xlab("") + ylab("") +
+  facet_grid(varLabel ~ ., scales="free_y")
+
+ggsave("./out/MB/2017-agra-aasr_WDI_SSA_ts.png", width=7, heigh=9, units="in")
+
+ggplot(dt[year<2015 & iso2c=="ZF"], aes(year, value, color=Region)) + geom_line() +
+  xlab("") + ylab("") +
+  facet_grid(varLabel ~ ., scales="free_y")
+
+ggsave("./out/MB/2017-agra-aasr_WDI_ZF_ts.png", width=7, heigh=9, units="in")
+
+ggplot(dt[year<2015], aes(year, value, color=Region)) + geom_line() +
+  xlab("") + ylab("") +
+  facet_grid(varLabel ~ ., scales="free_y")
+
+ggsave("./out/MB/2017-agra-aasr_WDI_ts.png", width=7, heigh=9, units="in")
+
+# => noticed that `SSA` and `SSA (excluded high income)` are messed up groupings
+# so we need to regenerate regional aggregates by hand, using the correct formulas:
+# - yield = sum(yield*production)/sum(production)
+# - GPD per capita = sum(GDP)/sum(population)
+# - value_added_% = 100*sum(value_added)/sum(GDP)
+# Also need to exclude `China` from `East Asia`
+
+# Generate new regional groupings
+reg[region %like% "Sub-Saharan Africa", unique(iso3c), by=income]
+reg[region %like% "East Asia", unique(country), by=.(income, iso3c)]
+reg[region %like% "East Asia" & !income %like% "High", unique(country), by=income]
+reg[region %like% "South Asia" & !income %like% "High", unique(country), by=.(income, iso3c)]
+
+reg[, group := NULL]
+reg[region %like% "Sub-Saharan Africa" & !income %like% "High" & iso3c != "ZAF",
+  group := "Rest of sub-Saharan Africa (excl. high income)"]
+reg[region %like% "East Asia" & !income %like% "High" & iso3c != "CHN",
+  group := "Rest of East Asia (excl. high income)"]
+reg[region %like% "South Asia" & !income %like% "High" & iso3c != "IND",
+  group := "Rest of South Asia (excl. high income)"]
+
+reg[iso3c=="ZAF", group := "South Africa"]
+reg[iso3c=="CHN", group := "China"]
+reg[iso3c=="IND", group := "India"]
+
+reg[!is.na(group), unique(country), by=group]
+
+# Re-download all needed WDI indicators
+vars <- c("AG.YLD.CREL.KG", "AG.PRD.CREL.MT",
+  #"NY.GDP.PCAP.PP.CD",
+  "NY.GDP.MKTP.PP.CD", "SP.POP.TOTL",
+  #"NV.AGR.TOTL.ZS", "NV.SRV.TETC.ZS", "NV.IND.TOTL.ZS",
+  "NV.AGR.TOTL.KD", "NV.SRV.TETC.KD", "NV.IND.TOTL.KD", "NY.GDP.MKTP.KD")
+
+dt = WDI(indicator=vars, country=reg[!is.na(group), unique(iso2c)], start=1990, end=2015)
+dt <- data.table(dt)
+
+# Merge in group names
+setkey(reg, iso2c)
+setkey(dt, iso2c)
+dt[reg, Region := group]
+
+# Re-compute regional aggregates
+# Make sure to only include full records (hence ifelse())
+dt.group <- dt[, .(
+  AG.YLD.CREL.KG =  sum(AG.YLD.CREL.KG*AG.PRD.CREL.MT, na.rm=T)/sum(ifelse(is.na(AG.YLD.CREL.KG), NA, AG.PRD.CREL.MT), na.rm=T),
+  NY.GDP.PCAP.PP.CD = sum(ifelse(is.na(SP.POP.TOTL), NA, NY.GDP.MKTP.PP.CD), na.rm=T)/sum(ifelse(is.na(NY.GDP.MKTP.PP.CD), NA, SP.POP.TOTL), na.rm=T),
+  NV.AGR.TOTL.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.AGR.TOTL.KD), na.rm=T)/sum(ifelse(is.na(NV.AGR.TOTL.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
+  NV.SRV.TETC.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.SRV.TETC.KD), na.rm=T)/sum(ifelse(is.na(NV.SRV.TETC.KD), NA, NY.GDP.MKTP.KD), na.rm=T),
+  NV.IND.TOTL.ZS = 100*sum(ifelse(is.na(NY.GDP.MKTP.KD), NA, NV.IND.TOTL.KD), na.rm=T)/sum(ifelse(is.na(NV.IND.TOTL.KD), NA, NY.GDP.MKTP.KD), na.rm=T)
+), by=.(Region, year)]
+
+dt.group <- melt(dt.group, id.vars=1:2)
+levels(dt.group$variable)
+dt.group[, varLabel := factor(variable, levels=levels(variable), labels=c(
+  "Cereal Yield\n(kg/ha)",
+  "GDP per Capita\n(PPP, current int. $)",
+  "Agriculture\n(value added, % of GDP)",
+  "Services\n(value added, % of GDP)",
+  "Industry\n(value added, % of GDP)"))]
+
+dt.group[, Region := factor(Region, levels=c(
+  "South Africa", "Rest of sub-Saharan Africa (excl. high income)",
+  "China", "Rest of East Asia (excl. high income)",
+  "India", "Rest of South Asia (excl. high income)"))]
+
+ggplot(dt.group[!varLabel %like% "value added"],
+  aes(year, value, color=Region)) +
+  geom_line() + xlab("") + ylab("") +
+  facet_wrap(~str_replace(varLabel, fixed(" ("), "\n("), ncol=1, scales="free_y") +
+  scale_color_manual(values=viridis_pal()(6)) +
+  theme_light()
+
+ggsave("./out/MB/2017-agra-aasr_WDI_ts (corrected).png", width=6.4, heigh=6, units="in")
+
+ggplot(dt.group[varLabel %like% "value added" & Region %like% "Africa"],
+  aes(year, value, color=varLabel)) +
+  geom_line() + xlab("") + ylab("") +
+  facet_wrap(~str_replace(Region, fixed(" ("), "\n("), nrow=1) +
+  scale_color_manual(name="",
+    values=c("darkgreen", "orange", "red"),
+    labels=str_replace(levels(dt.group$varLabel)[3:5], fixed(")"), ")\n")) +
+  theme_light()
+
+ggsave("./out/MB/2017-agra-aasr_WDI_GDP_ts (corrected).png", width=7, heigh=3, units="in")
+
+# Save data
+fwrite(dt.group, "./out/MB/2017-agra-aasr_WDI_ts (corrected).csv")
+
+# Save workspace
+save.image("./tmp/2017-agra-aasr_WDI.RData")
+
+
+```
+
+Long-term time series of macro-economic indicators across regions. Note that these series are aggregated using WDI country-level indicators.
+
+```{r agg-ag, fig.cap="Regional Trends in GDP per Capita and Cereal Yield (1990-2015) Source: WDI.", out.height="600px", out.width="600px"}
+
+p <- ggplot(dt.group[!varLabel %like% "value added"],
+  aes(year, value, color=Region)) +
+  geom_line() + xlab("") + ylab("") +
+  facet_wrap(~str_sub(varLabel, 1, 13), ncol=1, scales="free_y") +
+  scale_color_manual(name="",
+    values=viridis_pal()(6),
+    labels=str_replace(levels(dt.group$Region), fixed(" ("), "\n(")) +
+  theme_light()
+
+ggplotly(p, height=600, width=700)
+
+```
+
+```{r agg-gdp, fig.cap="Regional Trends in Sectoral Value Added (1990-2015) Source: WDI.", out.height="300px", out.width="600px"}
+
+p <- ggplot(dt.group[varLabel %like% "value added" & Region %like% "Africa"],
+  aes(year, value, color=varLabel)) +
+  geom_line() + xlab("") + ylab("") +
+  facet_wrap(~str_sub(Region, 1, 26), nrow=1) +
+  scale_color_manual(name="",
+    values=c("darkgreen", "orange", "red"),
+    labels=str_replace(levels(dt.group$varLabel)[3:5], fixed(")"), ")\n")) +
+  theme_light()
+
+ggplotly(p, height=300, width=790)
+
+```
+

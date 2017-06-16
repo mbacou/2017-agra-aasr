@@ -1,3 +1,4 @@
+
 ## Ghana
 
 ```{r, include=FALSE}
@@ -1147,21 +1148,21 @@ svyby(~agsalespc, ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
 # <= 4 ha      <= 4 ha   87756.2 13964.07
 # > 4 ha        > 4 ha  140465.3 44667.0
 
-svymean(~I(noaggross_sh*100), subset(gha.svy.farm, !is.na(croparea)), na.rm=T)
+svymean(~I(naggross_sh*100), subset(gha.svy.farm, !is.na(croparea)), na.rm=T)
 #                         mean     SE
 # I(noaggross_sh * 100) 22.044 0.0127
 # I(noaggross_sh * 100) 17.446 1.1725
 
-svyquantile(~I(noaggross_sh*100), gha.svy.farm, .5, na.rm=T)
+svyquantile(~I(naggross_sh*100), gha.svy.farm, .5, na.rm=T)
 #                             0.5
 # I(noaggross_sh * 100) 0.8265929
 
-svyby(~I(noaggross_sh*100), ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
+svyby(~I(naggross_sh*100), ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
 #         croparea_4ha I(noaggross_sh * 100)       se
 # <= 4 ha      <= 4 ha              17.58628 1.190880
 # > 4 ha        > 4 ha              12.53712 3.285989
 
-svyby(~I(noaggross_sh*100), ~croparea_4ha, gha.svy.farm, svyquantile, .5, ci=T, na.rm=T)
+svyby(~I(naggross_sh*100), ~croparea_4ha, gha.svy.farm, svyquantile, .5, ci=T, na.rm=T)
 #         croparea_4ha I(noaggross_sh * 100)         se
 # <= 4 ha      <= 4 ha             0.6300151 0.08870994
 # > 4 ha        > 4 ha             0.3270542 0.12108961
@@ -1492,7 +1493,7 @@ pplot(I(100*naggross_sh)~survey+croparea_clas, gha[rural=="urban"], alpha=.02,
 ```
 
 
-### Classification of Small and Medium Farm Holdings
+### Classification of Small Farm Holdings
 
 > Within the sub-sample of *farm households* we look at the distribution of households across these three key ("threshold") variables:
 > 
