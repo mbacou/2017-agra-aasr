@@ -220,20 +220,24 @@ Note that India is missing multiple years of agricultural employment statistics.
 
 ```{r agg-rutt, fig.cap="Trends in Land and Labor Productivity (2000-2014). Source: WDI.", fig.height=4, fig.width=6, dev="png"}
 
-ggplot(dt.rutt,
-  aes(labor/1000, land/1000, color=Region, group=Region, label=yearLabel)) +
-  geom_point(size=.5) + geom_label(size=2, nudge_x=1, nudge_y=6, show.legend=F) +  
-  geom_path(na.rm=T) + ylim(0,170) +
-  xlab("Ag. Value Added per Ag. Worker ('000 constant 2000 US$)") + 
-  ylab("Ag. Value Added per Hectare ('000 constant 2000 US$)") +
-  scale_color_manual(name="", 
-    labels=str_replace(levels(dt.group$Region), fixed("("), "\n("),
-    values=viridis_pal()(6)) +
-  theme_bw(base_size=9) + theme(legend.position="right")
+# ggplot(dt.rutt,
+#   aes(labor/1000, land/1000, color=Region, group=Region, label=yearLabel)) +
+#   geom_point(size=.5) + geom_label(size=2, nudge_x=1, nudge_y=6, show.legend=F) +  
+#   geom_path(na.rm=T) + ylim(0,170) +
+#   xlab("Ag. Value Added per Ag. Worker ('000 constant 2000 US$)") + 
+#   ylab("Ag. Value Added per Hectare ('000 constant 2000 US$)") +
+#   scale_color_manual(name="", 
+#     labels=str_replace(levels(dt.group$Region), fixed("("), "\n("),
+#     values=viridis_pal()(6)) +
+#   theme_bw(base_size=9) + theme(legend.position="right")
+# 
+# ggsave("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", width=6, heigh=4, units="in")
 
-ggsave("../out/MB/2017-agra-aasr_RUTT_ts (corrected).png", width=6, heigh=6, units="in")
+include_graphics("./figs/agg-rutt-1.png")
 
 ```
+
+The custom regional aggregation used in the above graphs are given here.
 
 ```{r agg-regions}
 
