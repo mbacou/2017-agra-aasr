@@ -85,8 +85,9 @@ ggplot(dt[year<2015], aes(year, value, color=Region)) + geom_line() +
 ggsave("./out/MB/2017-agra-aasr_WDI_ts.png", width=7, heigh=9, units="in")
 
 #####################################################################################
-# => noticed that `SSA` and `SSA (excluded high income)` are messed up groupings
-# so we need to regenerate regional aggregates by hand, using the correct formulas:
+# => noticed that only diff between region `SSA` and `SSA (excluded high income)` is
+# Equatorial Guinea as ZAF is not included in High Income.
+# So we need to regenerate regional aggregates by hand, using the correct formulas:
 # - yield = sum(yield*production)/sum(production)
 # - GPD per capita = sum(GDP)/sum(population)
 # - value_added_% = 100*sum(value_added)/sum(GDP)
@@ -186,22 +187,38 @@ save.image("./tmp/2017-agra-aasr_WDI.RData")
 Long-term time series of macro-economic indicators across regions. Note that these series are aggregated using WDI country-level indicators. Table \@ref(tab:agg-regions) below lists all countries included in each region. The raw data is available at [2017-agra-aasr_WDI_ts (corrected).csv](https://github.com/mbacou/2017-agra-aasr/blob/master/out/MB/2017-agra-aasr_WDI_ts%20(corrected).csv).
 
 
-```{r agg-ag, fig.cap="Regional Trends in GDP per Capita and Cereal Yield (1990-2015) Source: WDI.", fig.height=4, fig.width=6, dev="png"}
+```{r agg-gdp, fig.cap="Regional Trends in GDP per Capita (1990-2015) Source: WDI."}
 
-ggplot(dt.group[varLabel %in% levels(varLabel)[1:2]],
+ggplot(dt.group[varLabel %in% levels(varLabel)[2]],
   aes(year, value, color=Region)) +
   geom_line() + xlab("") + ylab("") +
   facet_wrap(~varLabel, nrow=1, scales="free_y") +
   scale_color_manual(name="",
     values=viridis_pal()(6),
     labels=str_replace(levels(dt.group$Region), fixed(" ("), "\n(")) +
-  theme_bw(base_size=10) + theme(legend.position="bottom")
+  theme_bw(base_size=10) + theme(legend.position="right")
 
-ggsave("../out/MB/2017-agra-aasr_WDI_ts (corrected).png", width=6.4, heigh=6, units="in")
+ggsave("../out/MB/2017-agra-aasr_WDI_ts_agg-gdp.png", width=6, height=4, units="in")
 
 ```
 
-```{r agg-gdp, fig.cap="Regional Trends in Sectoral Value Added (1990-2015) Source: WDI.", fig.height=6, fig.width=6, dev="png"}
+```{r agg-yield, fig.cap="Regional Trends in Cereal Yield (1990-2015) Source: WDI."}
+
+ggplot(dt.group[varLabel %in% levels(varLabel)[1]],
+  aes(year, value, color=Region)) +
+  geom_line() + xlab("") + ylab("") +
+  facet_wrap(~varLabel, nrow=1, scales="free_y") +
+  scale_color_manual(name="",
+    values=viridis_pal()(6),
+    labels=str_replace(levels(dt.group$Region), fixed(" ("), "\n(")) +
+  theme_bw(base_size=10) + theme(legend.position="right")
+
+ggsave("../out/MB/2017-agra-aasr_WDI_ts_agg-yield.png", width=6, height=4, units="in")
+
+```
+
+
+```{r agg-gdpsector, fig.cap="Regional Trends in Sectoral Value Added (1990-2015) Source: WDI.", fig.height=6, fig.width=6}
 
 ggplot(dt.group[varLabel %like% "value added"],
   aes(year, value, color=varLabel)) +
@@ -212,13 +229,13 @@ ggplot(dt.group[varLabel %like% "value added"],
     labels=str_replace(levels(dt.group$varLabel)[3:6], fixed("("), "\n(")) +
   theme_bw(base_size=10) + theme(legend.position="bottom")
 
-ggsave("../out/MB/2017-agra-aasr_WDI_GDP_ts (corrected).png", width=7, heigh=3, units="in")
+ggsave("../out/MB/2017-agra-aasr_WDI_ts_gdp-sector.png", width=6, height=7, units="in")
 
 ```
 
-Note that India is missing multiple years of agricultural employment statistics. Simple linear interpolation is used to impute these missing values.
+Note that India is missing multiple years of agricultural employment statistics. Simple **linear interpolation** is used to impute these missing values.
 
-```{r agg-rutt, fig.cap="Trends in Land and Labor Productivity (2000-2014). Source: WDI.", fig.height=4, fig.width=6, dev="png"}
+```{r agg-rutt, fig.cap="Trends in Land and Labor Productivity (2000-2014). Source: WDI.", fig.height=4, fig.width=6}
 
 ggplot(dt.rutt,
   aes(labor/1000, land/1000, color=Region, group=Region, label=yearLabel)) +
@@ -229,18 +246,18 @@ ggplot(dt.rutt,
   scale_color_manual(name="",
     labels=str_replace(levels(dt.group$Region), fixed("("), "\n("),
     values=viridis_pal()(6)) +
-  theme_bw(base_size=9) + theme(legend.position="right")
+  theme_bw(base_size=10) + theme(legend.position="right")
 
 #ggsave("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", width=6, heigh=4, units="in")
 
 
 ```
 
-The custom regional aggregation used in the above graphs are given here.
+The regional aggregation used in the above graphs is provided here.
 
 ```{r agg-regions}
 
-kable(reg[!is.na(group), .(iso2c, iso3c, income), keyby=.(Region=group, country)],
+kable(reg[!is.na(group), .(`ISO2 Code`=iso2c, `ISO3 Code`=iso3c, `Income Level`=income), keyby=.(Region=group, Country=country)],
   caption="Regional Aggregation")
 
 ```
