@@ -251,12 +251,12 @@ Note that India is missing multiple years of agricultural employment statistics.
 #     values=viridis_pal()(6)) +
 #   theme_bw(base_size=10) + theme(legend.position="right")
 
-# ggsave("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", width=6, heigh=4, units="in")
-
-include_graphics("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", dpi=300)
-
+# ggsave("../docs/fig/2017-agra-aasr_RUTT_ts (corrected).svg", width=6, heigh=4, units="in")
+# Make corrections in Inkscape
 
 ```
+
+![(#fig:agg-rutt) Trends in Land and Labor Productivity (2000-2014). Source: WDI.](fig/2017-agra-aasr_RUTT_ts (corrected).svg)
 
 The regional aggregation used in the above graphs is provided here.
 
