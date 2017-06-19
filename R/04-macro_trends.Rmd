@@ -2,11 +2,14 @@
 
 ```{r, include=FALSE}
 
+library(data.table)
 library(ggplot2)
 library(stringr)
 library(viridis)
+library(knitr)
 
 load("../tmp/2017-agra-aasr_WDI.RData")
+# rmarkdown::render("./R/04-macro_trends.Rmd", "word_document", output_dir="./out/MB/tmp")
 
 ```
 
@@ -187,7 +190,7 @@ save.image("./tmp/2017-agra-aasr_WDI.RData")
 Long-term time series of macro-economic indicators across regions. Note that these series are aggregated using WDI country-level indicators. Table \@ref(tab:agg-regions) below lists all countries included in each region. The raw data is available at [2017-agra-aasr_WDI_ts (corrected).csv](https://github.com/mbacou/2017-agra-aasr/blob/master/out/MB/2017-agra-aasr_WDI_ts%20(corrected).csv).
 
 
-```{r agg-gdp, fig.cap="Regional Trends in GDP per Capita (1990-2015) Source: WDI."}
+```{r agg-gdp, fig.cap="Regional Trends in GDP per Capita (1990-2015) Source: WDI.", fig.height=2}
 
 ggplot(dt.group[varLabel %in% levels(varLabel)[2]],
   aes(year, value, color=Region)) +
@@ -202,7 +205,7 @@ ggsave("../out/MB/2017-agra-aasr_WDI_ts_agg-gdp.png", width=6, height=4, units="
 
 ```
 
-```{r agg-yield, fig.cap="Regional Trends in Cereal Yield (1990-2015) Source: WDI."}
+```{r agg-yield, fig.cap="Regional Trends in Cereal Yield (1990-2015) Source: WDI.", fig.height=2}
 
 ggplot(dt.group[varLabel %in% levels(varLabel)[1]],
   aes(year, value, color=Region)) +
@@ -237,18 +240,20 @@ Note that India is missing multiple years of agricultural employment statistics.
 
 ```{r agg-rutt, fig.cap="Trends in Land and Labor Productivity (2000-2014). Source: WDI.", fig.height=4, fig.width=6}
 
-ggplot(dt.rutt,
-  aes(labor/1000, land/1000, color=Region, group=Region, label=yearLabel)) +
-  geom_point(size=.5) + geom_label(size=2, nudge_x=1, nudge_y=6, show.legend=F) +
-  geom_path(na.rm=T) + ylim(0,170) +
-  xlab("Ag. Value Added per Ag. Worker ('000 constant 2000 US$)") +
-  ylab("Ag. Value Added per Hectare ('000 constant 2000 US$)") +
-  scale_color_manual(name="",
-    labels=str_replace(levels(dt.group$Region), fixed("("), "\n("),
-    values=viridis_pal()(6)) +
-  theme_bw(base_size=10) + theme(legend.position="right")
+# ggplot(dt.rutt,
+#   aes(labor/1000, land/1000, color=Region, group=Region, label=yearLabel)) +
+#   geom_point(size=.5) + geom_label(size=2, nudge_x=1, nudge_y=6, show.legend=F) +
+#   geom_path(na.rm=T) + ylim(0,170) +
+#   xlab("Ag. Value Added per Ag. Worker ('000 constant 2000 US$)") +
+#   ylab("Ag. Value Added per Hectare ('000 constant 2000 US$)") +
+#   scale_color_manual(name="",
+#     labels=str_replace(levels(dt.group$Region), fixed("("), "\n("),
+#     values=viridis_pal()(6)) +
+#   theme_bw(base_size=10) + theme(legend.position="right")
 
-#ggsave("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", width=6, heigh=4, units="in")
+# ggsave("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", width=6, heigh=4, units="in")
+
+include_graphics("../out/MB/2017-agra-aasr_RUTT_ts (corrected).svg", dpi=300)
 
 
 ```

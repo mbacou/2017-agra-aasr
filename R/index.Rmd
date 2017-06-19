@@ -9,8 +9,7 @@ output:
   bookdown::gitbook:
     url: "https://mbacou.github.io/2017-agra-aasr/"
     github-repo: "mbacou/2017-agra-aasr"
-  bookdown::word_document2:
-    reference_docx: "/home/mbacou/Google Drive/X-Files/templates/rmarkdown.docx"
+  bookdown::word_document2: default
 always_allow_html: yes
 bibliography: biblio.bib
 csl: apa.csl
@@ -35,7 +34,7 @@ load("../tmp/2017-agra-aasr.RData")
 
 # Output options
 opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=150,
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=T,
   dev.args=list(
     png=list(family="Roboto Condensed", pointsize=11), 
     svg=list(family="Roboto Condensed")))
