@@ -256,7 +256,6 @@ load("./tmp/2017-agra-aasr_GHA.RData")
 
 # For now we replicate Nigeria's quadrant classification above to Ghana using both 
 # time-to-20K-market and time-to-50K-market layers.
-
 # Load all 3 rasters and classify Ghana districts
 qd.tt20k <- raster("~/Maps/cell5m/tt10_SSA_tiff/traveltimetomarket_ssa_020k.tif")
 qd.tt50k <- raster("~/Maps/cell5m/tt10_SSA_tiff/traveltimetomarket_ssa_050k.tif")
@@ -278,10 +277,9 @@ qd.agpot <- crop(qd.agpot, g2)
 qd.tt20k <- crop(qd.tt20k, g2)
 qd.tt50k <- crop(qd.tt50k, g2)
 
+# GAEZ color key from the documentation
 unique(qd.agpot)
 # [1] 1 2 3 4 5 6 9
-
-# Color key from the documentation
 qd.agpot.key <- c(
   `very high`=1,
   `high`=2,
@@ -329,13 +327,13 @@ summary(qd.tt20k)
 # Max.                     12.9055996
 # NA's                    350.0000000
 
-# Resample time-to-market layers to 1km (from 10km)
+# Resample time-to-market layers and GAEZ to 1km (from 10km)
 plot(qd.tt20k)
 spplot(qd.agpot)
 qd.agpot <- disaggregate(qd.agpot, fact=10)
 qd.tt20k <- disaggregate(qd.tt20k, fact=10, method="bilinear")
 qd.tt50k <- disaggregate(qd.tt50k, fact=10, method="bilinear")
-levels(qd.agpot) <- data.frame(ID=1:9, suitability=names(qd.agpot.key)) 
+levels(qd.agpot) <- data.frame(ID=1:9, category=names(qd.agpot.key)) 
 
 # Intersect with GHA district maps
 
@@ -360,10 +358,26 @@ g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
 spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)])
 # => TODO should not be any district with NA value
 
+# Also map recent land cover (ESA)
+qd.lc <- raster("~/Maps/ESA/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif")
+qd.lc <- crop(qd.lc, g2)
+qd.lc[qd.lc==0] <- NA
+qd.lc.lbl <- fread("~/Maps/ESA/ESACCI-LC-Legend.csv")
+setnames(qd.lc.lbl, 1:2, c("code", "class"))
+qd.lc.lbl[, col := rgb(cbind(R,G,B), maxColorValue=255)]
+qd.lc.lbl[, cat := str_replace_all(str_replace_all(abbreviate(toupper(class), 5), fixed("("), ""), fixed("/"), "")]
+setkey(qd.lc.lbl, code)
+qd.lc.lbl <- qd.lc.lbl[J(unique(qd.lc))]
+qd.lc <- cut(qd.lc, c(0, unique(qd.lc), maxValue(qd.lc)+1)) # important
+qd.lc <- ratify(qd.lc)
+levels(qd.lc) <- data.frame(ID=levels(qd.lc)[[1]]$ID, cat=qd.lc.lbl$cat)
+spplot(qd.lc, col.regions=qd.lc.lbl$col)
 
+# Map hi-res population density (Worldpop)
 
 
 # Save workspace
+rm(tmp, x, i)
 save.image("./tmp/2017-agra-aasr_GHA.RData")
 
 ```
@@ -390,16 +404,25 @@ Low and high potential areas are further classified as:
     * `-805` Irrigated area  
     * `-801` Forest  
     * `0` Land not suited for agriculture  
+
+This classification is shown below along with a recent remote-sensed land cover layer. 
     
-```{r gha-suitmap, fig.cap="Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ.", dev="png"}
+```{r gha-suitmap, fig.cap="Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ, 2015.", dev="png"}
 
 print(spplot(qd.agpot, col.regions=pal.agpot, 
-  xlab=list("Crop Suitability\nfor Low-Input Rainfed Cereals\n(FAO/IISA/GAEZ)", cex=.9)), 
+  xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IISA/GAEZ)", cex=.9)), 
   split=c(1,1,2,1), more=T)
 
-# print(spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)], 
-#   xlab=list("Quadrant Classification\nacross Districts (authors)", cex=.9)),
-#   split=c(2,1,2,1), more=F)
+print(spplot(qd.lc, col.regions=qd.lc.lbl$col,
+  xlab=list("Land Cover Classification\n(ESA 2015)", cex=.9)),
+  split=c(2,1,2,1), more=F)
+
+```
+
+```{r}
+
+kable(qd.lc.lbl[, .(Code=code, Label=cat, Class=class)],
+  caption="ESA Land Cover Classification")
 
 ```
     
