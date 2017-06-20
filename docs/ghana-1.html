@@ -103,7 +103,7 @@
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="ethiopia.html"><a href="ethiopia.html"><i class="fa fa-check"></i><b>3.3</b> Ethiopia</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="quadrant-classification.html"><a href="quadrant-classification.html"><i class="fa fa-check"></i><b>4</b> Quadrant Classification</a><ul>
+<li class="chapter" data-level="4" data-path="agricultural-potential.html"><a href="agricultural-potential.html"><i class="fa fa-check"></i><b>4</b> Agricultural Potential</a><ul>
 <li class="chapter" data-level="4.1" data-path="nigeria-1.html"><a href="nigeria-1.html"><i class="fa fa-check"></i><b>4.1</b> Nigeria</a></li>
 <li class="chapter" data-level="4.2" data-path="ghana-1.html"><a href="ghana-1.html"><i class="fa fa-check"></i><b>4.2</b> Ghana</a></li>
 </ul></li>
@@ -128,7 +128,72 @@
             <section class="normal" id="section-">
 <div id="ghana-1" class="section level2">
 <h2><span class="header-section-number">4.2</span> Ghana</h2>
-<p>[TBD]</p>
+<p>Using a combination of biophysical and infrastructure geospatial layers available over sub-Saharan African we identify zones of low/high agricultural potential and low/high market access in Ghana. This basket classification is useful to further characterize small farm holders across all 4 quadrants, and for targeting interventions and investments.</p>
+<p>The input layers used for Ghana are as follows.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Agricultural Potential</strong> – this measure was derived from <a href="http://www.fao.org/nr/gaez/about-data-portal/agricultural-suitability-and-potential-yields/en/">FAO/IIASA/GAEZ Cereal Suitability Index, 2007</a> (rainfed, low-input). Soil suitability classifications are based on knowledge of crop requirements, of prevailing soil conditions, and of applied soil management. In other words, soil suitability procedures quantify to what extent soil conditions match crop requirements under defined input and management circumstances.</li>
+</ol>
+<p>Low and high potential areas are further classified as:</p>
+<ul>
+<li>1-4 values are considered <strong>low suitability</strong>:
+<ul>
+<li><code>1</code> Land very poorly suited for pasture and at best poorly suited for rainfed crops<br />
+</li>
+<li><code>2</code> Land poorly suited for pasture and at best poorly suited for rainfed crops<br />
+</li>
+<li><code>3</code> Lands suited for pasture and at best poorly suited for rainfed crops<br />
+</li>
+<li><code>4</code> Land suited for rainfed crops and pasture possible<br />
+</li>
+</ul></li>
+<li>5-6 values are considered <strong>high suitability</strong>:
+<ul>
+<li><code>5</code> Land well suited for rainfed crops and pasture possible<br />
+</li>
+<li><code>6</code> Prime land suited for rainfed crops and pasture possible<br />
+</li>
+</ul></li>
+<li>809-0 is <strong>unsuitable</strong>:
+<ul>
+<li><code>-809</code> Protected area<br />
+</li>
+<li><code>-807</code> Urban area<br />
+</li>
+<li><code>-805</code> Irrigated area<br />
+</li>
+<li><code>-801</code> Forest<br />
+</li>
+<li><code>0</code> Land not suited for agriculture</li>
+</ul></li>
+</ul>
+<div class="figure"><span id="fig:gha-suitmap"></span>
+<img src="fig/gha-suitmap-1.png" alt="Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ." width="2100" />
+<p class="caption">
+Fig. 4.1: Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ.
+</p>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Market Access</strong> – Low and high market access areas are defined using a <strong>4 hour</strong> travel time threshold. The source is <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YKDWJD">IFPRI/HarvestChoice Travel Time to Markets in Africa South of the Sahara, 2016</a> at 5-arc-minute resolution:</li>
+</ol>
+<ul>
+<li><code>100</code> Low access (travel time greater than 4 hours)<br />
+</li>
+<li><code>200</code> High access (travel time less than or equal to 4 hours)</li>
+</ul>
+<p>All layers were resampled to 1km and then we generated dominant classes across Ghana’s districts (as household GPS locations are not available in any of the GLSS rounds).</p>
+<div class="figure"><span id="fig:gha-ttmaps"></span>
+<img src="fig/gha-ttmaps-1.png" alt="Travel Time to Nearest 20K and 50K Market. Source: IFPRI/HarvestChoice, 2016." width="2100" />
+<p class="caption">
+Fig. 4.2: Travel Time to Nearest 20K and 50K Market. Source: IFPRI/HarvestChoice, 2016.
+</p>
+</div>
+<p>The resulting cross-classification.</p>
+<div class="figure"><span id="fig:gha-quadmap"></span>
+<img src="fig/gha-quadmap-1.png" alt="Quadrant Classification across Districts, Ghana 2012/13. Source: authors." width="2100" />
+<p class="caption">
+Fig. 4.3: Quadrant Classification across Districts, Ghana 2012/13. Source: authors.
+</p>
+</div>
 
 </div>
 <!-- </div> -->

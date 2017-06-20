@@ -190,7 +190,7 @@ save.image("./tmp/2017-agra-aasr_WDI.RData")
 Long-term time series of macro-economic indicators across regions. Note that these series are aggregated using WDI country-level indicators. Table \@ref(tab:agg-regions) below lists all countries included in each region. The raw data is available at [2017-agra-aasr_WDI_ts (corrected).csv](https://github.com/mbacou/2017-agra-aasr/blob/master/out/MB/2017-agra-aasr_WDI_ts%20(corrected).csv).
 
 
-```{r agg-gdp, fig.cap="Regional Trends in GDP per Capita (1990-2015) Source: WDI.", fig.height=2}
+```{r agg-gdp, fig.cap="Regional Trends in GDP per Capita (1990-2015) Source: WDI.", fig.height=3}
 
 ggplot(dt.group[varLabel %in% levels(varLabel)[2]],
   aes(year, value, color=Region)) +
@@ -205,7 +205,7 @@ ggsave("../out/MB/2017-agra-aasr_WDI_ts_agg-gdp.png", width=6, height=4, units="
 
 ```
 
-```{r agg-yield, fig.cap="Regional Trends in Cereal Yield (1990-2015) Source: WDI.", fig.height=2}
+```{r agg-yield, fig.cap="Regional Trends in Cereal Yield (1990-2015) Source: WDI.", fig.height=3}
 
 ggplot(dt.group[varLabel %in% levels(varLabel)[1]],
   aes(year, value, color=Region)) +

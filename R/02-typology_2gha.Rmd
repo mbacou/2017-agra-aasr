@@ -700,6 +700,7 @@ shapefile(g2[g2$svyCode=="gha-glss6",], "~/Data/GHA-GLSS6/maps/gha-glss6-svyMap_
 
 ```
 
+
 ```{r gha-typo, eval=FALSE}
 
 ##################################################################################### 
@@ -1020,6 +1021,7 @@ summary(gha$class9)
 
 
 ```
+
 
 ```{r gha-est, eval=FALSE}
 

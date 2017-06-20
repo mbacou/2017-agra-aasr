@@ -1,13 +1,13 @@
-# Quadrant Classification
+# Agricultural Potential
 
 ## Nigeria
 
 [TBD]
 
-For documentation purposes below are code snippets from the 2016 Farmer Segmentation for Nigeria (definitions and characterization of quadrants and livelihood zones).
+For documentation purposes below are code snippets from the 2016 Farmer Segmentation for Nigeria (definitions and characterization of low-high quadrants and livelihood zones).
 
 
-```{r, eval=FALSE}
+```{r nga-quad, eval=FALSE}
 
 #####################################################################################
 # 2016.05.03 Quadrant Definitions across Livelihood Zones (from Diemuth 2016.04.06)
@@ -245,4 +245,191 @@ tmp <- tmp[, lapply(.SD, weighted.mean, wt_w2v1), keyby=.(seg_lvl_6, gender, var
 
 ## Ghana
 
-[TBD]
+```{r gha-quad, eval=FALSE}
+
+library(raster)
+library(data.table)
+library(viridis)
+
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr_GHA.RData")
+
+# For now we replicate Nigeria's quadrant classification above to Ghana using both 
+# time-to-20K-market and time-to-50K-market layers.
+
+# Load all 3 rasters and classify Ghana districts
+qd.tt20k <- raster("~/Maps/cell5m/tt10_SSA_tiff/traveltimetomarket_ssa_020k.tif")
+qd.tt50k <- raster("~/Maps/cell5m/tt10_SSA_tiff/traveltimetomarket_ssa_050k.tif")
+qd.agpot <- raster("~/Maps/GAEZ_res03crav6190lsilrcer/res03_crav6190l_silr_cer.tif")
+
+proj4string(qd.agpot)
+# [1] "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+proj4string(qd.tt20k)
+# [1] "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+proj4string(g2)
+# [1] "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+res(qd.agpot)
+# [1] 0.08333333 0.08333333
+res(qd.tt20k)
+# [1] 0.08333333 0.08333333
+
+# Crop all layers to Ghana
+qd.agpot <- crop(qd.agpot, g2)
+qd.tt20k <- crop(qd.tt20k, g2)
+qd.tt50k <- crop(qd.tt50k, g2)
+
+unique(qd.agpot)
+# [1] 1 2 3 4 5 6 9
+
+# Color key from the documentation
+qd.agpot.key <- c(
+  `very high`=1,
+  `high`=2,
+  `good`=3,
+  `medium`=4,
+  `moderate`=5,
+  `marginal`=6,
+  `very marginal`=7,
+  `not suitable`=8,
+  `water`=9)
+
+pal.agpot <- fread("
+0	112	0	Dark green
+21	174	17	Lime green
+172	225	94	Conifer
+254	216	1	Gold
+206	157	83	Tussock
+205	108	1	Sun
+128	128	128	Aluminium
+228	228	228	Athens grey
+32	32	255	Blue")
+pal.agpot <- rgb(pal.agpot[, .(V1, V2, V3)], maxColorValue=255)
+
+qd.agpot.lbl <- c(
+  "water",
+  "protected area",
+  "urban area",
+  "irrigated area",
+  "forest",
+  "land not suited for agriculture",
+  "land very poorly suited for pasture and at best poorly suited for rainfed crops",
+  "land poorly suited for pasture and at best poorly suited for rainfed crops",
+  "land suited for pasture and at best poorly suited for rainfed crops",
+  "land suited for rainfed crops and pasture possible ",
+  "land well suited for rainfed crops and pasture possible",
+  "prime land suited for rainfed crops and pasture possible")
+
+qd.agpot.lbl <- data.table(varCode=unique(qd.agpot), varLabel=qd.agpot.lbl)
+
+summary(qd.tt20k)
+# Min.                      0.0486763
+# 1st Qu.                   1.1240800
+# Median                    1.7141100
+# 3rd Qu.                   2.5925300
+# Max.                     12.9055996
+# NA's                    350.0000000
+
+# Resample time-to-market layers to 1km (from 10km)
+plot(qd.tt20k)
+spplot(qd.agpot)
+qd.agpot <- disaggregate(qd.agpot, fact=10)
+qd.tt20k <- disaggregate(qd.tt20k, fact=10, method="bilinear")
+qd.tt50k <- disaggregate(qd.tt50k, fact=10, method="bilinear")
+levels(qd.agpot) <- data.frame(ID=1:9, suitability=names(qd.agpot.key)) 
+
+# Intersect with GHA district maps
+
+
+# Compare with SDI version received on 2017.06.12
+g2.qd <- fread("./out/SDI/gha-L2_stats.csv")
+setkey(g2.qd, svyCode,svyL1Cd, svyL2Cd)
+setkey(g2.dt, svyCode,svyL1Cd, svyL2Cd)
+g2.dt[, seg_quad := NULL]
+g2.dt[g2.qd, seg_quad := statsmedia]
+unique(g2.dt$seg_quad)
+# [1] NA  3  4  0  1  2
+# lo-lo to hi-hi, where the first is ag potential and the second is market access
+g2.dt[, seg_quad := factor(seg_quad, levels=1:4, 
+  labels=c(
+    "lo suit.-lo mkt.", 
+    "lo suit.-hi mkt.", 
+    "hi suit.-lo mkt.", 
+    "hi suit.-hi mkt."))]
+
+g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
+spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)])
+# => TODO should not be any district with NA value
+
+
+
+
+# Save workspace
+save.image("./tmp/2017-agra-aasr_GHA.RData")
+
+```
+
+Using a combination of biophysical and infrastructure geospatial layers available over sub-Saharan African we identify zones of low/high agricultural potential and low/high market access in Ghana. This basket classification is useful to further characterize small farm holders across all 4 quadrants, and for targeting interventions and investments.
+
+The input layers used for Ghana are as follows.
+
+1. **Agricultural Potential** -- this measure was derived from [FAO/IIASA/GAEZ Cereal Suitability Index, 2007](http://www.fao.org/nr/gaez/about-data-portal/agricultural-suitability-and-potential-yields/en/) (rainfed, low-input). Soil suitability classifications are based on knowledge of crop requirements, of prevailing soil conditions, and of applied soil management. In other words, soil suitability procedures quantify to what extent soil conditions match crop requirements under defined input and management circumstances. 
+
+Low and high potential areas are further classified as:
+
+- 1-4 values are considered **low suitability**: 
+    * `1` Land very poorly suited for pasture and at best poorly suited for rainfed crops  
+    * `2` Land poorly suited for pasture and at best poorly suited for rainfed crops  
+    * `3` Lands suited for pasture and at best poorly suited for rainfed crops  
+    * `4` Land suited for rainfed crops and pasture possible  
+- 5-6 values are considered **high suitability**:  
+    * `5` Land well suited for rainfed crops and pasture possible  
+    * `6` Prime land suited for rainfed crops and pasture possible  
+- 809-0 is **unsuitable**:  
+    * `-809` Protected area  
+    * `-807` Urban area  
+    * `-805` Irrigated area  
+    * `-801` Forest  
+    * `0` Land not suited for agriculture  
+    
+```{r gha-suitmap, fig.cap="Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ.", dev="png"}
+
+print(spplot(qd.agpot, col.regions=pal.agpot, 
+  xlab=list("Crop Suitability\nfor Low-Input Rainfed Cereals\n(FAO/IISA/GAEZ)", cex=.9)), 
+  split=c(1,1,2,1), more=T)
+
+# print(spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)], 
+#   xlab=list("Quadrant Classification\nacross Districts (authors)", cex=.9)),
+#   split=c(2,1,2,1), more=F)
+
+```
+    
+2. **Market Access** -- Low and high market access areas are defined using a **4 hour** travel time threshold. The source is [IFPRI/HarvestChoice Travel Time to Markets in Africa South of the Sahara, 2016](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YKDWJD) at 5-arc-minute resolution:
+
+- `100` Low access (travel time greater than 4 hours)  
+- `200` High access (travel time less than or equal to 4 hours)  
+
+All layers were resampled to 1km and then we generated dominant classes across Ghana's districts (as household GPS locations are not available in any of the GLSS rounds).
+
+```{r gha-ttmaps, fig.cap="Travel Time to Nearest 20K and 50K Market. Source: IFPRI/HarvestChoice, 2016.", dev="png"}
+
+print(spplot(mask(qd.tt20k, g2[g2$svyCode=="gha-glss6",]),
+  xlab="Travel Time to Nearest 20K Market (hrs)",
+  col.regions=rev(inferno(30)), zlim=c(0,14), at=seq(0,14,.5)),
+  split=c(1,1,2,1), more=T)
+
+print(spplot(mask(qd.tt50k, g2[g2$svyCode=="gha-glss6",]),
+  xlab="Travel Time to Nearest 50K Market (hrs)", 
+  zlim=c(0,14), col.regions=rev(inferno(30)), at=seq(0,14,.5)),
+  split=c(2,1,2,1), more=F)
+
+```
+
+The resulting cross-classification.
+
+```{r gha-quadmap, fig.cap="Quadrant Classification across Districts, Ghana 2012/13. Source: authors.", dev="png"}
+
+spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)], 
+  xlab=list("Quadrant Classification across Districts", cex=.9))
+
+```
+

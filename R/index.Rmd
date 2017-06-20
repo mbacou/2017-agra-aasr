@@ -28,15 +28,17 @@ library(jsonlite)
 library(survey)
 library(knitr)
 library(tables)
+library(raster)
+library(viridis)
 
 # Load workspace
 load("../tmp/2017-agra-aasr.RData")
 
 # Output options
 opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=T,
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=T, 
   dev.args=list(
-    png=list(family="Roboto Condensed", pointsize=11), 
+    png=list(family="Roboto Condensed", pointsize=9), 
     svg=list(family="Roboto Condensed")))
 table_options(htmloptions(justification="c", head=F, pad=T))
 palette(HC.pal)
