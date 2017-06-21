@@ -38,6 +38,12 @@ For documentation purposes below are code snippets from the 2016 Farmer Segmenta
 # 100 – travel time greater than 4 hours, lo access
 # 200 – travel time less than or equal to 4 hours, high access
 
+library(raster)
+library(data.table)
+library(viridis)
+
+setwd("~/Google Drive/2016-BMGF-Segmentation/NGA")
+
 # Load the 2 rasters and classify LGAs
 qd.agpot <- raster("./maps/quadrant/nga_agpotallclass_1km.tif")
 qd.tt100k <- raster("./maps/quadrant/nga_tt1km100khr_4hr.tif")
@@ -70,7 +76,11 @@ qd.agpot.lbl <- c(
   "land well suited for rainfed crops and pasture possible",
   "prime land suited for rainfed crops and pasture possible")
 
-qd.agpot.lbl <- data.table(varCode=unique(qd.agpot), varLabel=qd.agpot.lbl)
+qd.agpot.lbl <- data.table(ID=1:12, code=unique(qd.agpot), label=qd.agpot.lbl)
+
+# Plot agpot layer
+spplot(qd.agpot, at=unique(qd.agpot), col.regions=viridis(12), colorkey=list(at=1:12, labels=as.character(unique(qd.agpot))))
+
 
 # Intersect with GHS coords
 tmp <- extract(qd.agpot, geo12.pts)
@@ -358,22 +368,23 @@ g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
 spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)])
 # => TODO should not be any district with NA value
 
-# Also map recent land cover (ESA)
+#####################################################################################
+# Compare with hi-res land cover (ESA, 2015)
 qd.lc <- raster("~/Maps/ESA/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif")
 qd.lc <- crop(qd.lc, g2)
 qd.lc[qd.lc==0] <- NA
+
 qd.lc.lbl <- fread("~/Maps/ESA/ESACCI-LC-Legend.csv")
 setnames(qd.lc.lbl, 1:2, c("code", "class"))
 qd.lc.lbl[, col := rgb(cbind(R,G,B), maxColorValue=255)]
 qd.lc.lbl[, cat := str_replace_all(str_replace_all(abbreviate(toupper(class), 5), fixed("("), ""), fixed("/"), "")]
 setkey(qd.lc.lbl, code)
-qd.lc.lbl <- qd.lc.lbl[J(unique(qd.lc))]
-qd.lc <- cut(qd.lc, c(0, unique(qd.lc), maxValue(qd.lc)+1)) # important
-qd.lc <- ratify(qd.lc)
-levels(qd.lc) <- data.frame(ID=levels(qd.lc)[[1]]$ID, cat=qd.lc.lbl$cat)
-spplot(qd.lc, col.regions=qd.lc.lbl$col)
 
-# Map hi-res population density (Worldpop)
+spplot(qd.lc, col.regions=qd.lc.lbl[J(unique(qd.lc)), col], at=c(-1, unique(qd.lc)), 
+  colorkey=list(at=1:23, labels=list(labels=qd.lc.lbl[J(unique(qd.lc)), cat], at=1:23+.5)))
+
+#####################################################################################
+# Compare with hi-res population density (Worldpop)
 
 
 # Save workspace
@@ -413,8 +424,10 @@ print(spplot(qd.agpot, col.regions=pal.agpot,
   xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ)", cex=.9)), 
   split=c(1,1,2,1), more=T)
 
-print(spplot(qd.lc, col.regions=qd.lc.lbl$col,
-  xlab=list("Land Cover Classification\n(ESA 2015)", cex=.9)),
+print(spplot(qd.lc, col.regions=qd.lc.lbl[J(unique(qd.lc)), col], 
+  xlab=list("Land Cover Classification\n(ESA 2015)", cex=.9),
+  at=c(-1, unique(qd.lc)), colorkey=list(at=1:23,
+    labels=list(labels=qd.lc.lbl[J(unique(qd.lc)), cat], at=1:23+.5))),
   split=c(2,1,2,1), more=F)
 
 ```
