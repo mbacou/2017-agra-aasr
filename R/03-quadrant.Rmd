@@ -290,7 +290,7 @@ qd.tt50k <- crop(qd.tt50k, g2)
 # GAEZ color key from the documentation
 unique(qd.agpot)
 # [1] 1 2 3 4 5 6 9
-qd.agpot.key <- c(
+qd.agpot.lbl <- c(
   `very high`=1,
   `high`=2,
   `good`=3,
@@ -313,21 +313,22 @@ pal.agpot <- fread("
 32	32	255	Blue")
 pal.agpot <- rgb(pal.agpot[, .(V1, V2, V3)], maxColorValue=255)
 
-qd.agpot.lbl <- c(
-  "water",
-  "protected area",
-  "urban area",
-  "irrigated area",
-  "forest",
-  "land not suited for agriculture",
-  "land very poorly suited for pasture and at best poorly suited for rainfed crops",
-  "land poorly suited for pasture and at best poorly suited for rainfed crops",
-  "land suited for pasture and at best poorly suited for rainfed crops",
-  "land suited for rainfed crops and pasture possible ",
-  "land well suited for rainfed crops and pasture possible",
-  "prime land suited for rainfed crops and pasture possible")
+# qd.agpot.lbl <- c(
+#   "water",
+#   "protected area",
+#   "urban area",
+#   "irrigated area",
+#   "forest",
+#   "land not suited for agriculture",
+#   "land very poorly suited for pasture and at best poorly suited for rainfed crops",
+#   "land poorly suited for pasture and at best poorly suited for rainfed crops",
+#   "land suited for pasture and at best poorly suited for rainfed crops",
+#   "land suited for rainfed crops and pasture possible ",
+#   "land well suited for rainfed crops and pasture possible",
+#   "prime land suited for rainfed crops and pasture possible")
 
-qd.agpot.lbl <- data.table(varCode=unique(qd.agpot), varLabel=qd.agpot.lbl)
+qd.agpot.lbl <- data.table(code=qd.agpot.lbl, label=names(qd.agpot.lbl), col=pal.agpot)
+rm(pal.agpot)
 
 summary(qd.tt20k)
 # Min.                      0.0486763
@@ -338,16 +339,14 @@ summary(qd.tt20k)
 # NA's                    350.0000000
 
 # Resample time-to-market layers and GAEZ to 1km (from 10km)
-plot(qd.tt20k)
+spplot(qd.tt20k)
 spplot(qd.agpot)
 qd.agpot <- disaggregate(qd.agpot, fact=10)
 qd.tt20k <- disaggregate(qd.tt20k, fact=10, method="bilinear")
 qd.tt50k <- disaggregate(qd.tt50k, fact=10, method="bilinear")
-levels(qd.agpot) <- data.frame(ID=1:9, category=names(qd.agpot.key)) 
+levels(qd.agpot) <- data.frame(ID=1:9, category=qd.agpot.lbl$label) 
 
-# Intersect with GHA district maps
-
-
+#####################################################################################
 # Compare with SDI version received on 2017.06.12
 g2.qd <- fread("./out/SDI/gha-L2_stats.csv")
 setkey(g2.qd, svyCode,svyL1Cd, svyL2Cd)
@@ -367,10 +366,60 @@ g2.dt[, seg_quad := factor(seg_quad, levels=1:4,
 g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
 spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)])
 # => TODO should not be any district with NA value
+rm(g2.qd)
 
-#####################################################################################
-# Compare with hi-res land cover (ESA, 2015)
+# Load SSA-wide CELL5M classified shapefile (received from Todd on 2017.06.20)
+qd.quad.dt <- fread("~/Maps/GAEZ_res03crav6190lsilrcer/Ag_Suitability_SSA.csv")
+names(qd.quad.dt)
+# We only need a few fields
+qd.quad.dt <- qd.quad.dt[, .(CELL5M=Cell5M_int, agpot, mktacc, seg=quadrant)]
+
+# Merge in X,Y
+tmp <- fread("./data/hcapi-X--ssa.csv")
+names(tmp)
+setkey(tmp, CELL5M)
+setkey(qd.quad.dt, CELL5M)
+qd.quad.dt <- qd.quad.dt[tmp]
+
+# Convert to raster and map
+qd.quad.dt[, .N, by=agpot]
+#    agpot      N
+# 1:    NA   5099
+# 2:        54560
+# 3:    lo 118437
+# 4:    hi 125357
+qd.quad.dt[agpot=="", agpot := "unsuitable"]
+qd.quad.dt[, agpot := factor(agpot, levels=c("unsuitable", "lo", "hi"))]
+qd.suit <- SpatialPixelsDataFrame(qd.quad.dt[, .(X, Y)],
+  data.frame(suit=qd.quad.dt$agpot), proj4string=CRS("+init=epsg:4326"))
+qd.suit <- raster(qd.suit)
+levels(qd.suit)
+# [[1]]
+#   ID     levels
+# 1  1 unsuitable
+# 2  2         lo
+# 3  3         hi
+spplot(qd.suit)
+
+# Resample to 1km (note that resampling loses RAT)
+qd.suit <- disaggregate(qd.suit, fact=10)
+res(qd.suit)
+table(values(qd.suit))
+#       1        2        3 
+# 5456000 11843700 12535700 
+levels(qd.suit) <- data.frame(ID=1:3, cat=c("unsuitable", "low", "high"))
+
+# Save SSA-wide suitability raster for re-use
+writeRaster(qd.suit, "~/Maps/BMGF/agpot-1km-lohi_SSA.tif", datatype="INT2S", 
+  options=c("COMPRESS=NONE", "TFW=YES"), prj=T, overwrite=T)
+
+qd.suit <- crop(qd.suit, g2)
+
+##################################################################################### 
+# Compare with hi-res land cover (ESA/CCI, 2015)
 qd.lc <- raster("~/Maps/ESA/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif")
+res(qd.lc)
+# [1] 0.002777778 0.002777778
 qd.lc <- crop(qd.lc, g2)
 qd.lc[qd.lc==0] <- NA
 
@@ -383,12 +432,115 @@ setkey(qd.lc.lbl, code)
 spplot(qd.lc, col.regions=qd.lc.lbl[J(unique(qd.lc)), col], at=c(-1, unique(qd.lc)), 
   colorkey=list(at=1:23, labels=list(labels=qd.lc.lbl[J(unique(qd.lc)), cat], at=1:23+.5)))
 
-#####################################################################################
-# Compare with hi-res population density (Worldpop)
+# Compare with another hi-res land cover (USGS/EROS, 2013)
+qd.usgs <- raster("~/Maps/USGS/west_africa_land-use_land-cover_2013_2km/swa_2013lulc_2km.tif")
+proj4string(qd.usgs)
+# [1] "+proj=laea +lat_0=11 +lon_0=3 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
+res(qd.usgs)
+# [1] 2000 2000
 
+g2 <- spTransform(g2, proj4string(qd.usgs))
+qd.usgs <- crop(qd.usgs, g2)
+g2 <- spTransform(g2, proj4string(qd.tt20k))
+unique(qd.usgs)
+#  [1]  1  2  3  4  6  7  8  9 10 11 12 13 14 15 21 22 23 24 25 27 31 78
+
+qd.usgs.lbl <- data.table(levels(qd.usgs)[[1]])
+qd.usgs.lbl[, col := rgb(cbind(red,green,blue), maxColorValue=255)]
+setkey(qd.usgs.lbl, value)
+levels(qd.usgs) <- qd.usgs.lbl[, .(ID=value, code, class=class_name, col)]
+spplot(qd.usgs, "code", col.regions=setorder(qd.usgs.lbl, code)[, col])
+
+
+##################################################################################### 
+# TODO Compare with hi-res population density (Worldpop)
+qd.pop <- raster("~/Maps/Worldpop/AFR_PPP_2015_adj_v2.tif")
+res(qd.pop)
+qd.pop <- crop(qd.pop, g2)
+summary(qd.pop)
+
+
+
+#####################################################################################
+# Summarize all rasters across GLSS districts (3 waves)
+
+proj4string(g2)
+# [1] "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+proj4string(qd.suit)
+# [1] "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+
+# We need the following summary stats:
+# - median tt20K travel time (qd.tt20k)
+# - median tt50K travel time (qd.tt50k)
+# - dominant LC class (qd.lc)
+# - dominant GAEZ class (qd.agpot)
+# - dominant hi/lo suitability class (qd.suit)
+# All layers have been cropped to `g2` and resampled to 1km
+tmp1 <- extract(qd.tt20k, g2, median, na.rm=T, small=T)
+tmp2 <- extract(qd.tt50k, g2, median, na.rm=T, small=T)
+tmp3 <- extract(qd.lc, g2, modal, na.rm=T, small=T)
+tmp4 <- extract(qd.agpot, g2, modal, na.rm=T, small=T, factors=T, df=T)
+tmp5 <- extract(qd.suit, g2, modal, na.rm=T, small=T, factors=T, df=T)
+tmp6 <- extract(qd.tt20k, g2, mean, na.rm=T, small=T)
+tmp7 <- extract(qd.tt50k, g2, mean, na.rm=T, small=T)
+
+table(tmp3)
+#  10  30  40  50  62 120 170 190 210 
+# 204   2   2   2  39  21   1  10   4 
+table(tmp4)
+#  3   4   5   6   9 
+# 32  67 163  17   6 
+table(tmp5)
+#  1   3 
+# 31 254 
+# => no low suitability district (hum)
+
+# Combine all extracts
+g2.dt <- data.table(g2@data, 
+  tt20k_med=tmp1[,1], tt50k_med=tmp2[,1], tt20k_mean=tmp6[,1], tt50k_mean=tmp7[,1],
+  lc=tmp3[,1], agpot=tmp4[,2], suit=tmp5[,2])
+
+# Convert codes to factors
+g2.dt[, lc := factor(lc, levels=qd.lc.lbl$code, labels=qd.lc.lbl$cat)]
+summary(g2.dt$lc)
+summary(g2.dt$tt20k_mean)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.1076  0.9807  1.4460  1.5450  2.0300  4.7310 
+summary(g2.dt$tt50k_mean)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.1082  1.2240  1.8440  1.9390  2.4280  5.7260 
+summary(g2.dt$tt20k_med)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.104   0.879   1.375   1.445   1.824   5.014 
+# => use tt50k for now
+summary(g2.dt$suit)
+#  high        low unsuitable 
+#   254          0         31 
+
+# Make lo/hi quadrants (use 4hr cutoff)
+levels(g2.dt$suit) <- c("agpot-hi", "agpot-lo", "agpot-no")
+g2.dt[, qd_mkt := factor(tt50k_mean <= 4, levels=c(F,T), labels=c("mkt-lo", "mkt-hi"))]
+g2.dt[, quad := paste(suit,ifelse(tt50k_mean <= 4, "mkt-hi", "mkt-lo"), sep=" / ")]
+g2.dt[, quad := factor(quad, levels=c(
+  "agpot-no / mkt-lo", "agpot-no / mkt-hi",
+  "agpot-lo / mkt-lo", "agpot-lo / mkt-hi",
+  "agpot-hi / mkt-lo", "agpot-hi / mkt-hi"))]
+g2.dt[, .N, by=quad]
+#                quad   N
+# 1: agpot-hi / mkt-hi 242
+# 2: agpot-no / mkt-hi  27
+# 3: agpot-hi / mkt-lo  12
+# 4: agpot-no / mkt-lo   4
+
+# Map it
+g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
+spplot(g2[g2$svyCode=="gha-glss6",], "quad", col="grey20", lwd=.2, col.regions=viridis(6))
+
+# Save attributes for re-use
+write.dta(g2.dt, "./tmp/gha-glss_L2_att.dta", version=12L)
 
 # Save workspace
-rm(tmp, x, i)
+rm(tmp, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, x, i)
 save.image("./tmp/2017-agra-aasr_GHA.RData")
 
 ```
@@ -397,7 +549,9 @@ Using a combination of biophysical and infrastructure geospatial layers availabl
 
 The input layers used for Ghana are as follows.
 
-1. **Agricultural Potential** -- this measure was derived from [FAO/IIASA/GAEZ Cereal Suitability Index, 2007](http://www.fao.org/nr/gaez/about-data-portal/agricultural-suitability-and-potential-yields/en/) (rainfed, low-input). Soil suitability classifications are based on knowledge of crop requirements, of prevailing soil conditions, and of applied soil management. In other words, soil suitability procedures quantify to what extent soil conditions match crop requirements under defined input and management circumstances. 
+### Agricultural Potential
+
+This measure was derived from [FAO/IIASA/GAEZ Crop Suitability Index, 2007](http://www.fao.org/nr/gaez/about-data-portal/agricultural-suitability-and-potential-yields/en/) (cereals, rainfed, low-input). Soil suitability classifications are based on knowledge of crop requirements, of prevailing soil conditions, and of applied soil management. In other words, soil suitability procedures quantify to what extent soil conditions match crop requirements under defined input and management circumstances. 
 
 Low and high potential areas are further classified as:
 
@@ -416,30 +570,43 @@ Low and high potential areas are further classified as:
     * `-801` Forest  
     * `0` Land not suited for agriculture  
 
-This classification is shown below along with a recent remote-sensed land cover layer. 
+IIASA/GAEZ crop suitability for Ghana is shown below along with two more recent and higher-resolution remote-sensed land cover classification from [ESA/CCI](http://maps.elie.ucl.ac.be/CCI/viewer/) and from [USGS/EROS](https://eros.usgs.gov/westafrica/data-downloads). The fourth map shows areas of low and high agricultural potential based on additional work conducted by BMGF/SDI (this layer was resampled from 10km to 1km resolution and then summarized across districts).
     
-```{r gha-suitmap, fig.cap="Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ, 2015.", dev="png"}
+```{r gha-suitmap, fig.cap="Mapping Ghana's Agricultural Potential", dev="png"}
 
-print(spplot(qd.agpot, col.regions=pal.agpot, 
-  xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ)", cex=.9)), 
+print(spplot(qd.agpot, col.regions=qd.agpot.lbl$col, 
+  xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ 2007)", cex=.9)), 
   split=c(1,1,2,1), more=T)
 
 print(spplot(qd.lc, col.regions=qd.lc.lbl[J(unique(qd.lc)), col], 
-  xlab=list("Land Cover Classification\n(ESA 2015)", cex=.9),
+  xlab=list("Land Cover Classification\n(ESA/CCI 2015)", cex=.9),
   at=c(-1, unique(qd.lc)), colorkey=list(at=1:23,
     labels=list(labels=qd.lc.lbl[J(unique(qd.lc)), cat], at=1:23+.5))),
+  split=c(2,1,2,1), more=F)
+
+print(spplot(qd.usgs, "code", col.regions=qd.usgs.lbl[order(code), col], 
+  xlab=list("Land Cover Classification\n(USGS/EROS 2013)", cex=.9)), 
+  split=c(1,1,2,1), more=T)
+
+print(spplot(qd.suit, col.regions=c(qd.agpot.lbl[c(2,6), col], "grey"), 
+  xlab=list("Classified Low/High Agricultural Potential\n(BMGF/SDI 2016)", cex=.9)),
   split=c(2,1,2,1), more=F)
 
 ```
 
 ```{r}
 
+kable(qd.usgs.lbl[, .(Code=value, Label=code, Class=class_name)],
+  caption="USGA/EROS Land Cover Classification")
+
 kable(qd.lc.lbl[, .(Code=code, Label=cat, Class=class)],
-  caption="ESA Land Cover Classification")
+  caption="ESA/CCI Land Cover Classification")
 
 ```
     
-2. **Market Access** -- Low and high market access areas are defined using a **4 hour** travel time threshold. The source is [IFPRI/HarvestChoice Travel Time to Markets in Africa South of the Sahara, 2016](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YKDWJD) at 5-arc-minute resolution:
+### Market Access
+
+Low and high market access areas are defined using a **4 hour** travel time threshold. The source is [IFPRI/HarvestChoice Travel Time to Markets in Africa South of the Sahara, 2016](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YKDWJD) at 5-arc-minute (10km) resolution:
 
 - `100` Low access (travel time greater than 4 hours)  
 - `200` High access (travel time less than or equal to 4 hours)  
@@ -460,12 +627,17 @@ print(spplot(mask(qd.tt50k, g2[g2$svyCode=="gha-glss6",]),
 
 ```
 
-The resulting cross-classification.
+Below is the resulting cross-classification summarized across Ghana's 170 districts. Low and high market access districts use a **mean travel time to nearest 50K market**.
 
 ```{r gha-quadmap, fig.cap="Quadrant Classification across Districts, Ghana 2012/13. Source: authors.", dev="png"}
 
-spplot(g2[g2$svyCode=="gha-glss6", "seg_quad"], col.regions=pal.agpot[c(5,6,3,2)], 
-  xlab=list("Quadrant Classification across Districts", cex=.9))
+print(spplot(g2[g2$svyCode=="gha-glss6",], "qd_mkt", col="grey20", lwd=.2, col.regions=viridis(2),
+  xlab=list("Low/High Market Access\nacross Districts (GLSS6)", cex=.9)),
+  split=c(1,1,2,1), more=T)
+
+print(spplot(g2[g2$svyCode=="gha-glss6",], "quad", col="grey20", lwd=.2, col.regions=viridis(6),
+  xlab=list("Quadrant Classification\nacross Districts (GLSS6)", cex=.9)),
+  split=c(2,1,2,1), more=F)
 
 ```
 

@@ -105,7 +105,10 @@
 </ul></li>
 <li class="chapter" data-level="4" data-path="agricultural-potential.html"><a href="agricultural-potential.html"><i class="fa fa-check"></i><b>4</b> Agricultural Potential</a><ul>
 <li class="chapter" data-level="4.1" data-path="nigeria-1.html"><a href="nigeria-1.html"><i class="fa fa-check"></i><b>4.1</b> Nigeria</a></li>
-<li class="chapter" data-level="4.2" data-path="ghana-1.html"><a href="ghana-1.html"><i class="fa fa-check"></i><b>4.2</b> Ghana</a></li>
+<li class="chapter" data-level="4.2" data-path="ghana-1.html"><a href="ghana-1.html"><i class="fa fa-check"></i><b>4.2</b> Ghana</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="ghana-1.html"><a href="ghana-1.html#agricultural-potential-1"><i class="fa fa-check"></i><b>4.2.1</b> Agricultural Potential</a></li>
+<li class="chapter" data-level="4.2.2" data-path="ghana-1.html"><a href="ghana-1.html#market-access"><i class="fa fa-check"></i><b>4.2.2</b> Market Access</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="trends-in-macro-indicators.html"><a href="trends-in-macro-indicators.html"><i class="fa fa-check"></i><b>5</b> Trends in Macro Indicators</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -130,9 +133,9 @@
 <h2><span class="header-section-number">4.2</span> Ghana</h2>
 <p>Using a combination of biophysical and infrastructure geospatial layers available over sub-Saharan African we identify zones of low/high agricultural potential and low/high market access in Ghana. This basket classification is useful to further characterize small farm holders across all 4 quadrants, and for targeting interventions and investments.</p>
 <p>The input layers used for Ghana are as follows.</p>
-<ol style="list-style-type: decimal">
-<li><strong>Agricultural Potential</strong> – this measure was derived from <a href="http://www.fao.org/nr/gaez/about-data-portal/agricultural-suitability-and-potential-yields/en/">FAO/IIASA/GAEZ Cereal Suitability Index, 2007</a> (rainfed, low-input). Soil suitability classifications are based on knowledge of crop requirements, of prevailing soil conditions, and of applied soil management. In other words, soil suitability procedures quantify to what extent soil conditions match crop requirements under defined input and management circumstances.</li>
-</ol>
+<div id="agricultural-potential-1" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Agricultural Potential</h3>
+<p>This measure was derived from <a href="http://www.fao.org/nr/gaez/about-data-portal/agricultural-suitability-and-potential-yields/en/">FAO/IIASA/GAEZ Crop Suitability Index, 2007</a> (cereals, rainfed, low-input). Soil suitability classifications are based on knowledge of crop requirements, of prevailing soil conditions, and of applied soil management. In other words, soil suitability procedures quantify to what extent soil conditions match crop requirements under defined input and management circumstances.</p>
 <p>Low and high potential areas are further classified as:</p>
 <ul>
 <li>1-4 values are considered <strong>low suitability</strong>:
@@ -166,15 +169,158 @@
 <li><code>0</code> Land not suited for agriculture</li>
 </ul></li>
 </ul>
-<p>This classification is shown below along with a recent remote-sensed land cover layer.</p>
+<p>IIASA/GAEZ crop suitability for Ghana is shown below along with two more recent and higher-resolution remote-sensed land cover classification from <a href="http://maps.elie.ucl.ac.be/CCI/viewer/">ESA/CCI</a> and from <a href="https://eros.usgs.gov/westafrica/data-downloads">USGS/EROS</a>. The fourth map shows areas of low and high agricultural potential based on additional work conducted by BMGF/SDI (this layer was resampled from 10km to 1km resolution and then summarized across districts).</p>
 <div class="figure"><span id="fig:gha-suitmap"></span>
-<img src="fig/gha-suitmap-1.png" alt="Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ, 2015." width="2100" />
+<img src="fig/gha-suitmap-1.png" alt="Mapping Ghana's Agricultural Potential" width="2100" />
 <p class="caption">
-Fig. 4.1: Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ, 2015.
+Fig. 4.1: Mapping Ghana’s Agricultural Potential
+</p>
+</div>
+<div class="figure"><span id="fig:gha-suitmap"></span>
+<img src="fig/gha-suitmap-2.png" alt="Mapping Ghana's Agricultural Potential" width="2100" />
+<p class="caption">
+Fig. 4.1: Mapping Ghana’s Agricultural Potential
 </p>
 </div>
 <table>
-<caption><span id="tab:unnamed-chunk-12">Tab. 4.1: </span>ESA Land Cover Classification</caption>
+<caption><span id="tab:unnamed-chunk-12">Tab. 4.1: </span>USGA/EROS Land Cover Classification</caption>
+<thead>
+<tr class="header">
+<th align="right">Code</th>
+<th align="left">Label</th>
+<th align="left">Class</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">8</td>
+<td align="left">A</td>
+<td align="left">Agriculture</td>
+</tr>
+<tr class="even">
+<td align="right">14</td>
+<td align="left">AI</td>
+<td align="left">Irrigated agriculture</td>
+</tr>
+<tr class="odd">
+<td align="right">27</td>
+<td align="left">AP</td>
+<td align="left">Cropland and fallow with oil palms</td>
+</tr>
+<tr class="even">
+<td align="right">22</td>
+<td align="left">B</td>
+<td align="left">Bowe</td>
+</tr>
+<tr class="odd">
+<td align="right">24</td>
+<td align="left">BL</td>
+<td align="left">Agriculture in shallows and recession</td>
+</tr>
+<tr class="even">
+<td align="right">21</td>
+<td align="left">DVF</td>
+<td align="left">Degraded forest</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">E</td>
+<td align="left">Water bodies</td>
+</tr>
+<tr class="even">
+<td align="right">15</td>
+<td align="left">FG</td>
+<td align="left">Gallery forest and riparian forest</td>
+</tr>
+<tr class="odd">
+<td align="right">13</td>
+<td align="left">H</td>
+<td align="left">Settlements</td>
+</tr>
+<tr class="even">
+<td align="right">78</td>
+<td align="left">OPM</td>
+<td align="left">Open mine</td>
+</tr>
+<tr class="odd">
+<td align="right">12</td>
+<td align="left">SD</td>
+<td align="left">Bare soil</td>
+</tr>
+<tr class="even">
+<td align="right">28</td>
+<td align="left">SF</td>
+<td align="left">Swamp forest</td>
+</tr>
+<tr class="odd">
+<td align="right">11</td>
+<td align="left">SR</td>
+<td align="left">Rocky land</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">SS</td>
+<td align="left">Sandy area</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="left">T</td>
+<td align="left">Thicket</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">VF</td>
+<td align="left">Forest</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">VM</td>
+<td align="left">Mangrove</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">VP</td>
+<td align="left">Wetland - floodplain</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="left">VPI</td>
+<td align="left">Plantation</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">VS</td>
+<td align="left">Savanna</td>
+</tr>
+<tr class="odd">
+<td align="right">32</td>
+<td align="left">VSb</td>
+<td align="left">Shrubland</td>
+</tr>
+<tr class="even">
+<td align="right">31</td>
+<td align="left">VSH</td>
+<td align="left">Herbaceous savanna</td>
+</tr>
+<tr class="odd">
+<td align="right">29</td>
+<td align="left">VSS</td>
+<td align="left">Sahelian short grass savanna</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">VSt</td>
+<td align="left">Steppe</td>
+</tr>
+<tr class="odd">
+<td align="right">25</td>
+<td align="left">WL</td>
+<td align="left">Woodland</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:unnamed-chunk-12">Tab. 4.1: </span>ESA/CCI Land Cover Classification</caption>
 <thead>
 <tr class="header">
 <th align="right">Code</th>
@@ -375,9 +521,10 @@ Fig. 4.1: Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ
 </tr>
 </tbody>
 </table>
-<ol start="2" style="list-style-type: decimal">
-<li><strong>Market Access</strong> – Low and high market access areas are defined using a <strong>4 hour</strong> travel time threshold. The source is <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YKDWJD">IFPRI/HarvestChoice Travel Time to Markets in Africa South of the Sahara, 2016</a> at 5-arc-minute resolution:</li>
-</ol>
+</div>
+<div id="market-access" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Market Access</h3>
+<p>Low and high market access areas are defined using a <strong>4 hour</strong> travel time threshold. The source is <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YKDWJD">IFPRI/HarvestChoice Travel Time to Markets in Africa South of the Sahara, 2016</a> at 5-arc-minute (10km) resolution:</p>
 <ul>
 <li><code>100</code> Low access (travel time greater than 4 hours)<br />
 </li>
@@ -390,7 +537,7 @@ Fig. 4.1: Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ
 Fig. 4.2: Travel Time to Nearest 20K and 50K Market. Source: IFPRI/HarvestChoice, 2016.
 </p>
 </div>
-<p>The resulting cross-classification.</p>
+<p>Below is the resulting cross-classification summarized across Ghana’s 170 districts. Low and high market access districts use a <strong>mean travel time to nearest 50K market</strong>.</p>
 <div class="figure"><span id="fig:gha-quadmap"></span>
 <img src="fig/gha-quadmap-1.png" alt="Quadrant Classification across Districts, Ghana 2012/13. Source: authors." width="2100" />
 <p class="caption">
@@ -398,6 +545,7 @@ Fig. 4.3: Quadrant Classification across Districts, Ghana 2012/13. Source: autho
 </p>
 </div>
 
+</div>
 </div>
 <!-- </div> -->
             </section>
