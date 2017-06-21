@@ -410,7 +410,7 @@ This classification is shown below along with a recent remote-sensed land cover 
 ```{r gha-suitmap, fig.cap="Crop Suitability for Low-Input Rainfed Cereals. Source: FAO/IIASA/GAEZ, 2015.", dev="png"}
 
 print(spplot(qd.agpot, col.regions=pal.agpot, 
-  xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IISA/GAEZ)", cex=.9)), 
+  xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ)", cex=.9)), 
   split=c(1,1,2,1), more=T)
 
 print(spplot(qd.lc, col.regions=qd.lc.lbl$col,

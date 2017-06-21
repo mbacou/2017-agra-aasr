@@ -1,7 +1,7 @@
 ---
-title: "Business-oriented Typology and Characterization of Agriculture in SSA"
+title: "Business-oriented Typology and Characterization of Agriculture in SSA (Documentation)"
 author: "[Melanie Bacou](http://github.com/mbacou) for BMGF"
-date: "Last updated on `r Sys.Date()` -- DRAFT, DO NOT USE OR CITE"
+date: "Last updated on `r Sys.Date()` -- CODES AND NOTES, DO NOT USE OR CITE"
 description: "A multi-scale and cross-time framework"
 site: bookdown::bookdown_site
 knit: bookdown::render_book
@@ -36,7 +36,7 @@ load("../tmp/2017-agra-aasr.RData")
 
 # Output options
 opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=T, 
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=F, 
   dev.args=list(
     png=list(family="Roboto Condensed", pointsize=9), 
     svg=list(family="Roboto Condensed")))
@@ -45,7 +45,7 @@ palette(HC.pal)
 
 ```
 
-This study is a prospective chapter in *AGRA Africa Agriculture Status Report (AASR) 2017*.
+Codes and notes for a prospective chapter in *AGRA Africa Agriculture Status Report (AASR) 2017*.
 
 The overall objective of the AASR report is to [@aasr_cn_2017]:  
  
