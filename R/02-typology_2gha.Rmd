@@ -491,14 +491,42 @@ tmp[, .N, keyby=surveyr]
 tmp[surveyr==2013, summary(hhid)]
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 6000000 6030000 6061000 6061000 6091000 6120000  
-
 gha[survey=="2012/13", summary(hhid)]
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 6000000 6030000 6061000 6061000 6091000 6120000 
-# => seems OK
+# => seems OK to merge
 
+tmp[surveyr==2005, summary(hhid)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000
+gha[survey=="2005/06", summary(hhid)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000
+# => OK too
 
+# Merge in all input use vars
+setkey(tmp, hhid)
+setkey(gha, hhid)
+gha <- gha[tmp, `:=`(
+  seeds = i.aseeds,
+  fert_any = i.afertilizer,
+  fert_inorg = i.afertilizer_inorganic,
+  fert_org = i.aorganic_fertilizer,
+  herb = i.aherbicides,
+  pest = i.ainsecticides,
+  irr = i.airrigation,
+  fuel = i.aFuel_and_maintenance,
+  hired_labor = i.ahired_labour)]
 
+# Verify
+gha[, lapply(.SD, mean, na.rm=T), by=svyCode, 
+  .SDcols=c("seeds", "fert_any", "herb", "pest", "irr", "fuel", "hired_labor")]
+#      svyCode      seeds  fert_any      herb      pest         irr      fuel hired_labor
+# 1: gha-glss4        NaN       NaN       NaN       NaN         NaN       NaN         NaN
+# 2: gha-glss5 0.24618659 0.1729020 0.1532458 0.1645974 0.003902093 0.1590990   0.4968074
+# 3: gha-glss6 0.09843787 0.2775459 0.3269735 0.1836394 0.005067970 0.1890055   0.2805867
+
+# Refresh all survey designs below
 
 ```
 
@@ -1242,8 +1270,42 @@ svyby(~croparea_imp+naggross_sh+cropsales_sh, ~class, tmp.svy, svymean, na.rm=T)
 # 2     2     2.513138  0.46917690    0.4815426      0.16263990    0.006067555      0.01969218
 # 3     3     2.591977  0.02566287    0.4931233      0.10819529    0.001442684      0.01067543
 
-```
 
+# Tests
+tmp <- svyby(~totgross, ~naggross_clas+cropsales_clas, subset(gha.svy[[2]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
+
+tmp <- svyby(~totgross, ~naggross_clas+cropsales_clas, subset(gha.svy[[3]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
+
+tmp <- svyby(~cellphone, ~naggross_clas+cropsales_clas, subset(gha.svy[[2]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
+
+tmp <- svyCrossTab(list(~distroad, ~distpost), ~class9, subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), quantiles=c(.25,.5,.75))
+
+tmp <- svyCrossTab(list(~cellphone, ~runwater), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
+
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+par(mfrow=c(1,2), cex=.8)
+svyplot(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha" & rural=="rural"), style="grayhex", basecol="grey10",
+  sample.size=1000, xlab="Income Diversification", ylab="Crop Sales ('000 LCU)")
+
+svyplot(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], rural=="urban"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)")
+
+tmp <- svysmooth(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"))
+lines(tmp, col="red", lwd=2)
+
+svyplot(cropsales~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)", ylim=c(0, 4E6))
+
+svyplot(cropsales~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)", ylim=c(0, 4E6))
+
+tmp <- svysmooth(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"))
+lines(tmp, col="red", lwd=2)
+
+legend("topright", lty=c(1,1), col=c(4), legend=c("Male"), bty="n")
+svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="hex", basecol=41, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
+legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
+
+```
 
 
 ```{r gha-save, eval=FALSE}
@@ -1599,13 +1661,14 @@ html(tabular(Heading("Income Diversification")*naggross_clas*(mean+CI)~Heading("
 tmp <- svyCrossTab(list(
   ~hhsize_imp, 
   ~I(100*femhead),
+  ~I(100*widowhead),
   ~hhlabor,
-  ~I(100*naggross_sh), 
-  ~I(100*cropsales_sh)  
+  ~I(100*ownhome), ~I(100*cellphone), ~I(100*telephone), ~I(100*electricity), 
+  ~distwater, ~distroad, ~distpost, ~distbank, ~disthealth  
   ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab2) Est. Characteristics of Farm Holdings below 4 ha across Categories (2012/13, percent)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+table_options(HTMLcaption="(#tab:tab2) Est. Demographic Characteristics of Farm Holdings below 4 ha across Categories (2012/13, percent/km)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 tmp <- svyCrossTab(list(
@@ -1619,22 +1682,45 @@ table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha a
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
+# Income
 tmp <- svyCrossTab(list(
   ~aggross, 
   ~totgross, 
+  ~I(100*naggross_sh),   
   ~cropvalue, 
   ~cropsales,
+  ~I(100*cropsales_sh),    
   ~totlvstprod,
   ~totlivsold
   ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (2012/13, Cedis)")
+table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (2012/13, Percent/Cedis)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Livestock
+tmp <- svyCrossTab(list(
+~I(1E3*TLU_horse), ~I(1E3*TLU_cattle), ~I(1E3*TLU_pigs), ~I(1E3*TLU_sheep),
+  ~I(1E3*TLU_small), ~I(1E3*TLU_total)), 
+  ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab5) Est. Small and Large Livestock Holdings for Farms below 4 ha across Categories (2012/13, '000 TLU)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Input uses
+tmp <- svyCrossTab(list(
+  ~I(100*seeds), ~I(100*fert_any), ~I(100*fert_inorg), ~I(100*fert_org), 
+  ~I(100*herb), ~I(100*pest), ~I(100*irr), ~I(100*fuel), ~I(100*hired_labor)), 
+  ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab6) Est. Agricultural Input Use in Farms below 4 ha across Categories (2012/13, percent of farms)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 ```
 
-Below are estimated distributions of key characteristics for farms below 4 ha as of 2012/13.
+Below are estimated distributions of key characteristics for farms below 4 ha (GLSS6, 2012/13).
 
 ```{r gha-bplot2a, fig.cap="Est. Farm Sizes of Farm Holdings below 4 ha across Categories (2012/13, ha)"}
 
@@ -1643,6 +1729,7 @@ svyboxplot(landown~class9, gha.svy.shf[["gha6"]],
   ylab="Est. Land Owned (ha)", ylim=c(0,2), varwidth=T)
 
 ```
+
 
 ```{r gha-bplot2b, fig.cap="Est. Cultivated Area of Farm Holdings below 4 ha across Categories (2012/13, ha)"}
 
@@ -1660,43 +1747,35 @@ svyboxplot(I(aggross/1000)~class9, gha.svy.shf[["gha6"]],
 
 ```
 
+```{r gha-bplot2d, fig.cap="Est. Farm Holdings below 4 ha with Seed Purchases across Categories (2012/13, '000 Cedis)"}
 
-```{r gha-scratch, eval=FALSE}
-
-tmp <- svyby(~totgross, ~naggross_clas+cropsales_clas, subset(gha.svy[[2]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
-
-tmp <- svyby(~totgross, ~naggross_clas+cropsales_clas, subset(gha.svy[[3]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
-
-tmp <- svyby(~cellphone, ~naggross_clas+cropsales_clas, subset(gha.svy[[2]], croparea_clas=="<= 2 ha"), svymean, na.rm=T)
-
-tmp <- svyCrossTab(list(~distroad, ~distpost), ~class9, subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), quantiles=c(.25,.5,.75))
-
-tmp <- svyCrossTab(list(~cellphone, ~runwater), ~class9, subset(gha.svy[[1]], croparea_4ha=="<= 4 ha"), quantiles=c(.25,.5,.75))
-
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
-  data=tmp), rmarkdown=T)
-
-par(mfrow=c(1,2), cex=.8)
-svyplot(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha" & rural=="rural"), style="grayhex", basecol="grey10",
-  sample.size=1000, xlab="Income Diversification", ylab="Crop Sales ('000 LCU)")
-
-svyplot(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], rural=="urban"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)")
-
-tmp <- svysmooth(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"))
-lines(tmp, col="red", lwd=2)
-
-svyplot(cropsales~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)", ylim=c(0, 4E6))
-
-svyplot(cropsales~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"), style="grayhex", basecol="grey10", xlab="Income Diversification", ylab="Crop Sales ('000 LCU)", ylim=c(0, 4E6))
-
-tmp <- svysmooth(I(100*cropsales_sh)~I(100*naggross_sh), subset(gha.svy[[1]], croparea_clas=="<= 2 ha"))
-lines(tmp, col="red", lwd=2)
-
-legend("topright", lty=c(1,1), col=c(4), legend=c("Male"), bty="n")
-svyplot(I(cropsales/1000)~agehead, subset(ghs.svy.farm, femhead==1), style="hex", basecol=41, xlab="Age of Hhld Head", ylab="Crop Sales ('000 LCU)")
-legend("topright", lty=c(1,1), col=c(41), legend=c("Female"), bty="n")
+par(cex=.8)
+svyboxplot(I(100*seeds)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Seed Purchases (percent)", varwidth=T)
 
 ```
 
+```{r gha-bplot2e, fig.cap="Est. Farm Holdings below 4 ha using Organic Fertilizer across Categories (2012/13, '000 Cedis)"}
 
+par(cex=.8)
+svyboxplot(I(100*fert_org)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Organic Fertilizer Use (percent)",  varwidth=T)
+
+```
+
+```{r gha-bplot2f, fig.cap="Est. Farm Holdings below 4 ha using Chemical Fertilizer across Categories (2012/13, '000 Cedis)"}
+
+par(cex=.8)
+svyboxplot(I(100*fert_inorg)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Chemical Fertilizer Use (percent)", varwidth=T)
+
+```
+
+```{r gha-bplot2g, fig.cap="Est. Farm Holdings below 4 ha using Fuel and/or Maintenance Services across Categories (2012/13, '000 Cedis)"}
+
+par(cex=.8)
+svyboxplot(I(100*fuel)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Fuel/Maintenance Use (percent)", varwidth=T)
+
+```
 

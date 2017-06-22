@@ -784,13 +784,14 @@ Mean and median household characteristics (farms below 4 ha) across the resultin
 tmp <- svyCrossTab(list(
   ~hhsize_imp, 
   ~I(100*femhead),
+  ~I(100*widowhead),
   ~hhlabor,
-  ~I(100*naggross_sh), 
-  ~I(100*cropsales_sh)  
+  ~I(100*ownhome), ~I(100*cellphone), ~I(100*telephone), ~I(100*electricity), 
+  ~distwater, ~distroad, ~distpost, ~distbank, ~disthealth  
   ), ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab2) Est. Characteristics of Farm Holdings below 4 ha across Quadrants (2012/13, percent)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+table_options(HTMLcaption="(#tab:gha-quad-tab2) Est. Demographic Characteristics of Farm Holdings below 4 ha across Quadrants (2012/13, percent/km)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 tmp <- svyCrossTab(list(
@@ -800,21 +801,44 @@ tmp <- svyCrossTab(list(
   ~croparea_imp
   ), ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha across Quadrants (2012/13, ha)")
+table_options(HTMLcaption="(#tab:gha-quad-tab3) Land Assets of Farm Holdings below 4 ha across Quadrants (2012/13, ha)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
+# Income
 tmp <- svyCrossTab(list(
   ~aggross, 
   ~totgross, 
+  ~I(100*naggross_sh),   
   ~cropvalue, 
   ~cropsales,
+  ~I(100*cropsales_sh),    
   ~totlvstprod,
   ~totlivsold
   ), ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
-table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Quadrants (2012/13, Cedis)")
+table_options(HTMLcaption="(#tab:gha-quad-tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Quadrants (2012/13, Percent/Cedis)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Livestock
+tmp <- svyCrossTab(list(
+~I(1E3*TLU_horse), ~I(1E3*TLU_cattle), ~I(1E3*TLU_pigs), ~I(1E3*TLU_sheep),
+  ~I(1E3*TLU_small), ~I(1E3*TLU_total)), 
+  ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:gha-quad-tab5) Est. Small and Large Livestock Holdings for Farms below 4 ha across Quadrants (2012/13, '000 TLU)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Input uses
+tmp <- svyCrossTab(list(
+  ~I(100*seeds), ~I(100*fert_any), ~I(100*fert_inorg), ~I(100*fert_org), 
+  ~I(100*herb), ~I(100*pest), ~I(100*irr), ~I(100*fuel), ~I(100*hired_labor)), 
+  ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:gha-quad-tab6) Est. Agricultural Input Use in Farms below 4 ha across Quadrants (2012/13, percent of farms)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 ```
@@ -843,6 +867,20 @@ svyboxplot(I(cropsales/1000)~seg_quad_4, gha.svy.shf[["gha6"]], varwidth=T,
 
 ```
 
+```{r gha-quad-bplot2d, fig.cap="Est. Input Uses for Farm Holdings below 4 ha across Categories (2012/13, percent of farms)"}
 
+par(mfrow=c(1,2), cex=.8)
+svyboxplot(I(100*seeds)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Seed Purchases (percent)", varwidth=T)
 
+svyboxplot(I(100*fert_org)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Organic Fertilizer Use (percent)",  varwidth=T)
+
+svyboxplot(I(100*fert_inorg)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Chemical Fertilizer Use (percent)", varwidth=T)
+
+svyboxplot(I(100*fuel)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Fuel/Maintenance Use (percent)", varwidth=T)
+
+```
 
