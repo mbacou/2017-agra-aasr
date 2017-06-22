@@ -103,11 +103,13 @@
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="ethiopia.html"><a href="ethiopia.html"><i class="fa fa-check"></i><b>3.3</b> Ethiopia</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="agricultural-potential.html"><a href="agricultural-potential.html"><i class="fa fa-check"></i><b>4</b> Agricultural Potential</a><ul>
+<li class="chapter" data-level="4" data-path="quadrant-classification.html"><a href="quadrant-classification.html"><i class="fa fa-check"></i><b>4</b> Quadrant Classification</a><ul>
 <li class="chapter" data-level="4.1" data-path="nigeria-1.html"><a href="nigeria-1.html"><i class="fa fa-check"></i><b>4.1</b> Nigeria</a></li>
 <li class="chapter" data-level="4.2" data-path="ghana-1.html"><a href="ghana-1.html"><i class="fa fa-check"></i><b>4.2</b> Ghana</a><ul>
-<li class="chapter" data-level="4.2.1" data-path="ghana-1.html"><a href="ghana-1.html#agricultural-potential-1"><i class="fa fa-check"></i><b>4.2.1</b> Agricultural Potential</a></li>
+<li class="chapter" data-level="4.2.1" data-path="ghana-1.html"><a href="ghana-1.html#agricultural-potential"><i class="fa fa-check"></i><b>4.2.1</b> Agricultural Potential</a></li>
 <li class="chapter" data-level="4.2.2" data-path="ghana-1.html"><a href="ghana-1.html#market-access"><i class="fa fa-check"></i><b>4.2.2</b> Market Access</a></li>
+<li class="chapter" data-level="4.2.3" data-path="ghana-1.html"><a href="ghana-1.html#classification-of-farm-holdings-across-quadrants"><i class="fa fa-check"></i><b>4.2.3</b> Classification of Farm Holdings across Quadrants</a></li>
+<li class="chapter" data-level="4.2.4" data-path="ghana-1.html"><a href="ghana-1.html#key-results-2"><i class="fa fa-check"></i><b>4.2.4</b> Key Results</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="trends-in-macro-indicators.html"><a href="trends-in-macro-indicators.html"><i class="fa fa-check"></i><b>5</b> Trends in Macro Indicators</a></li>
@@ -133,7 +135,7 @@
 <h2><span class="header-section-number">4.2</span> Ghana</h2>
 <p>Using a combination of biophysical and infrastructure geospatial layers available over sub-Saharan African we identify zones of low/high agricultural potential and low/high market access in Ghana. This basket classification is useful to further characterize small farm holders across all 4 quadrants, and for targeting interventions and investments.</p>
 <p>The input layers used for Ghana are as follows.</p>
-<div id="agricultural-potential-1" class="section level3">
+<div id="agricultural-potential" class="section level3">
 <h3><span class="header-section-number">4.2.1</span> Agricultural Potential</h3>
 <p>This measure was derived from <a href="http://www.fao.org/nr/gaez/about-data-portal/agricultural-suitability-and-potential-yields/en/">FAO/IIASA/GAEZ Crop Suitability Index, 2007</a> (cereals, rainfed, low-input). Soil suitability classifications are based on knowledge of crop requirements, of prevailing soil conditions, and of applied soil management. In other words, soil suitability procedures quantify to what extent soil conditions match crop requirements under defined input and management circumstances.</p>
 <p>Low and high potential areas are further classified as:</p>
@@ -537,11 +539,2223 @@ Fig. 4.1: Mapping Ghana’s Agricultural Potential
 Fig. 4.2: Travel Time to Nearest 20K and 50K Market. Source: IFPRI/HarvestChoice, 2016.
 </p>
 </div>
-<p>Below is the resulting cross-classification summarized across Ghana’s 170 districts. Low and high market access districts use a <strong>mean travel time to nearest 50K market</strong>.</p>
-<div class="figure"><span id="fig:gha-quadmap"></span>
-<img src="fig/gha-quadmap-1.png" alt="Quadrant Classification across Districts, Ghana 2012/13. Source: authors." width="2100" />
+</div>
+<div id="classification-of-farm-holdings-across-quadrants" class="section level3">
+<h3><span class="header-section-number">4.2.3</span> Classification of Farm Holdings across Quadrants</h3>
+<p>Below is the resulting cross-classification summarized across Ghana’s 170 districts (GLSS6) and 110 districts (GLSS5). Low and high market access districts use a <strong>mean travel time to nearest 50K market</strong>. In addition all districts that summarize to <em>unsuitable</em> <code>agpot-no</code> are reclassified to <em>low suitability</em> <code>agpot-lo</code>. None of the GLSS survey districts summarize to <em>low suitability</em>, the actual breakdown is given in <a href="ghana-1.html#tab:gha-quadtab">4.2</a>.</p>
+<table class="Rtable">
+<caption>
+<span id="tab:gha-quadtab">Tab. 4.2: </span> Distribution of Ghana’s Districts and Observations across Quadrants by Survey Year
+</caption>
+<thead>
+<tr class="center">
+<th>
+Survey
+</th>
+<th>
+Quadrant
+</th>
+<th>
+District
+</th>
+<th>
+Obs.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+gha-glss5
+</th>
+<th class="left">
+agpot-no / mkt-lo
+</th>
+<td>
+     2
+</td>
+<td>
+    75
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-no / mkt-hi
+</th>
+<td>
+     9
+</td>
+<td>
+ 2,066
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-lo / mkt-lo
+</th>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-lo / mkt-hi
+</th>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-hi / mkt-lo
+</th>
+<td>
+     5
+</td>
+<td>
+   300
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-hi / mkt-hi
+</th>
+<td>
+    94
+</td>
+<td>
+ 6,246
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+All
+</th>
+<td>
+   110
+</td>
+<td>
+ 8,687
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+gha-glss6
+</th>
+<th class="left">
+agpot-no / mkt-lo
+</th>
+<td>
+     2
+</td>
+<td>
+   176
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-no / mkt-hi
+</th>
+<td>
+    17
+</td>
+<td>
+ 3,183
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-lo / mkt-lo
+</th>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-lo / mkt-hi
+</th>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-hi / mkt-lo
+</th>
+<td>
+     7
+</td>
+<td>
+   508
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+agpot-hi / mkt-hi
+</th>
+<td>
+   144
+</td>
+<td>
+12,905
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+All
+</th>
+<td>
+   170
+</td>
+<td>
+16,772
+</td>
+</tr>
+</tbody>
+</table>
+<div class="figure"><span id="fig:gha-quadmap6"></span>
+<img src="fig/gha-quadmap6-1.png" alt="Quadrant Classification across Districts, Ghana 2012/13. Source: authors." width="2100" />
 <p class="caption">
 Fig. 4.3: Quadrant Classification across Districts, Ghana 2012/13. Source: authors.
+</p>
+</div>
+<div class="figure"><span id="fig:gha-quadmap5"></span>
+<img src="fig/gha-quadmap5-1.png" alt="Quadrant Classification across Districts, Ghana 2005/06. Source: authors." width="2100" />
+<p class="caption">
+Fig. 4.4: Quadrant Classification across Districts, Ghana 2005/06. Source: authors.
+</p>
+</div>
+</div>
+<div id="key-results-2" class="section level3">
+<h3><span class="header-section-number">4.2.4</span> Key Results</h3>
+<div class="figure"><span id="fig:gha-quad-fig2a"></span>
+<img src="fig/gha-quad-fig2a-1.svg" alt="Est. Proportions of Farm Holdings across Quadrants (below/above 4 ha)" width="2100" />
+<p class="caption">
+Fig. 4.5: Est. Proportions of Farm Holdings across Quadrants (below/above 4 ha)
+</p>
+</div>
+<table class="Rtable">
+<caption>
+<span id="tab:tab1">Tab. 3.6: </span> Est. Proportions of Farm Holdings below 4 ha across Quadrants (2012/13, percent)
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th>
+ 
+</th>
+<th colspan="2">
+Market Access
+</th>
+</tr>
+<tr class="center">
+<th>
+Ag. Potential
+</th>
+<th>
+</th>
+<th>
+mkt-hi
+</th>
+<th>
+mkt-lo
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+agpot-hi
+</th>
+<th class="left">
+mean
+</th>
+<td>
+89.5
+</td>
+<td>
+3.4
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+CI
+</th>
+<td>
+86.6 - 92.3
+</td>
+<td>
+2.1 - 4.7
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+agpot-lo
+</th>
+<th class="left">
+mean
+</th>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+CI
+</th>
+<td>
+0.0 - 0.0
+</td>
+<td>
+0.0 - 0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+agpot-no
+</th>
+<th class="left">
+mean
+</th>
+<td>
+5.5
+</td>
+<td>
+1.7
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+CI
+</th>
+<td>
+3.0 - 7.9
+</td>
+<td>
+0.7 - 2.7
+</td>
+</tr>
+</tbody>
+</table>
+<p>Mean and median household characteristics (farms below 4 ha) across the resulting quadrants are estimated in the tables below.</p>
+<table class="Rtable">
+<caption>
+<span id="tab:tab2">Tab. 3.24: </span> Est. Characteristics of Farm Holdings below 4 ha across Quadrants (2012/13, percent)
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th>
+ 
+</th>
+<th colspan="2">
+agpot-lo / mkt-lo
+</th>
+<th colspan="2">
+agpot-lo / mkt-hi
+</th>
+<th colspan="2">
+agpot-hi / mkt-lo
+</th>
+<th colspan="2">
+agpot-hi / mkt-hi
+</th>
+</tr>
+<tr class="center">
+<th>
+Variable
+</th>
+<th>
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+hhsize_imp
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+  5.65
+</td>
+<td>
+  0.44
+</td>
+<td>
+  4.56
+</td>
+<td>
+  0.25
+</td>
+<td>
+  4.76
+</td>
+<td>
+  0.29
+</td>
+<td>
+  4.41
+</td>
+<td>
+  0.05
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+  4.00
+</td>
+<td>
+  0.51
+</td>
+<td>
+  3.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  3.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  3.00
+</td>
+<td>
+  0.26
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+  5.00
+</td>
+<td>
+  0.51
+</td>
+<td>
+  4.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  4.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  4.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+  7.00
+</td>
+<td>
+  0.51
+</td>
+<td>
+  6.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  6.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  6.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+(100 * femhead)
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+ 12.48
+</td>
+<td>
+  3.81
+</td>
+<td>
+ 22.46
+</td>
+<td>
+  3.33
+</td>
+<td>
+ 22.66
+</td>
+<td>
+  4.12
+</td>
+<td>
+ 28.14
+</td>
+<td>
+  0.94
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+ 25.51
+</td>
+<td>
+  0.00
+</td>
+<td>
+ 25.51
+</td>
+<td>
+100.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+hhlabor
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+  2.79
+</td>
+<td>
+  0.25
+</td>
+<td>
+  2.49
+</td>
+<td>
+  0.11
+</td>
+<td>
+  2.42
+</td>
+<td>
+  0.14
+</td>
+<td>
+  2.20
+</td>
+<td>
+  0.03
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+  2.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  2.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  1.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  1.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+  2.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  2.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  2.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  2.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+  3.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  3.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  3.00
+</td>
+<td>
+  0.26
+</td>
+<td>
+  3.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+(100 * naggross_sh)
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+ 34.23
+</td>
+<td>
+  3.83
+</td>
+<td>
+ 81.46
+</td>
+<td>
+  3.43
+</td>
+<td>
+ 43.06
+</td>
+<td>
+  5.61
+</td>
+<td>
+ 49.31
+</td>
+<td>
+  1.39
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+ 83.07
+</td>
+<td>
+ 11.50
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+  1.62
+</td>
+<td>
+  3.25
+</td>
+<td>
+ 99.71
+</td>
+<td>
+  0.93
+</td>
+<td>
+ 13.35
+</td>
+<td>
+ 19.71
+</td>
+<td>
+ 48.33
+</td>
+<td>
+  7.01
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+ 90.49
+</td>
+<td>
+ 11.72
+</td>
+<td>
+100.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+ 98.55
+</td>
+<td>
+  2.64
+</td>
+<td>
+ 98.71
+</td>
+<td>
+  0.37
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+(100 * cropsales_sh)
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+ 37.78
+</td>
+<td>
+  7.81
+</td>
+<td>
+ 19.10
+</td>
+<td>
+  4.55
+</td>
+<td>
+ 43.88
+</td>
+<td>
+  4.57
+</td>
+<td>
+ 36.14
+</td>
+<td>
+  1.17
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+  0.00
+</td>
+<td>
+  7.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+<td>
+  5.14
+</td>
+<td>
+  0.00
+</td>
+<td>
+  0.00
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+ 30.08
+</td>
+<td>
+ 14.09
+</td>
+<td>
+  0.00
+</td>
+<td>
+  6.77
+</td>
+<td>
+ 44.27
+</td>
+<td>
+  9.17
+</td>
+<td>
+ 29.09
+</td>
+<td>
+  2.92
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+ 70.16
+</td>
+<td>
+ 13.88
+</td>
+<td>
+ 31.22
+</td>
+<td>
+ 16.29
+</td>
+<td>
+ 78.37
+</td>
+<td>
+  4.97
+</td>
+<td>
+ 68.17
+</td>
+<td>
+  1.73
+</td>
+</tr>
+</tbody>
+</table>
+<table class="Rtable">
+<caption>
+<span id="tab:tab3">Tab. 3.25: </span> Land Assets of Farm Holdings below 4 ha across Quadrants (2012/13, ha)
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th>
+ 
+</th>
+<th colspan="2">
+agpot-lo / mkt-lo
+</th>
+<th colspan="2">
+agpot-lo / mkt-hi
+</th>
+<th colspan="2">
+agpot-hi / mkt-lo
+</th>
+<th colspan="2">
+agpot-hi / mkt-hi
+</th>
+</tr>
+<tr class="center">
+<th>
+Variable
+</th>
+<th>
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+landown
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+0.9
+</td>
+<td>
+0.2
+</td>
+<td>
+1.0
+</td>
+<td>
+0.2
+</td>
+<td>
+1.1
+</td>
+<td>
+0.2
+</td>
+<td>
+1.1
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+0.0
+</td>
+<td>
+0.1
+</td>
+<td>
+0.1
+</td>
+<td>
+0.1
+</td>
+<td>
+0.0
+</td>
+<td>
+0.1
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+0.4
+</td>
+<td>
+0.4
+</td>
+<td>
+0.8
+</td>
+<td>
+0.2
+</td>
+<td>
+0.8
+</td>
+<td>
+0.2
+</td>
+<td>
+0.8
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+1.6
+</td>
+<td>
+0.3
+</td>
+<td>
+1.2
+</td>
+<td>
+0.2
+</td>
+<td>
+2.0
+</td>
+<td>
+0.2
+</td>
+<td>
+2.0
+</td>
+<td>
+0.1
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+croparea_imp
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+1.5
+</td>
+<td>
+0.1
+</td>
+<td>
+1.1
+</td>
+<td>
+0.1
+</td>
+<td>
+1.4
+</td>
+<td>
+0.1
+</td>
+<td>
+1.4
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+0.8
+</td>
+<td>
+0.3
+</td>
+<td>
+0.3
+</td>
+<td>
+0.1
+</td>
+<td>
+0.4
+</td>
+<td>
+0.1
+</td>
+<td>
+0.4
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+1.4
+</td>
+<td>
+0.3
+</td>
+<td>
+0.8
+</td>
+<td>
+0.2
+</td>
+<td>
+1.2
+</td>
+<td>
+0.2
+</td>
+<td>
+1.2
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+2.0
+</td>
+<td>
+0.1
+</td>
+<td>
+1.6
+</td>
+<td>
+0.2
+</td>
+<td>
+2.2
+</td>
+<td>
+0.3
+</td>
+<td>
+2.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+</tbody>
+</table>
+<table class="Rtable">
+<caption>
+<span id="tab:tab4">Tab. 3.12: </span> Est. Production, Sales, and Income of Farm Holdings below 4 ha across Quadrants (2012/13, Cedis)
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th>
+ 
+</th>
+<th colspan="2">
+agpot-lo / mkt-lo
+</th>
+<th colspan="2">
+agpot-lo / mkt-hi
+</th>
+<th colspan="2">
+agpot-hi / mkt-lo
+</th>
+<th colspan="2">
+agpot-hi / mkt-hi
+</th>
+</tr>
+<tr class="center">
+<th>
+Variable
+</th>
+<th>
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+<th>
+est.
+</th>
+<th>
+std. err.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+aggross
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+ 2,712
+</td>
+<td>
+   623
+</td>
+<td>
+   463
+</td>
+<td>
+   117
+</td>
+<td>
+ 1,417
+</td>
+<td>
+   215
+</td>
+<td>
+ 1,076
+</td>
+<td>
+    55
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+   110
+</td>
+<td>
+   228
+</td>
+<td>
+     0
+</td>
+<td>
+     3
+</td>
+<td>
+   105
+</td>
+<td>
+    88
+</td>
+<td>
+    46
+</td>
+<td>
+    19
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+   950
+</td>
+<td>
+   643
+</td>
+<td>
+    76
+</td>
+<td>
+    73
+</td>
+<td>
+   847
+</td>
+<td>
+   239
+</td>
+<td>
+   521
+</td>
+<td>
+    41
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+ 3,148
+</td>
+<td>
+ 1,034
+</td>
+<td>
+   333
+</td>
+<td>
+   209
+</td>
+<td>
+ 1,876
+</td>
+<td>
+   248
+</td>
+<td>
+ 1,413
+</td>
+<td>
+    69
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+totgross
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+16,744
+</td>
+<td>
+ 3,178
+</td>
+<td>
+54,012
+</td>
+<td>
+12,446
+</td>
+<td>
+17,401
+</td>
+<td>
+ 2,788
+</td>
+<td>
+15,014
+</td>
+<td>
+   732
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+   479
+</td>
+<td>
+   473
+</td>
+<td>
+ 1,616
+</td>
+<td>
+   546
+</td>
+<td>
+   707
+</td>
+<td>
+   201
+</td>
+<td>
+   653
+</td>
+<td>
+    30
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+ 2,703
+</td>
+<td>
+ 1,269
+</td>
+<td>
+10,726
+</td>
+<td>
+ 4,189
+</td>
+<td>
+ 2,194
+</td>
+<td>
+   504
+</td>
+<td>
+ 2,015
+</td>
+<td>
+   105
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+10,267
+</td>
+<td>
+ 4,188
+</td>
+<td>
+47,424
+</td>
+<td>
+15,822
+</td>
+<td>
+12,122
+</td>
+<td>
+ 4,841
+</td>
+<td>
+ 9,172
+</td>
+<td>
+   732
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+cropvalue
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+ 1,959
+</td>
+<td>
+   650
+</td>
+<td>
+   475
+</td>
+<td>
+   115
+</td>
+<td>
+ 1,520
+</td>
+<td>
+   209
+</td>
+<td>
+ 1,089
+</td>
+<td>
+    51
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+    96
+</td>
+<td>
+   149
+</td>
+<td>
+   144
+</td>
+<td>
+    58
+</td>
+<td>
+   275
+</td>
+<td>
+   113
+</td>
+<td>
+   210
+</td>
+<td>
+    20
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+   679
+</td>
+<td>
+   511
+</td>
+<td>
+   260
+</td>
+<td>
+    45
+</td>
+<td>
+   994
+</td>
+<td>
+   168
+</td>
+<td>
+   638
+</td>
+<td>
+    33
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+ 2,473
+</td>
+<td>
+ 1,049
+</td>
+<td>
+   494
+</td>
+<td>
+   325
+</td>
+<td>
+ 1,983
+</td>
+<td>
+   252
+</td>
+<td>
+ 1,434
+</td>
+<td>
+    66
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+cropsales
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+   566
+</td>
+<td>
+   176
+</td>
+<td>
+   221
+</td>
+<td>
+    66
+</td>
+<td>
+   989
+</td>
+<td>
+   157
+</td>
+<td>
+   595
+</td>
+<td>
+    29
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+     0
+</td>
+<td>
+    41
+</td>
+<td>
+     0
+</td>
+<td>
+    10
+</td>
+<td>
+    79
+</td>
+<td>
+    38
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+   161
+</td>
+<td>
+   178
+</td>
+<td>
+    40
+</td>
+<td>
+    30
+</td>
+<td>
+   481
+</td>
+<td>
+   133
+</td>
+<td>
+   200
+</td>
+<td>
+    23
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+   752
+</td>
+<td>
+   360
+</td>
+<td>
+   160
+</td>
+<td>
+    31
+</td>
+<td>
+ 1,242
+</td>
+<td>
+   271
+</td>
+<td>
+   760
+</td>
+<td>
+    56
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+totlvstprod
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+ 1,346
+</td>
+<td>
+   507
+</td>
+<td>
+   162
+</td>
+<td>
+   121
+</td>
+<td>
+   106
+</td>
+<td>
+    25
+</td>
+<td>
+   160
+</td>
+<td>
+    33
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+     2
+</td>
+<td>
+     7
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+    93
+</td>
+<td>
+    55
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+    20
+</td>
+<td>
+    21
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+   463
+</td>
+<td>
+ 1,390
+</td>
+<td>
+    10
+</td>
+<td>
+   213
+</td>
+<td>
+   113
+</td>
+<td>
+    48
+</td>
+<td>
+    60
+</td>
+<td>
+     6
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+totlivsold
+</th>
+<th class="left">
+Mean
+</th>
+<td>
+ 1,281
+</td>
+<td>
+   502
+</td>
+<td>
+   153
+</td>
+<td>
+   120
+</td>
+<td>
+    82
+</td>
+<td>
+    23
+</td>
+<td>
+   148
+</td>
+<td>
+    33
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q25
+</th>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q50
+</th>
+<td>
+    47
+</td>
+<td>
+    30
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+<td>
+     8
+</td>
+<td>
+     0
+</td>
+<td>
+     0
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+ 
+</th>
+<th class="left">
+Q75
+</th>
+<td>
+   314
+</td>
+<td>
+ 1,334
+</td>
+<td>
+     0
+</td>
+<td>
+     4
+</td>
+<td>
+    69
+</td>
+<td>
+    32
+</td>
+<td>
+    40
+</td>
+<td>
+     5
+</td>
+</tr>
+</tbody>
+</table>
+<p>Below are estimated distributions of key characteristics for farms below 4 ha as of 2012/13.</p>
+<div class="figure"><span id="fig:gha-quad-bplot2a"></span>
+<img src="fig/gha-quad-bplot2a-1.svg" alt="Est. Farm Size and Cultivated Area of Farm Holdings below 4 ha across Quadrants (2012/13, ha)" width="2100" />
+<p class="caption">
+Fig. 4.6: Est. Farm Size and Cultivated Area of Farm Holdings below 4 ha across Quadrants (2012/13, ha)
+</p>
+</div>
+<div class="figure"><span id="fig:gha-quad-bplot2c"></span>
+<img src="fig/gha-quad-bplot2c-1.svg" alt="Est. Gross Farm Income and Crop Sales for Farm Holdings below 4 ha across Quadrants (2012/13, '000 Cedis)" width="2100" />
+<p class="caption">
+Fig. 4.7: Est. Gross Farm Income and Crop Sales for Farm Holdings below 4 ha across Quadrants (2012/13, ’000 Cedis)
 </p>
 </div>
 

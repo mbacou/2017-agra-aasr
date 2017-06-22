@@ -1,10 +1,10 @@
-# Agricultural Potential
+# Quadrant Classification
 
 ## Nigeria
 
 [TBD]
 
-For documentation purposes below are code snippets from the 2016 Farmer Segmentation for Nigeria (definitions and characterization of low-high quadrants and livelihood zones).
+For documentation purposes below are code snippets from the 2016 Farmer Segmentation for Nigeria (definitions and characterization of low/high quadrants and livelihood zones).
 
 
 ```{r nga-quad, eval=FALSE}
@@ -260,6 +260,9 @@ tmp <- tmp[, lapply(.SD, weighted.mean, wt_w2v1), keyby=.(seg_lvl_6, gender, var
 library(raster)
 library(data.table)
 library(viridis)
+library(stringr)
+library(foreign)
+library(survey)
 
 setwd("~/Projects/2017-agra-aasr")
 load("./tmp/2017-agra-aasr_GHA.RData")
@@ -519,25 +522,92 @@ summary(g2.dt$suit)
 
 # Make lo/hi quadrants (use 4hr cutoff)
 levels(g2.dt$suit) <- c("agpot-hi", "agpot-lo", "agpot-no")
-g2.dt[, qd_mkt := factor(tt50k_mean <= 4, levels=c(F,T), labels=c("mkt-lo", "mkt-hi"))]
-g2.dt[, quad := paste(suit,ifelse(tt50k_mean <= 4, "mkt-hi", "mkt-lo"), sep=" / ")]
-g2.dt[, quad := factor(quad, levels=c(
+g2.dt[, seg_mkt := factor(tt50k_mean <= 4, levels=c(F,T), labels=c("mkt-lo", "mkt-hi"))]
+g2.dt[, seg_quad_6 := paste(suit, seg_mkt, sep=" / ")]
+g2.dt[, seg_quad_6 := factor(seg_quad_6, levels=c(
   "agpot-no / mkt-lo", "agpot-no / mkt-hi",
   "agpot-lo / mkt-lo", "agpot-lo / mkt-hi",
   "agpot-hi / mkt-lo", "agpot-hi / mkt-hi"))]
-g2.dt[, .N, by=quad]
+g2.dt[, .N, by=seg_quad_6]
 #                quad   N
 # 1: agpot-hi / mkt-hi 242
 # 2: agpot-no / mkt-hi  27
 # 3: agpot-hi / mkt-lo  12
 # 4: agpot-no / mkt-lo   4
 
+# Reclass all `agpot-no` districts to `agpot-lo`
+g2.dt[, seg_quad_4 := seg_quad_6]
+levels(g2.dt$seg_quad_4) <- list(
+  `agpot-lo / mkt-lo` = c("agpot-no / mkt-lo", "agpot-lo / mkt-lo"), 
+  `agpot-lo / mkt-hi` = c("agpot-no / mkt-hi", "agpot-lo / mkt-hi"),
+  `agpot-hi / mkt-lo`="agpot-hi / mkt-lo", 
+  `agpot-hi / mkt-hi`="agpot-hi / mkt-hi")
+g2.dt[, .N, by=seg_quad_4]
+#           seg_quad_4   N
+# 1: agpot-hi / mkt-hi 242
+# 2: agpot-lo / mkt-hi  27
+# 3: agpot-hi / mkt-lo  12
+# 4: agpot-lo / mkt-lo   4
+
 # Map it
 g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
-spplot(g2[g2$svyCode=="gha-glss6",], "quad", col="grey20", lwd=.2, col.regions=viridis(6))
+spplot(g2[g2$svyCode=="gha-glss6",], "seg_quad_4", col="grey20", lwd=.2, col.regions=viridis(4))
 
 # Save attributes for re-use
+attr(g2.dt, "var.labels") <- c("ISO3 country code", "survey code", "region code (used in survey)",
+  "region", "district code (used in survey)", "district", "district label",
+  "area (sq. km.)", "longitude of centroid", "latitude of centroid",
+  "shape ID", "agro-ecological zone (reported in survey)", 
+  "travel time to 20K market (hrs, median)", "travel time to 50K market (hrs, median)",
+  "travel time to 20K market (hrs, mean)", "travel time to 50K market (hrs, mean)",
+  "ESA/CCI land cover code", "FAO/GAEZ suitability code", "BMGF/SDI ag. potential class",
+  "low/high market access", "quadrant class (6-class)", "quadrant class (4-class)")
 write.dta(g2.dt, "./tmp/gha-glss_L2_att.dta", version=12L)
+
+# Merge district classification into hhld records
+setkey(g2.dt, svyCode, svyL1Nm, svyL2Cd)
+setkey(gha, svyCode, region, svyL2Cd)
+gha[g2.dt, `:=`(
+  tt20k_med=i.tt20k_med,
+  tt50k_med=i.tt50k_med,
+  tt20k_mean=i.tt20k_mean,
+  tt50k_mean=i.tt50k_mean,
+  lc_esa=i.lc,
+  suit_gaez=i.agpot,
+  suit_bmgf=i.suit,
+  seg_mkt=i.seg_mkt,
+  seg_quad_6=i.seg_quad_6,
+  seg_quad_4=i.seg_quad_4)]
+
+# Verify
+gha[svyCode=="gha-glss6", summary(seg_quad_6)]
+gha[, .N, by=.(svyCode, seg_quad_4)]
+#      svyCode        seg_quad_4     N
+# 1: gha-glss6 agpot-hi / mkt-hi 12905
+# 2: gha-glss6 agpot-lo / mkt-hi  3183
+# 3: gha-glss6 agpot-hi / mkt-lo   508
+# 4: gha-glss6 agpot-lo / mkt-lo   176
+# 5: gha-glss5 agpot-hi / mkt-hi  6246
+# 6: gha-glss5 agpot-lo / mkt-hi  2066
+# 7: gha-glss5 agpot-hi / mkt-lo   300
+# 8: gha-glss5 agpot-lo / mkt-lo    75
+# 9: gha-glss4                NA  5998
+
+# Update all survey designs
+gha.svy <- list(
+  `gha6` = svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2012/13"]),
+  `gha5` =  svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2005/06"]),  
+  `gha4` = svydesign(~clust+hhid, strata=~rural, w=~weight, nest=T,
+    data=gha[survey=="1998/99"])
+)
+
+# Subset survey sample to farms
+gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
+
+# Subset survey sample to only SHF (note that they exclude farms with no `croparea`)
+gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
 
 # Save workspace
 rm(tmp, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, x, i)
@@ -627,17 +697,152 @@ print(spplot(mask(qd.tt50k, g2[g2$svyCode=="gha-glss6",]),
 
 ```
 
-Below is the resulting cross-classification summarized across Ghana's 170 districts. Low and high market access districts use a **mean travel time to nearest 50K market**.
+### Classification of Farm Holdings across Quadrants
 
-```{r gha-quadmap, fig.cap="Quadrant Classification across Districts, Ghana 2012/13. Source: authors.", dev="png"}
+Below is the resulting cross-classification summarized across Ghana's 170 districts (GLSS6) and 110 districts (GLSS5). Low and high market access districts use a **mean travel time to nearest 50K market**. In addition all districts that summarize to *unsuitable* `agpot-no` are reclassified to *low suitability* `agpot-lo`. None of the GLSS survey districts summarize to *low suitability*, the actual breakdown is given in \@ref(tab:gha-quadtab).
 
-print(spplot(g2[g2$svyCode=="gha-glss6",], "qd_mkt", col="grey20", lwd=.2, col.regions=viridis(2),
+```{r gha-quadtab, results="asis"}
+
+tmp <- gha[svyCode!="gha-glss4", .(District=uniqueN(paste(region, svyL2Nm)), N=.N),
+  keyby=.(svyCode=as.character(svyCode), seg_quad_6)]
+tmp1 <- fread("
+svyCode,        seg_quad_6, District,  N
+gha-glss6, agpot-lo / mkt-lo,        0,  0
+gha-glss6, agpot-lo / mkt-hi,        0,  0
+gha-glss5, agpot-lo / mkt-lo,        0,  0
+gha-glss5, agpot-lo / mkt-hi,        0,  0")
+tmp <- rbind(tmp, tmp1)
+
+table_options(HTMLcaption="(#tab:gha-quadtab) Distribution of Ghana's Districts and Observations across Quadrants by Survey Year")
+html(tabular((Survey=Factor(svyCode))*((Quadrant=seg_quad_6)+1)~((District=District)+(`Obs.`=N))*Heading()*Format(big.mark=",")*sum, data=tmp))
+
+```
+
+```{r gha-quadmap6, fig.cap="Quadrant Classification across Districts, Ghana 2012/13. Source: authors.", dev="png"}
+
+print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_mkt", col="grey20", lwd=.2, col.regions=viridis(2),
   xlab=list("Low/High Market Access\nacross Districts (GLSS6)", cex=.9)),
   split=c(1,1,2,1), more=T)
 
-print(spplot(g2[g2$svyCode=="gha-glss6",], "quad", col="grey20", lwd=.2, col.regions=viridis(6),
+print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_quad_4", col="grey20", lwd=.2, col.regions=viridis(4),
   xlab=list("Quadrant Classification\nacross Districts (GLSS6)", cex=.9)),
   split=c(2,1,2,1), more=F)
 
 ```
+
+```{r gha-quadmap5, fig.cap="Quadrant Classification across Districts, Ghana 2005/06. Source: authors.", dev="png"}
+
+print(spplot(g2[g2$svyCode=="gha-glss5",], "seg_mkt", col="grey20", lwd=.2, col.regions=viridis(2),
+  xlab=list("Low/High Market Access\nacross Districts (GLSS5)", cex=.9)),
+  split=c(1,1,2,1), more=T)
+
+print(spplot(g2[g2$svyCode=="gha-glss5",], "seg_quad_4", col="grey20", lwd=.2, col.regions=viridis(4),
+  xlab=list("Quadrant Classification\nacross Districts (GLSS5)", cex=.9)),
+  split=c(2,1,2,1), more=F)
+
+```
+
+
+### Key Results
+
+```{r gha-quad-fig2a, fig.cap="Est. Proportions of Farm Holdings across Quadrants (below/above 4 ha)"}
+
+par(mfrow=c(1,3), mar=c(3,3,0,.25))
+plot(svytable(~croparea_4ha+suit_bmgf, gha.svy[["gha6"]]), main=NA, las=1, col=rev(viridis(3)),
+  ylab=NA, xlab="Crop Suitability 3-class")
+plot(svytable(~croparea_4ha+seg_mkt, gha.svy[["gha6"]]), main=NA, las=1, col=viridis(2),
+  ylab=NA, xlab="Market Access 2-class")
+plot(svytable(~croparea_4ha+seg_quad_4, gha.svy[["gha6"]]), main=NA, las=1, col=viridis(4)[c(1,2,3,4)],
+  ylab=NA, xlab="Quadrant Typology 4-class")
+
+```
+
+```{r gha-quad-tab1, results="asis"}
+
+tmp <- svymean(~I(interaction(suit_bmgf, seg_mkt)), gha.svy.shf[["gha6"]], na.rm=T)
+tmp.cv <- confint(tmp)
+tmp <- cbind(as.data.table(tmp*100), as.data.table(tmp.cv*100))
+tmp[`2.5 %`<0, `2.5 %` := 0]
+tmp <- tmp[, lapply(.SD, function(x) format(x, digits=0, nsmall=1, scientific=F))]
+tmp[, CI := paste(`2.5 %`, `97.5 %`, sep=" - ")]
+
+tmp[, `:=`(
+  suit_bmgf = factor(rep(levels(gha$suit_bmgf), each=1, 2)),
+  seg_mkt = factor(rep(levels(gha$seg_mkt), each=3, 1))
+  )]
+
+table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings below 4 ha across Quadrants (2012/13, percent)")
+html(tabular(Heading("Ag. Potential")*suit_bmgf*(mean+CI)~Heading("Market Access")*seg_mkt*Heading()*identity,
+  data=tmp), rmarkdown=T)
+
+```
+
+Mean and median household characteristics (farms below 4 ha) across the resulting quadrants are estimated in the tables below.
+
+```{r gha-quad-tab2, results="asis"}
+
+tmp <- svyCrossTab(list(
+  ~hhsize_imp, 
+  ~I(100*femhead),
+  ~hhlabor,
+  ~I(100*naggross_sh), 
+  ~I(100*cropsales_sh)  
+  ), ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab2) Est. Characteristics of Farm Holdings below 4 ha across Quadrants (2012/13, percent)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+tmp <- svyCrossTab(list(
+  ~landown,
+  #~landshare,
+  #~landrent,
+  ~croparea_imp
+  ), ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha across Quadrants (2012/13, ha)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+tmp <- svyCrossTab(list(
+  ~aggross, 
+  ~totgross, 
+  ~cropvalue, 
+  ~cropsales,
+  ~totlvstprod,
+  ~totlivsold
+  ), ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Quadrants (2012/13, Cedis)")
+html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+```
+
+Below are estimated distributions of key characteristics for farms below 4 ha as of 2012/13.
+
+```{r gha-quad-bplot2a, fig.cap="Est. Farm Size and Cultivated Area of Farm Holdings below 4 ha across Quadrants (2012/13, ha)"}
+
+par(mfrow=c(1,2), cex=.8)
+svyboxplot(landown~seg_quad_4, gha.svy.shf[["gha6"]], varwidth=T,
+  ylab="Est. Land Owned (ha)", ylim=c(0,5))
+
+svyboxplot(croparea_imp~seg_quad_4, gha.svy.shf[["gha6"]], varwidth=T,
+  ylab="Est. Cultivated Area (ha)", ylim=c(0,5))
+
+```
+
+```{r gha-quad-bplot2c, fig.cap="Est. Gross Farm Income and Crop Sales for Farm Holdings below 4 ha across Quadrants (2012/13, '000 Cedis)"}
+
+par(mfrow=c(1,2), cex=.8)
+svyboxplot(I(aggross/1000)~seg_quad_4, gha.svy.shf[["gha6"]], varwidth=T,
+  ylab="Est. Gross Farm Income ('000 Cedis)", ylim=c(0,5))
+
+svyboxplot(I(cropsales/1000)~seg_quad_4, gha.svy.shf[["gha6"]], varwidth=T,
+  ylab="Est. Crop Sales ('000 Cedis)", ylim=c(0,5))
+
+```
+
+
+
 
