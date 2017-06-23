@@ -9,7 +9,6 @@ output:
   bookdown::gitbook:
     url: "https://mbacou.github.io/2017-agra-aasr/"
     github-repo: "mbacou/2017-agra-aasr"
-  bookdown::word_document2: default
 always_allow_html: yes
 bibliography: biblio.bib
 csl: apa.csl

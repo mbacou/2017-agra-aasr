@@ -17,7 +17,7 @@ load("./tmp/2017-agra-aasr.RData")
 
 #####################################################################################
 # Helper - Combine and format results from survey::svyby()
-svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75), labels=NULL) {
+svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75)) {
   
   # Pass a list of formulas (list(~var1, ~var2, ...))
   # Then use tables::tabular() to format pivot tables
@@ -56,8 +56,8 @@ svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75), labels=NUL
   x <- x[y]
  
   # Add optional labels
-  if(!missing(labels)) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2],
-    var := labels[i]]
+  if(!is.null(names(formula))) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2],
+    var := names(formula)[i]]
   
   var.levels <- sapply(formula, function(x) as.character(x)[2])
   var.levels <- str_replace(var.levels, fixed("I("), fixed("("))
