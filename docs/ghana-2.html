@@ -113,7 +113,7 @@
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="trends-in-macro-indicators.html"><a href="trends-in-macro-indicators.html"><i class="fa fa-check"></i><b>5</b> Trends in Macro Indicators</a></li>
-<li class="chapter" data-level="6" data-path="clustering-small-farm-holdings.html"><a href="clustering-small-farm-holdings.html"><i class="fa fa-check"></i><b>6</b> Clustering Small Farm Holdings</a><ul>
+<li class="chapter" data-level="6" data-path="clustering-farm-holdings.html"><a href="clustering-farm-holdings.html"><i class="fa fa-check"></i><b>6</b> Clustering Farm Holdings</a><ul>
 <li class="chapter" data-level="6.1" data-path="nigeria-2.html"><a href="nigeria-2.html"><i class="fa fa-check"></i><b>6.1</b> Nigeria</a></li>
 <li class="chapter" data-level="6.2" data-path="ghana-2.html"><a href="ghana-2.html"><i class="fa fa-check"></i><b>6.2</b> Ghana</a><ul>
 <li class="chapter" data-level="6.2.1" data-path="ghana-2.html"><a href="ghana-2.html#aproach-1-partitioning"><i class="fa fa-check"></i><b>6.2.1</b> Aproach #1 – Partitioning</a></li>
@@ -153,74 +153,205 @@
 </ul>
 <p><u>Note on <strong>k-mean</strong> and <strong>pam</strong> clustering</u>: the use of means in k-means implies that clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. A more robust algorithm is provided by PAM, also known as k-medoids clustering.</p>
 <p>All pirate plots below show median line in red, mean in green, and blue is the inferred 95% confidence interval of the mean.</p>
-<p>Pair-wise scatter plots across selected cultivated area and income variables colored by region.</p>
+<p>Below are pair-wise scatter plots across selected cultivated area and income variables colored by region.</p>
 <p><img src="fig/unnamed-chunk-15-1.png" width="2100" /><img src="fig/unnamed-chunk-15-2.png" width="2100" /></p>
 <div id="aproach-1-partitioning" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> Aproach #1 – Partitioning</h3>
-<p>Using PAM we derive an optimal number of clusters for the selected variables.</p>
+<p>With the selected variables the optimal number of clusters (based on average silhouette width) could either be <strong>3</strong> or <strong>7</strong>. We choose to go with <strong>3</strong> in the following partitioning scheme.</p>
 <div class="figure"><span id="fig:unnamed-chunk-16"></span>
 <img src="fig/unnamed-chunk-16-1.svg" alt="PAM Clustering (GLSS6)" width="2100" />
 <p class="caption">
 Fig. 6.1: PAM Clustering (GLSS6)
 </p>
 </div>
-<p>With the selected variables the optimal number of clusters (based on average silhouette width) could either be <strong>3</strong> or <strong>7</strong>. We choose to go with <strong>3</strong> in the following partitioning scheme.</p>
-<table>
-<caption><span id="tab:unnamed-chunk-17">Tab. 6.1: </span>PAM Medoids</caption>
-<thead>
-<tr class="header">
-<th align="right">croparea_imp</th>
-<th align="right">cropsales_sh</th>
-<th align="right">naggross_sh</th>
-<th align="right">totgross</th>
-<th align="right">cropsales</th>
-<th align="right">totcropprod</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">-0.2185418</td>
-<td align="right">-0.1269601</td>
-<td align="right">-0.7204098</td>
-<td align="right">-0.3571596</td>
-<td align="right">-0.4378577</td>
-<td align="right">-0.3153773</td>
-</tr>
-<tr class="even">
-<td align="right">-0.4476030</td>
-<td align="right">-0.5142731</td>
-<td align="right">1.4131190</td>
-<td align="right">0.0798336</td>
-<td align="right">-0.5009273</td>
-<td align="right">-0.5399184</td>
-</tr>
-<tr class="odd">
-<td align="right">0.6213493</td>
-<td align="right">0.8257679</td>
-<td align="right">-0.5226564</td>
-<td align="right">-0.2776139</td>
-<td align="right">1.1727822</td>
-<td align="right">0.9989932</td>
-</tr>
-</tbody>
-</table>
 <div class="figure"><span id="fig:unnamed-chunk-17"></span>
 <img src="fig/unnamed-chunk-17-1.png" alt="Clusters of Farm Households (PAM, k=3)" width="2100" />
 <p class="caption">
 Fig. 6.2: Clusters of Farm Households (PAM, k=3)
 </p>
 </div>
-<p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting 3 clusters.</p>
 <div class="figure"><span id="fig:unnamed-chunk-18"></span>
-<img src="fig/unnamed-chunk-18-1.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="2100" />
+<img src="fig/unnamed-chunk-18-1.png" alt="Clusters of Farm Households (PAM, k=7)" width="2100" />
 <p class="caption">
-Fig. 6.3: Distribution of Household Characteristics across 3 Clusters (PAM)
+Fig. 6.3: Clusters of Farm Households (PAM, k=7)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-18"></span>
-<img src="fig/unnamed-chunk-18-2.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="2100" />
+<table class="Rtable">
+<caption>
+<span id="tab:gha-clust-pam">Tab. 6.1: </span> Frequency counts of Observations across PAM clusters (k=3 and k=7)
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th colspan="7">
+PAM k=7
+</th>
+<th>
+ 
+</th>
+</tr>
+<tr class="center">
+<th>
+PAM k=3
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+5
+</th>
+<th>
+6
+</th>
+<th>
+7
+</th>
+<th>
+All
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+1
+</th>
+<td>
+1,588
+</td>
+<td>
+1,521
+</td>
+<td>
+   19
+</td>
+<td>
+   58
+</td>
+<td>
+   80
+</td>
+<td>
+    0
+</td>
+<td>
+    0
+</td>
+<td>
+3,266
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+2
+</th>
+<td>
+    0
+</td>
+<td>
+   11
+</td>
+<td>
+1,259
+</td>
+<td>
+    6
+</td>
+<td>
+  791
+</td>
+<td>
+    0
+</td>
+<td>
+  254
+</td>
+<td>
+2,321
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+3
+</th>
+<td>
+  109
+</td>
+<td>
+    1
+</td>
+<td>
+    0
+</td>
+<td>
+1,020
+</td>
+<td>
+   96
+</td>
+<td>
+  334
+</td>
+<td>
+   47
+</td>
+<td>
+1,607
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+All
+</th>
+<td>
+1,697
+</td>
+<td>
+1,533
+</td>
+<td>
+1,278
+</td>
+<td>
+1,084
+</td>
+<td>
+  967
+</td>
+<td>
+  334
+</td>
+<td>
+  301
+</td>
+<td>
+7,194
+</td>
+</tr>
+</tbody>
+</table>
+<p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting k=3 clusters.</p>
+<div class="figure"><span id="fig:unnamed-chunk-19"></span>
+<img src="fig/unnamed-chunk-19-1.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="2100" />
 <p class="caption">
-Fig. 6.3: Distribution of Household Characteristics across 3 Clusters (PAM)
+Fig. 6.4: Distribution of Household Characteristics across 3 Clusters (PAM)
+</p>
+</div>
+<div class="figure"><span id="fig:unnamed-chunk-19"></span>
+<img src="fig/unnamed-chunk-19-2.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="2100" />
+<p class="caption">
+Fig. 6.4: Distribution of Household Characteristics across 3 Clusters (PAM)
 </p>
 </div>
 </div>
@@ -233,40 +364,182 @@ Fig. 6.3: Distribution of Household Characteristics across 3 Clusters (PAM)
 </li>
 <li><strong>Divisive</strong> – “top down” approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy (R <code>diana()</code>).</li>
 </ul>
-<p>Again we contrast the 2 approaches.</p>
-<pre><code>[1] 0.9999284</code></pre>
-<pre><code>[1] 0.9994045</code></pre>
-<pre><code>grp
-   1    2    3    4 
-6478  486  192   38 </code></pre>
-<p><img src="fig/gha-clust-hca-1.png" width="2100" /></p>
-<pre><code>grp
-   1    2    3    4 
-6865  286   36    7 </code></pre>
-<p><img src="fig/gha-clust-hca-2.png" width="2100" /></p>
+<p>We contrast the 2 approaches, cutting the trees at 4 stems.</p>
+<table class="Rtable">
+<caption>
+<span id="tab:gha-clust-hca">Tab. 6.2: </span> Frequency counts of Observations in Agg. and Div. Clusters (k=4)
+</caption>
+<thead>
+<tr class="center">
+<th>
+ 
+</th>
+<th colspan="4">
+Divisive Clusters
+</th>
+<th>
+ 
+</th>
+</tr>
+<tr class="center">
+<th>
+Agglomerative Clusters
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+<th>
+3
+</th>
+<th>
+4
+</th>
+<th>
+All
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="center">
+<th class="left">
+1
+</th>
+<td>
+6,478
+</td>
+<td>
+    0
+</td>
+<td>
+    0
+</td>
+<td>
+    0
+</td>
+<td>
+6,478
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+2
+</th>
+<td>
+  387
+</td>
+<td>
+   99
+</td>
+<td>
+    0
+</td>
+<td>
+    0
+</td>
+<td>
+  486
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+3
+</th>
+<td>
+    0
+</td>
+<td>
+  187
+</td>
+<td>
+    5
+</td>
+<td>
+    0
+</td>
+<td>
+  192
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+4
+</th>
+<td>
+    0
+</td>
+<td>
+    0
+</td>
+<td>
+   31
+</td>
+<td>
+    7
+</td>
+<td>
+   38
+</td>
+</tr>
+<tr class="center">
+<th class="left">
+All
+</th>
+<td>
+6,865
+</td>
+<td>
+  286
+</td>
+<td>
+   36
+</td>
+<td>
+    7
+</td>
+<td>
+7,194
+</td>
+</tr>
+</tbody>
+</table>
+<div class="figure"><span id="fig:gha-clust-hca"></span>
+<img src="fig/gha-clust-hca-1.png" alt="Results from Agg. an Div. Hierarchical Clustering (k=4)" width="2100" />
+<p class="caption">
+Fig. 6.5: Results from Agg. an Div. Hierarchical Clustering (k=4)
+</p>
+</div>
+<div class="figure"><span id="fig:gha-clust-hca"></span>
+<img src="fig/gha-clust-hca-2.png" alt="Results from Agg. an Div. Hierarchical Clustering (k=4)" width="2100" />
+<p class="caption">
+Fig. 6.5: Results from Agg. an Div. Hierarchical Clustering (k=4)
+</p>
+</div>
 <p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting tree leaves.</p>
-<div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="fig/unnamed-chunk-19-1.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=9)" width="2100" />
+<div class="figure"><span id="fig:unnamed-chunk-20"></span>
+<img src="fig/unnamed-chunk-20-1.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)" width="2100" />
 <p class="caption">
-Fig. 6.4: Distribution of Household Characteristics across 4 Clusters (AGNES, k=9)
-</p>
-</div>
-<div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="fig/unnamed-chunk-19-2.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=9)" width="2100" />
-<p class="caption">
-Fig. 6.4: Distribution of Household Characteristics across 4 Clusters (AGNES, k=9)
+Fig. 6.6: Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)
 </p>
 </div>
 <div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="fig/unnamed-chunk-20-1.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=9)" width="2100" />
+<img src="fig/unnamed-chunk-20-2.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)" width="2100" />
 <p class="caption">
-Fig. 6.5: Distribution of Household Characteristics across 4 Clusters (DIANA, k=9)
+Fig. 6.6: Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="fig/unnamed-chunk-20-2.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=9)" width="2100" />
+<div class="figure"><span id="fig:unnamed-chunk-21"></span>
+<img src="fig/unnamed-chunk-21-1.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)" width="2100" />
 <p class="caption">
-Fig. 6.5: Distribution of Household Characteristics across 4 Clusters (DIANA, k=9)
+Fig. 6.7: Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)
+</p>
+</div>
+<div class="figure"><span id="fig:unnamed-chunk-21"></span>
+<img src="fig/unnamed-chunk-21-2.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)" width="2100" />
+<p class="caption">
+Fig. 6.7: Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)
 </p>
 </div>
 </div>

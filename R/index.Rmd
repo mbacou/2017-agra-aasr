@@ -35,7 +35,7 @@ load("../tmp/2017-agra-aasr.RData")
 
 # Output options
 opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=F, 
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=T, 
   dev.args=list(
     png=list(family="Roboto Condensed", pointsize=9), 
     svg=list(family="Roboto Condensed")))

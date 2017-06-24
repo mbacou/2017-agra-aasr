@@ -23,7 +23,7 @@ load("./tmp/2017-agra-aasr_GHA.RData")
 pplot <- function(..., note=NULL, alpha=.1) {
   require(yarrr)
   pirateplot(..., pal="black", jitter.val=.07,
-    cex.names=.8, cex.axis=.8, gl.lty=3, back.col=gray(.97),
+    cex.names=.8, cex.axis=.8, gl.lty=3, back.col="white",
     point.o=min(alpha, .1), point.pch=16, point.cex=.5,
     bean.f.col="white", bean.lwd=.2,
     inf.lwd=.2, inf.f.col="blue", inf.f.o=.3,
@@ -1212,10 +1212,10 @@ save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars.inc, vars.char, pplot,
   file="./tmp/2017-agra-aasr_GHA_merged.RData")
 
 # Save workspace
-rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, 
-  summaryname, svyCrossTab, svyCrossPlot, X, Y, var, train.scaled, dist, cor, grp)
+rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, summaryname, 
+  svyCrossTab, svyCrossPlot, X, Y, var, train, train.scaled, dist, cor, grp,
+  mod.pam, mod.pam7, mod.agg, mod.div)
 save.image("./tmp/2017-agra-aasr_GHA.RData")
-
 
 ```
 
