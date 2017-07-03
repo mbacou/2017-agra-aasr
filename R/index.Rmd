@@ -1,6 +1,6 @@
 ---
 title: "Business-oriented Typology and Characterization of Agriculture in SSA (Documentation)"
-author: "[Melanie Bacou](http://github.com/mbacou) for BMGF"
+author: "[BACOU, Melanie](http://github.com/mbacou) for AGRA"
 date: "Last updated on `r Sys.Date()` -- CODES AND NOTES, DO NOT USE OR CITE"
 description: "A multi-scale and cross-time framework"
 site: bookdown::bookdown_site
@@ -35,7 +35,7 @@ load("../tmp/2017-agra-aasr.RData")
 
 # Output options
 opts_chunk$set(comment=NA, warning=F, message=F, echo=F, base.url="../docs",
-  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=T, 
+  dev="svg", fig.path="fig/", fig.width=7, fig.height=3.8, dpi=300, cache=F, 
   dev.args=list(
     png=list(family="Roboto Condensed", pointsize=9), 
     svg=list(family="Roboto Condensed")))

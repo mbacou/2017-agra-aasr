@@ -1,6 +1,6 @@
 # Clustering Farm Holdings
 
-[in progress]
+[work in progress]
 
 ## Nigeria
 
@@ -8,12 +8,12 @@
 
 ## Ghana
 
-
 ```{r}
 
 library(cluster)
 library(mclust)
 library(factoextra)
+#library(ggradar)
 
 load("../tmp/2017-agra-aasr_GHA_cluster.RData")
 
@@ -26,29 +26,63 @@ library(viridis)
 library(stringr)
 library(survey)
 
-setwd("~/Projects/2017-agra-aasr/R")
-preview_chapter("05-clustering.Rmd")
-
 setwd("~/Projects/2017-agra-aasr")
 load("./tmp/2017-agra-aasr_GHA.RData")
 
+# Preview this chapter only
+setwd("~/Projects/2017-agra-aasr/R")
+preview_chapter("05-clustering.Rmd")
+
+#####################################################################################
+# Helper- Add alpha transparency
+#####################################################################################
+add.alpha <- function(col, alpha=1) {
+  if(missing(col)) stop("Please provide a vector of colours.")
+  apply(sapply(col, col2rgb)/255, 2, function(x) rgb(x[1], x[2], x[3], alpha=alpha))  
+}
+
+
+#####################################################################################
+# Select clustering features and training set
 X <- c("croparea_imp", "cropsales_sh", "naggross_sh", "totgross", "cropsales", "totcropprod")
 Y <- c("hhid", "croparea_4ha", "region", "svyL2Cd", "svyL2Nm", "agehead", "distbank")
+
+# Keep all farm households from GLSS6
 train <- gha[wave=="wave 6" & croparea_imp>0, .SD, .SDcols=c(Y, X)]
 train <- na.omit(train)
 
 #####################################################################################
-# PAM Clustering
+# PAM Partition Clustering
 #####################################################################################
-# Sub-select variables, convert and scale
-train.scaled <- scale(data.frame(train)[, X])
+# Sub-select variables (also always use standardized values)
+trainX <- data.frame(train)[, X]
 
-# Nb of clusters
-mod.pam.nb <- fviz_nbclust(train.scaled, pam, method="silhouette")
+# Test Nb of clusters, using 2 distance matrices (Pearson collinearity)
+# The Minkowski distance is a metric in a normed vector space which can be considered
+# as a generalization of both the Euclidean distance and the Manhattan distance.
+distE <- get_dist(trainX, method="euclidean", stand=T)
+distM <- get_dist(trainX, method="minkowski", stand=T)
+distP <- get_dist(trainX, method="pearson", stand=T)
 
-# PAM clusters with 3 groups
-mod.pam <- pam(train.scaled, 3)
-mod.pam7 <- pam(train.scaled, 7)
+# Compare stats
+mod.pam.nbE <- fviz_nbclust(trainX, pam, method="silhouette", diss=distE)
+mod.pam.nbM <- fviz_nbclust(trainX, pam, method="silhouette", diss=distM)
+
+# Select a model for the rest of the analysis
+mod.pam.nb <- modE.pam.nbE
+
+# PAM clusters with 3, 5, and 7 groups (5 is for Peter) -- VERY SLOW
+mod.pamE <- eclust(trainX, "pam", stand=T, k.max=4, hc_metric="euclidean")
+mod.pamM <- eclust(trainX, "pam", stand=T, k=3, k.max=4, hc_metric="minkowski")
+
+# GAP stats plot
+fviz_nbclust(mod.pamE)
+fviz_gap_stat(mod.pam$silinfo)
+fviz_gap_stat(mod.pam$gap_stat)
+
+mod.pam3 <- eclust(trainX, k=3, diss=distE)
+mod.pam5 <- eclust(trainX, k=5, diss=distE)
+mod.pam7 <- eclust(trainX, k=7, diss=distE)
 mod.pam$medoids
 #      croparea_imp cropsales_sh naggross_sh    totgross  cropsales totcropprod
 # [1,]   -0.2185418   -0.1269601  -0.7204098 -0.35715958 -0.4378577  -0.3153773
@@ -56,207 +90,55 @@ mod.pam$medoids
 # [3,]    0.6213493    0.8257679  -0.5226564 -0.27761385  1.1727822   0.9989932
 
 # Plot clusters
-fviz_cluster(mod.pam, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3))
-fviz_cluster(mod.pam7, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(7))
+fviz_cluster(list(data, cluster), geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3))
+
 
 # Save clusters
-train[, clust_pam := mod.pam$clustering]
+train[, clust_pam3 := mod.pam3$clustering]
+train[, clust_pam5 := mod.pam5$clustering]
 train[, clust_pam7 := mod.pam7$clustering]
+
 
 #####################################################################################
 # Hierarchical Clustering
 #####################################################################################
-dist <- dist(data.frame(train)[, X], method="euclidean")
-cor <- cor(t(data.frame(train)[, X]), method="pearson")
-cor <- as.dist(1 - cor)
 
-# Agglomerative Nesting
-mod.agg <- agnes(dist, method="ward")
+# 1) AGNES - Agglomerative Nesting
+mod.agg <- eclust(trainX, "agnes", k.max=7, stand=T, hc_metric="euclidean")
 mod.agg$ac
 # [1] 0.9999284
 
-# DIvisive ANAlysis Clustering
-mod.div <- diana(dist, stop.at.k=12)
-mod.div$dc
-# [1] 0.9994045
-
-# Cut tree into 4 groups and compare models
-grp <- cutree(as.hclust(mod.agg), k=4)
+# Cut tree into 5 groups and compare models
+grp <- hcut(mod.agg, k=5)
 table(grp)
 train[, clust_agg := grp]
 
-fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_agg),
-  ggtheme=theme_bw(base_size=10), palette=viridis(4),
-  main="AGNES, k=4")
+fviz_cluster(mod.agg, 
+  ggtheme=theme_bw(base_size=10), palette=viridis(5), main="AGNES, k=5")
 
-grp <- cutree(as.hclust(mod.div), k=4)
+# 2) DIANA - DIvisive ANAlysis Clustering
+mod.div <- eclust(trainX, "diana", k.max=7, stand=T, hc_metric="euclidean")
+mod.div$dc
+# [1] 0.9994045
+
+# Cut tree into 5 groups and compare models
+grp <- hcut(mod.div, k=5)
 table(grp)
 train[, clust_div := grp]
 
-fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_div),
-  ggtheme=theme_bw(base_size=10), palette=viridis(4),
-  main="DIANA, k=4")
+fviz_cluster(mod.div,
+  ggtheme=theme_bw(base_size=10), palette=viridis(5), main="DIANA, k=5")
+
+# 3) HKMEANS
+mod.hk5 <- hkmeans(trainX, k=5, hc.method="ward.D2", stand=T, hc_metric="euclidean")
+hkmeans_tree(mod.hk5, rect.col=viridis(5))
+
+fviz_cluster(mod.hk5,
+  ggtheme=theme_bw(base_size=10), palette=viridis(5), main="HKmeans, k=5")
 
 
 #####################################################################################
-# Merge results into `gha`, update survey design and re-estimate
-setkey(train, hhid)
-setkey(gha, hhid)
-
-gha[, `:=`(clust_pam=NULL, clust_hca=NULL, clust_m=NULL)]
-gha[train, clust_pam := i.clust_pam]
-gha[, .N, by=.(svyCode, clust_pam)]
-#      svyCode clust_pam    N
-# 1: gha-glss4        NA 5998
-# 2: gha-glss5        NA 8687
-# 3: gha-glss6        NA 9578
-# 4: gha-glss6         1 5426
-# 5: gha-glss6         2 1768
-
-gha.svy[["gha6"]] <- svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
-    data=gha[survey=="2012/13"])
-gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
-
-```
-
-```{r gha-clust-save, eval=FALSE}
-
-save(X, Y, train, mod.pam, mod.pam7, mod.pam.nb, mod.agg, mod.div, 
-  file="./tmp/2017-agra-aasr_GHA_cluster.RData")
-
-```
-
-We start with non-hierarchical/partition **k-means** and **pam** clustering (Partitioning around Medoids) on our set of cultivated area and income variables, using data from GLSS6 initially (all farm households). In the output below the selected variables are defined as:
-
-- `croparea_imp` cultivated area (in fact operated area) in ha (imputed)
-- `cropsales` value of sales from crops and crop byproducts (Cedis)
-- `aggross` gross farm income (Cedis)
-- `totgross` gross household income (Cedis)
-- `totcropprod` value of crop production (Cedis)
-- `naggross_sh` non-farm income as share of total gross income
-- `cropsales_sh` crop sales as share of total crop production (in fact share of all ag products sold)
-
-<u>Note on **k-mean** and **pam** clustering</u>: the use of means in k-means implies that clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. A more robust algorithm is provided by PAM, also known as k-medoids clustering.
-
-All pirate plots below show median line in red, mean in green, and blue is the inferred 95% confidence interval of the mean.
-
-Below are pair-wise scatter plots across selected cultivated area and income variables colored by region.
-
-```{r, dev="png"}
-
-# Pair-wise plots across regions
-clPairs(train[, .SD, .SDcols=X[c(1,2,3)]], train$region, 16, viridis(10), CEX=.8)
-clPairs(train[, .SD, .SDcols=X[c(1,4:6)]], train$region, 16, viridis(10), CEX=.8)
-
-```
-
-
-### Aproach #1 -- Partitioning
-
-With the selected variables the optimal number of clusters (based on average silhouette width) could either be **3** or **7**. We choose to go with **3** in the following partitioning scheme.
-
-```{r, fig.cap="PAM Clustering (GLSS6)"}
-
-mod.pam.nb + geom_vline(aes(xintercept=3), color="grey", linetype="dashed")
-
-```
-
-```{r, fig.cap="Clusters of Farm Households (PAM, k=3)", dev="png"}
-
-# Plot clusters
-fviz_cluster(mod.pam, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3), main="PAM, k=3")
-
-```
-
-```{r, fig.cap="Clusters of Farm Households (PAM, k=7)", dev="png"}
-
-# Plot clusters
-fviz_cluster(mod.pam7, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(7), main="PAM, k=7")
-
-```
-
-```{r gha-clust-pam-freq, results="asis"}
-
-# Compare models
-table_options(HTMLcaption="(#tab:gha-clust-pam) Frequency counts of Observations across PAM clusters (k=3 and k=7)")
-html(tabular((`PAM k=3`=Factor(clust_pam))+1~((`PAM k=7`=Factor(clust_pam7))+1)*Format(big.mark=","), 
-  data=train))
-
-```
-
-Below are descriptive characteristics for the **sample** of farm households across the resulting k=3 clusters.
-
-```{r, fig.cap="Distribution of Household Characteristics across 3 Clusters (PAM)", dev="png"}
-
-par(mfrow=c(1,3))
-for (i in X[1:3]) pplot(as.formula(paste0(i, "~clust_pam")), train, alpha=.02, ylab=NA, xlab=i,
-  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
-
-for (i in X[4]) pplot(as.formula(paste0(i, "~clust_pam")), train, alpha=.02, ylab=NA, xlab=i, ylim=c(0, 32000),
-  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
-
-for (i in X[5:6]) pplot(as.formula(paste0(i, "~clust_pam")), train, alpha=.02, ylab=NA, xlab=i, ylim=c(0, 8000),
-  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
-
-```
-
-### Aproach #2 -- Hierarchical Clustering
-
-This method is sensitive to the choice of dissimilarity measure (distance matrix). **Euclidean** distance is often preferred, however a **correlation-based** distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. Both methods are used here.
-
-Further there are 2 generic types of hierarchical clustering algorithms:
-
-- **Agglomerative** -- "bottom up" approach: each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy (R `agnes()`).  
-- **Divisive** -- "top down" approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy (R `diana()`).  
-
-We contrast the 2 approaches, cutting the trees at 4 stems.
-
-```{r gha-clust-hca-freq, results="asis"}
-
-# Cut tree into 4 groups and compare models
-table_options(HTMLcaption="(#tab:gha-clust-hca) Frequency counts of Observations in Agg. and Div. Clusters (k=4)")
-html(tabular((`Agglomerative Clusters`=Factor(clust_agg))+1~((`Divisive Clusters`=Factor(clust_div))+1)*Format(big.mark=",")*Heading(), 
-  data=train), rmarkdown=T)
-
-```
-
-```{r gha-clust-hca, dev="png", fig.cap="Results from Agg. an Div. Hierarchical Clustering (k=4)"}
-
-fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_agg),
-  ggtheme=theme_bw(base_size=10), palette=viridis(4),
-  main="AGNES, k=4")
-
-fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_div),
-  ggtheme=theme_bw(base_size=10), palette=viridis(4),
-  main="DIANA, k=4")
-
-```
-
-Below are descriptive characteristics for the **sample** of farm households across the resulting tree leaves.
-
-```{r, fig.cap="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)", dev="png"}
-
-par(mfrow=c(1,3))
-for (i in X) pplot(as.formula(paste0(i, "~clust_agg")), train, alpha=.02, ylab=NA, xlab=i,
-  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
-
-```
-
-```{r, fig.cap="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)", dev="png"}
-
-par(mfrow=c(1,3))
-for (i in X) pplot(as.formula(paste0(i, "~clust_div")), train, alpha=.02, ylab=NA, xlab=i,
-  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
-
-```
-
-
-### Approach #3 Model-Based Clustering
-
-```{r gha-clust-mclust, eval=F}
-
-#####################################################################################
-# Mclust (model-based clustering)
+# TODO Mclust (model-based clustering)
 #####################################################################################
 
 # Compare model fits using BIC
@@ -296,12 +178,185 @@ table(fit.3$classification)
 #    1    2    3 
 # 3740  832 4539 
 
+```
+
+
+```{r gha-clust-save, eval=FALSE}
+
+# Merge clustering results into `gha`, update survey designs, re-estimate population
+setkey(train, hhid)
+setkey(gha, hhid)
+
+gha[, `:=`(clust_pam=NULL, clust_hca=NULL, clust_m=NULL)]
+gha[train, clust_pam := i.clust_pam]
+gha[, .N, by=.(svyCode, clust_pam)]
+#      svyCode clust_pam    N
+# 1: gha-glss4        NA 5998
+# 2: gha-glss5        NA 8687
+# 3: gha-glss6        NA 9578
+# 4: gha-glss6         1 5426
+# 5: gha-glss6         2 1768
+
+gha.svy[["gha6"]] <- svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2012/13"])
+gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
+
+# Save cluster results
+save(X, Y, train, 
+  mod.pam3, mod.pam5, mod.pam7, mod.pam.nb, mod.agg, mod.div, add.alpha,
+  file="./tmp/2017-agra-aasr_GHA_cluster.RData")
+
+# Save workspace
+rm(tmp, i, x,
+  X, Y, var, train, train.scaled, dist, cor, grp,
+  mod.pam, mod.pam7, mod.agg, mod.div)
+save.image("./tmp/2017-agra-aasr_GHA.RData")
+
+```
+
+We start with a non-hierarchical **PAM** (Partitioning around Medoids) clustering approach using the set of 7 variables listed below and data from Ghana GLSS6 initially (all farm households). The selected variables are defined as:
+
+- `croparea_imp` cultivated area (in fact operated area) in ha (imputed)
+- `cropsales` value of sales from crops and crop byproducts (Cedis)
+- `aggross` gross farm income (Cedis)
+- `totgross` gross household income (Cedis)
+- `totcropprod` value of crop production (Cedis)
+- `naggross_sh` non-farm income as share of total gross income
+- `cropsales_sh` crop sales as share of total crop production (in fact share of all ag products sold)
+
+<u>Note on **k-mean** and **pam** techniques</u>: the use of *means* in *k-means* implies that clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. PAM (also known as k-medoids clustering) can provide a more robust algorithm in some instances.
+
+<u>Note on violin/pirate plots</u>: all distributional plots below show **median** line in **red**, **mean** in **green**, and the **blue** region is the inferred **95% confidence interval** of the mean. At present pirate plots cannot be drawn for an entire population (using weights), simple boxplots are used instead showing median and IQ range.
+
+Below are pair-wise scatter plots across all selected variables (cultivated area, sales, and income variables) colored by region.
+
+```{r, dev="png", fig.width=7, fig.height=7}
+
+# Pair-wise plots across regions
+clPairs(train[, .SD, .SDcols=X], train$region, 16, add.alpha(viridis(10), .5), CEX=.8)
 
 ```
 
 
-```{r gha-clust-est, eval=F}
+### Aproach #1 -- Partitioning
 
+With the selected variables (standardized) the optimal number of clusters (based on average silhouette width) is **3** or **7**. We choose to test results using **k=3** and **k=5** in the following partitioning schemes.
+
+```{r, fig.cap="PAM Clustering of GLSS6 Households (Euclidean Distance)"}
+
+mod.pam.nb + 
+  geom_vline(aes(xintercept=3), color="grey50", linetype="dashed") +
+  geom_vline(aes(xintercept=5), color="grey50", linetype="dashed") +
+  theme_bw(base_size=10) + theme(panel.grid=element_line(linetype="dotted"))
+  
+
+```
+
+```{r, fig.cap="Clusters of Farm Households (PAM, k=3)", dev="png"}
+
+# Plot clusters
+fviz_cluster(mod.pam3, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3), main="PAM, k=3")
+
+summary(mod.pam3)
+
+```
+
+```{r, fig.cap="Clusters of Farm Households (PAM, k=5)", dev="png"}
+
+# Plot clusters
+fviz_cluster(mod.pam5, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(5), main="PAM, k=5")
+
+```
+
+```{r gha-clust-pam-freq, results="asis"}
+
+# Compare models
+table_options(HTMLcaption="(#tab:gha-clust-pam) Frequency counts of Observations across PAM clusters (k=3 and k=7)")
+html(tabular((`PAM k=3`=Factor(clust_pam3))+1~((`PAM k=7`=Factor(clust_pam7))+1)*Format(big.mark=","), 
+  data=train))
+
+```
+
+Below are descriptive characteristics for the **sample** of farm households across the resulting k=3 clusters.
+
+```{r, fig.cap="Distribution of Household Characteristics across 3 Clusters (PAM)", dev="png"}
+
+par(mfrow=c(1,3))
+for (i in X[1:3]) pplot(as.formula(paste0(i, "~clust_pam3")), train, alpha=.02, ylab=NA, xlab=i,
+  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
+
+for (i in X[4]) pplot(as.formula(paste0(i, "~clust_pam3")), train, alpha=.02, ylab=NA, xlab=i, ylim=c(0, 32000),
+  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
+
+for (i in X[5:6]) pplot(as.formula(paste0(i, "~clust_pam3")), train, alpha=.02, ylab=NA, xlab=i, ylim=c(0, 8000),
+  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
+
+```
+
+### Aproach #2 -- Hierarchical Clustering
+
+This method is sensitive to the choice of dissimilarity measure (distance matrix). **Euclidean** distance is often preferred, however a **correlation-based** distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. In the following we retained a XXX distance measure.
+
+Further there are multiple generic types of hierarchical clustering algorithms:
+
+- **Agglomerative** -- "bottom up" approach: each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy (uses R `agnes()`).  
+- **Divisive** -- "top down" approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy (uses R `diana()`).  
+- *HKmean* -- a hybrid hierarchical k-means clustering for optimizing clustering outputs (uses R `hkmean()`).
+
+We contrast the 3 approaches, cutting the resulting trees at 5 stems.
+
+```{r gha-clust-hca-freq, results="asis"}
+
+# Cut tree into 4 groups and compare models
+table_options(HTMLcaption="(#tab:gha-clust-hca) Frequency counts of Observations in Agg. and Div. Clusters (k=4)")
+html(tabular((`Agglomerative Clusters`=Factor(clust_agg))+1~((`Divisive Clusters`=Factor(clust_div))+1)*Format(big.mark=",")*Heading(), 
+  data=train), rmarkdown=T)
+
+```
+
+```{r gha-clust-hca, dev="png", fig.cap="Results from Agg. an Div. Hierarchical Clustering (k=4)"}
+
+fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_agg),
+  ggtheme=theme_bw(base_size=10), palette=viridis(4),
+  main="AGNES, k=4")
+
+fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_div),
+  ggtheme=theme_bw(base_size=10), palette=viridis(4),
+  main="DIANA, k=4")
+
+```
+
+Below are descriptive characteristics for the **sample** of farm households across the resulting tree branches.
+
+```{r, fig.cap="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)", dev="png"}
+
+par(mfrow=c(1,3))
+for (i in X) pplot(as.formula(paste0(i, "~clust_agg")), train, alpha=.02, ylab=NA, xlab=i,
+  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
+
+```
+
+```{r, fig.cap="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)", dev="png"}
+
+par(mfrow=c(1,3))
+for (i in X) pplot(as.formula(paste0(i, "~clust_div")), train, alpha=.02, ylab=NA, xlab=i,
+  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
+
+```
+
+
+### Approach #3 Model-Based Clustering
+
+This approach does not yield interesting results. Not shown here for now.
+
+### Key Results
+
+Below are population summaries for the selected cluster scheme.
+
+
+```{r gha-clust-radar, eval=F}
+
+# Estimate mean/median/quantiles
 tmp <- svyCrossTab(list(
   ~croparea_imp,
   ~aggross, 
@@ -313,6 +368,30 @@ tmp <- svyCrossTab(list(
   ~totlvstprod,
   ~totlivsold
   ), ~clust_pam, gha.svy.farm[["gha6"]], quantiles=c(.25,.5,.75))
+
+# Draw radar plots
+
+
+ggradar(tmp) 
+
+# ggplot(dt.group[varLabel %like% "value added"],
+#   aes(year, value, color=varLabel)) +
+#   geom_line() + xlab("") + ylab("") +
+#   facet_wrap(~Region, ncol=2) +
+#   scale_color_manual(name="",
+#     values=c("darkgreen", "orange", "red", "brown"),
+#     labels=str_replace(levels(dt.group$varLabel)[3:6], fixed("("), "\n(")) +
+#   theme_bw(base_size=10) + 
+#   theme(legend.position="right", panel.grid=element_line(linetype="dotted"))
+# 
+# ggsave("../out/MB/2017-agra-aasr_WDI_ts_gdp-sector.png", width=6, height=7, units="in")
+
+
+```
+
+Tables of summary statistics for the entire population.
+
+```{r gha-clust-tab, results="asis", eval=F}
 
 table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (2012/13, Percent/Cedis)")
 html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),

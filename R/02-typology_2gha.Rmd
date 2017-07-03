@@ -1213,8 +1213,7 @@ save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars.inc, vars.char, pplot,
 
 # Save workspace
 rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, summaryname, 
-  svyCrossTab, svyCrossPlot, X, Y, var, train, train.scaled, dist, cor, grp,
-  mod.pam, mod.pam7, mod.agg, mod.div)
+  svyCrossTab, svyCrossPlot)
 save.image("./tmp/2017-agra-aasr_GHA.RData")
 
 ```
