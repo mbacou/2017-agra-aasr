@@ -257,8 +257,6 @@ mod.pam.nb +
 # Plot clusters
 fviz_cluster(mod.pam3, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3), main="PAM, k=3")
 
-summary(mod.pam3)
-
 ```
 
 ```{r, fig.cap="Clusters of Farm Households (PAM, k=5)", dev="png"}
@@ -272,8 +270,8 @@ fviz_cluster(mod.pam5, geom="point", ggtheme=theme_bw(base_size=10), palette=vir
 
 # Compare models
 table_options(HTMLcaption="(#tab:gha-clust-pam) Frequency counts of Observations across PAM clusters (k=3 and k=7)")
-html(tabular((`PAM k=3`=Factor(clust_pam3))+1~((`PAM k=7`=Factor(clust_pam7))+1)*Format(big.mark=","), 
-  data=train))
+html(tabular((`PAM k=3`=Factor(clust_pam3))+1~((`PAM k=5`=Factor(clust_pam5))+1)*Format(big.mark=","), 
+  data=train), rmarkdown=T)
 
 ```
 

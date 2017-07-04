@@ -342,12 +342,36 @@ summary(qd.tt20k)
 # NA's                    350.0000000
 
 # Resample time-to-market layers and GAEZ to 1km (from 10km)
-spplot(qd.tt20k)
-spplot(qd.agpot)
 qd.agpot <- disaggregate(qd.agpot, fact=10)
 qd.tt20k <- disaggregate(qd.tt20k, fact=10, method="bilinear")
 qd.tt50k <- disaggregate(qd.tt50k, fact=10, method="bilinear")
 levels(qd.agpot) <- data.frame(ID=1:9, category=qd.agpot.lbl$label) 
+
+# Verify
+# Also load earlier 2008 (instead of 2010) TT rasters
+qd.tt08 <- fread("~/Maps/cell5m/tt10_SSA_tiff/hcapi-travel_time-ssa.csv")
+qd.tt08 <- SpatialPixelsDataFrame(qd.tt08[, .(X,Y)], 
+  data.frame(qd.tt08)[, 8:17], proj4string=CRS("+init=epsg:4326"))
+qd.tt08 <- brick(qd.tt08)
+
+# Resample
+qd.tt08 <- crop(qd.tt08, g2[g2$svyCode=="gha-glss6",])
+qd.tt08 <- disaggregate(qd.tt08, fact=10)
+
+spplot(qd.tt08, col.regions=rev(viridis(28)), maxpixels=100000)
+spplot(tmp[[1:5]], col.regions=plasma, maxpixels=100000, at=c(seq(-1,24,1), 62),
+  sub="HarvestChoice Travel Times (circa 2007, hrs)",
+  par.settings=list(strip.background=list(col="#fafafa")))
+
+png("./docs/fig/HC_tt10.png", width=6, height=5, res=220, units="in", family="Roboto Condensed", pointsize=8)
+spplot(mask(qd.tt08[[6:10]], g2[g2$svyCode=="gha-glss6",]),
+  col.regions=plasma, maxpixels=300000, at=c(seq(-1,24,1), 62),
+  sub=list("HarvestChoice Travel Times (circa 2010, hrs)", font=1),
+  par.settings=list(strip.background=list(col="#fafafa")))
+dev.off()
+
+# Keep all 2 versions (10 layers) instead.
+rm(qd.tt20k, qd.tt50k)
 
 #####################################################################################
 # Compare with SDI version received on 2017.06.12
@@ -461,7 +485,6 @@ qd.pop <- raster("~/Maps/Worldpop/AFR_PPP_2015_adj_v2.tif")
 res(qd.pop)
 qd.pop <- crop(qd.pop, g2)
 summary(qd.pop)
-
 
 
 #####################################################################################
@@ -691,21 +714,23 @@ Low and high potential areas are further classified as:
     * `0` Land not suited for agriculture  
 
 IIASA/GAEZ crop suitability for Ghana is shown below along with two more recent and higher-resolution remote-sensed land cover classification from [ESA/CCI](http://maps.elie.ucl.ac.be/CCI/viewer/) and from [USGS/EROS](https://eros.usgs.gov/westafrica/data-downloads). The fourth map shows areas of low and high agricultural potential based on additional work conducted by BMGF/SDI (this layer was resampled from 10km to 1km resolution and then summarized across districts).
+
+```{r, fig.cap="Sources of hi-res Land Cover Maps for Ghana"}
+
+include_graphics("./fig/gha-lc-maps.png")
+
+```
+
+```{r, fig.cap="Sources of hi-res Climatic Constraints for Ghana (e.g. FEWSNET)"}
+
+include_graphics("./fig/gha-ndvi-eta_2017.06.d2.png")
+
+```
     
 ```{r gha-suitmap, fig.cap="Mapping Ghana's Agricultural Potential", dev="png"}
 
 print(spplot(qd.agpot, col.regions=qd.agpot.lbl$col, 
   xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ 2007)", cex=.8)), 
-  split=c(1,1,2,1), more=T)
-
-print(spplot(qd.lc, col.regions=qd.lc.lbl[J(unique(qd.lc)), col], 
-  xlab=list("Land Cover Classification\n(ESA/CCI 2015)", cex=.8),
-  at=c(-1, unique(qd.lc)), colorkey=list(at=1:23,
-    labels=list(labels=qd.lc.lbl[J(unique(qd.lc)), cat], at=1:23+.5))),
-  split=c(2,1,2,1), more=F)
-
-print(spplot(qd.usgs, "code", col.regions=qd.usgs.lbl[order(code), col], 
-  xlab=list("Land Cover Classification\n(USGS/EROS 2013)", cex=.8)), 
   split=c(1,1,2,1), more=T)
 
 print(spplot(qd.suit, col.regions=c(qd.agpot.lbl[c(2,6), col], "grey"), 
@@ -733,17 +758,9 @@ Low and high market access areas are defined using a **4 hour** travel time thre
 
 All layers were resampled to 1km and then we generated dominant classes across Ghana's districts (as household GPS locations are not available in any of the GLSS rounds).
 
-```{r gha-ttmaps, fig.cap="Travel Time to Nearest 20K and 50K Market. Source: IFPRI/HarvestChoice, 2016.", dev="png"}
+```{r, fig.cap="Travel Time to Nearest 20K and 50K Market. Source: IFPRI/HarvestChoice, 2016."}
 
-print(spplot(mask(qd.tt20k, g2[g2$svyCode=="gha-glss6",]),
-  xlab="Travel Time to Nearest 20K Market (hrs)",
-  col.regions=rev(inferno(30)), zlim=c(0,14), at=seq(0,14,.5)),
-  split=c(1,1,2,1), more=T)
-
-print(spplot(mask(qd.tt50k, g2[g2$svyCode=="gha-glss6",]),
-  xlab="Travel Time to Nearest 50K Market (hrs)", 
-  zlim=c(0,14), col.regions=rev(inferno(30)), at=seq(0,14,.5)),
-  split=c(2,1,2,1), more=F)
+include_graphics("./fig/HC_tt10.png")
 
 ```
 
@@ -799,13 +816,13 @@ print(spplot(g2[g2$svyCode=="gha-glss5",], "seg_quad_4", col="grey20", lwd=.2, c
 
 par(mfrow=c(1,3), mar=c(5,0,2,.25))
 plot(svytable(~croparea_4ha+suit_bmgf, gha.svy[["gha6"]]), 
-  main=NA, las=2, cex.axis=1, border=NA, col=rev(viridis(3)),
+  main=NA, las=2, cex.axis=1, col=rev(viridis(3)),
   ylab=NA, xlab="Crop Suitability 3-class")
 plot(svytable(~croparea_4ha+seg_mkt, gha.svy[["gha6"]]), 
-  main=NA, las=2, cex.axis=1, border=NA,col=viridis(2),
+  main=NA, las=2, cex.axis=1, col=viridis(2),
   ylab=NA, xlab="Market Access 2-class")
 plot(svytable(~croparea_4ha+seg_quad_4, gha.svy[["gha6"]]), 
-  main=NA, las=2, cex.axis=1, border=NA, col=viridis(4)[c(1,2,3,4)],
+  main=NA, las=2, cex.axis=1, col=viridis(4)[c(1,2,3,4)],
   ylab=NA, xlab="Quadrant Typology 4-class")
 
 ```
@@ -952,13 +969,13 @@ In this section we combine results from the farm typology developed in [Section 
 # Use `seg_quad_4` and a new 5-class typology `class5`
 par(mfrow=c(1,3), mar=c(5,.25,2,.25))
 plot(svytable(~seg_quad_4+cropsales_clas, gha.svy.shf[["gha6"]]), 
-  main=NA, las=2, cex.lab=2, col=viridis(3),
+  main=NA, las=2, cex.axis=1, col=viridis(3),
   ylab=NA, xlab="Crop Commercialization (below 4 ha)")
 plot(svytable(~seg_quad_4+naggross_2clas, gha.svy.shf[["gha6"]]), 
-  main=NA, las=2, cex.lab=2, col=viridis(3),
+  main=NA, las=2, cex.axis=1, col=viridis(3),
   ylab=NA, xlab="Non-Farm Income low/high (below 4 ha)")
 plot(svytable(~seg_quad_4+class5, gha.svy.shf[["gha6"]]), 
-  main=NA, las=2, cex.lab=2, col=viridis(5),
+  main=NA, las=2, cex.axis=1, col=viridis(5),
   ylab=NA, xlab="Typology 5-class (below 4 ha)")
 
 ```
