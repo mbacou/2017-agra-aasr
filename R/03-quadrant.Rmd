@@ -360,13 +360,13 @@ qd.tt08 <- disaggregate(qd.tt08, fact=10)
 
 spplot(qd.tt08, col.regions=rev(viridis(28)), maxpixels=100000)
 spplot(tmp[[1:5]], col.regions=plasma, maxpixels=100000, at=c(seq(-1,24,1), 62),
-  sub="HarvestChoice Travel Times (circa 2007, hrs)",
+  xlab="HarvestChoice Travel Times (circa 2007, hrs)",
   par.settings=list(strip.background=list(col="#fafafa")))
 
 png("./docs/fig/HC_tt10.png", width=6, height=5, res=220, units="in", family="Roboto Condensed", pointsize=8)
 spplot(mask(qd.tt08[[6:10]], g2[g2$svyCode=="gha-glss6",]),
   col.regions=plasma, maxpixels=300000, at=c(seq(-1,24,1), 62),
-  sub=list("HarvestChoice Travel Times (circa 2010, hrs)", font=1),
+  xlab=list("HarvestChoice Travel Times (circa 2010, hrs)", cex=.8),
   par.settings=list(strip.background=list(col="#fafafa")))
 dev.off()
 
@@ -489,7 +489,6 @@ summary(qd.pop)
 
 #####################################################################################
 # Summarize all rasters across GLSS districts (3 waves)
-
 proj4string(g2)
 # [1] "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 proj4string(qd.suit)
