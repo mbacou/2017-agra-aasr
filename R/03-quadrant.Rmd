@@ -695,21 +695,21 @@ IIASA/GAEZ crop suitability for Ghana is shown below along with two more recent 
 ```{r gha-suitmap, fig.cap="Mapping Ghana's Agricultural Potential", dev="png"}
 
 print(spplot(qd.agpot, col.regions=qd.agpot.lbl$col, 
-  xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ 2007)", cex=.9)), 
+  xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ 2007)", cex=.8)), 
   split=c(1,1,2,1), more=T)
 
 print(spplot(qd.lc, col.regions=qd.lc.lbl[J(unique(qd.lc)), col], 
-  xlab=list("Land Cover Classification\n(ESA/CCI 2015)", cex=.9),
+  xlab=list("Land Cover Classification\n(ESA/CCI 2015)", cex=.8),
   at=c(-1, unique(qd.lc)), colorkey=list(at=1:23,
     labels=list(labels=qd.lc.lbl[J(unique(qd.lc)), cat], at=1:23+.5))),
   split=c(2,1,2,1), more=F)
 
 print(spplot(qd.usgs, "code", col.regions=qd.usgs.lbl[order(code), col], 
-  xlab=list("Land Cover Classification\n(USGS/EROS 2013)", cex=.9)), 
+  xlab=list("Land Cover Classification\n(USGS/EROS 2013)", cex=.8)), 
   split=c(1,1,2,1), more=T)
 
 print(spplot(qd.suit, col.regions=c(qd.agpot.lbl[c(2,6), col], "grey"), 
-  xlab=list("Classified Low/High Agricultural Potential\n(BMGF/SDI 2016)", cex=.9)),
+  xlab=list("Low/High Agricultural Potential\n(BMGF/SDI 2016)", cex=.8)),
   split=c(2,1,2,1), more=F)
 
 ```
@@ -717,7 +717,7 @@ print(spplot(qd.suit, col.regions=c(qd.agpot.lbl[c(2,6), col], "grey"),
 ```{r}
 
 kable(qd.usgs.lbl[, .(Code=value, Label=code, Class=class_name)],
-  caption="USGA/EROS Land Cover Classification")
+  caption="USGS/EROS Land Cover Classification")
 
 kable(qd.lc.lbl[, .(Code=code, Label=cat, Class=class)],
   caption="ESA/CCI Land Cover Classification")
@@ -797,12 +797,15 @@ print(spplot(g2[g2$svyCode=="gha-glss5",], "seg_quad_4", col="grey20", lwd=.2, c
 
 ```{r gha-quad-fig2a, fig.cap="Est. Proportions of Farm Holdings across Quadrants (below/above 4 ha)"}
 
-par(mfrow=c(1,3), mar=c(3,3,0,.25))
-plot(svytable(~croparea_4ha+suit_bmgf, gha.svy[["gha6"]]), main=NA, las=1, col=rev(viridis(3)),
+par(mfrow=c(1,3), mar=c(5,0,2,.25))
+plot(svytable(~croparea_4ha+suit_bmgf, gha.svy[["gha6"]]), 
+  main=NA, las=2, cex.axis=1, border=NA, col=rev(viridis(3)),
   ylab=NA, xlab="Crop Suitability 3-class")
-plot(svytable(~croparea_4ha+seg_mkt, gha.svy[["gha6"]]), main=NA, las=1, col=viridis(2),
+plot(svytable(~croparea_4ha+seg_mkt, gha.svy[["gha6"]]), 
+  main=NA, las=2, cex.axis=1, border=NA,col=viridis(2),
   ylab=NA, xlab="Market Access 2-class")
-plot(svytable(~croparea_4ha+seg_quad_4, gha.svy[["gha6"]]), main=NA, las=1, col=viridis(4)[c(1,2,3,4)],
+plot(svytable(~croparea_4ha+seg_quad_4, gha.svy[["gha6"]]), 
+  main=NA, las=2, cex.axis=1, border=NA, col=viridis(4)[c(1,2,3,4)],
   ylab=NA, xlab="Quadrant Typology 4-class")
 
 ```
@@ -833,9 +836,13 @@ Mean and median household characteristics (farms below 4 ha) across the resultin
 
 tmp <- svyCrossTab(list(
   ~hhsize_imp, 
+  ~agehead,
   ~I(100*femhead),
   ~I(100*widowhead),
   ~hhlabor,
+  ~educhead,
+  ~educave15_60,
+  ~educhigh,
   ~I(100*ownhome), ~I(100*cellphone), ~I(100*telephone), ~I(100*electricity), 
   ~distwater, ~distroad, ~distpost, ~distbank, ~disthealth  
   ), ~seg_quad_4, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
@@ -940,18 +947,19 @@ svyboxplot(I(100*fuel)~seg_quad_4, gha.svy.shf[["gha6"]],
 In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access).
 
 
-```{r gha-class5-fig, fig.cap="Est. Proportions of Farm Holdings across Combined Categories (below/above 4 ha)"}
+```{r gha-class5-fig, fig.cap="Est. Proportions of Farm Holdings across Combined Categories (farms below 4 ha)"}
 
 # Use `seg_quad_4` and a new 5-class typology `class5`
-par(mfrow=c(1,2), mar=c(3,0,0,.25), mai=c(.5,0,0,0), cex=1.2, cex.lab=.7)
-plot(svytable(~seg_quad_4+cropsales_clas, gha.svy.shf[["gha6"]]), main=NA, las=2, col=viridis(3),
-  ylab=NA, xlab="Crop Commercialization")
-plot(svytable(~seg_quad_4+naggross_2clas, gha.svy.shf[["gha6"]]), main=NA, las=2, col=viridis(3),
-  ylab=NA, xlab="Non-Farm Income low/high")
-
-par(mfrow=c(1,1), mar=c(3,0,0,.25), mai=c(.5,0,0,0), cex=1.2, cex.lab=.7)
-plot(svytable(~seg_quad_4+class5, gha.svy.shf[["gha6"]]), main=NA, las=2, col=viridis(5),
-  ylab=NA, xlab="Typology 5-class")
+par(mfrow=c(1,3), mar=c(5,.25,2,.25))
+plot(svytable(~seg_quad_4+cropsales_clas, gha.svy.shf[["gha6"]]), 
+  main=NA, las=2, cex.lab=2, col=viridis(3),
+  ylab=NA, xlab="Crop Commercialization (below 4 ha)")
+plot(svytable(~seg_quad_4+naggross_2clas, gha.svy.shf[["gha6"]]), 
+  main=NA, las=2, cex.lab=2, col=viridis(3),
+  ylab=NA, xlab="Non-Farm Income low/high (below 4 ha)")
+plot(svytable(~seg_quad_4+class5, gha.svy.shf[["gha6"]]), 
+  main=NA, las=2, cex.lab=2, col=viridis(5),
+  ylab=NA, xlab="Typology 5-class (below 4 ha)")
 
 ```
 
@@ -973,7 +981,7 @@ tmp[, `:=`(
 
 table_options(HTMLcaption="(#tab:gha-tab-class5) Est. Proportions of Farm Holdings below 4 ha across Development Domains and Farm Types (2012/13, percent)")
 html(tabular(Heading("Development Domain")*seg_quad_4*(mean+CI)~Heading("Farm Type")*class5*Heading()*identity,
-  data=tmp), rmarkdown=T)
+  data=tmp), rmarkdown=T, scroll=T, caption="(#tab:gha-tab-class5) Est. Proportions of Farm Holdings below 4 ha across Development Domains and Farm Types (2012/13, percent)")
 
 ```
 
@@ -983,9 +991,13 @@ Mean and median household characteristics (farms below 4 ha) across the resultin
 
 tmp <- svyCrossTab(list(
   ~hhsize_imp, 
+  ~agehead,
   ~I(100*femhead),
   ~I(100*widowhead),
   ~hhlabor,
+  ~educhead,
+  ~educave15_60,
+  ~educhigh,  
   ~I(100*ownhome), ~I(100*cellphone), ~I(100*telephone), ~I(100*electricity), 
   ~distwater, ~distroad, ~distpost, ~distbank, ~disthealth  
   ), ~class5, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))

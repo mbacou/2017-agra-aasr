@@ -156,18 +156,18 @@
 <p><u>Note on <strong>k-mean</strong> and <strong>pam</strong> techniques</u>: the use of <em>means</em> in <em>k-means</em> implies that clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. PAM (also known as k-medoids clustering) can provide a more robust algorithm in some instances.</p>
 <p><u>Note on violin/pirate plots</u>: all distributional plots below show <strong>median</strong> line in <strong>red</strong>, <strong>mean</strong> in <strong>green</strong>, and the <strong>blue</strong> region is the inferred <strong>95% confidence interval</strong> of the mean. At present pirate plots cannot be drawn for an entire population (using weights), simple boxplots are used instead showing median and IQ range.</p>
 <p>Below are pair-wise scatter plots across all selected variables (cultivated area, sales, and income variables) colored by region.</p>
-<p><img src="fig/unnamed-chunk-15-1.png" width="2100" /></p>
+<p><img src="fig/unnamed-chunk-15-1.png" width="1540" /></p>
 <div id="aproach-1-partitioning" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> Aproach #1 – Partitioning</h3>
 <p>With the selected variables (standardized) the optimal number of clusters (based on average silhouette width) is <strong>3</strong> or <strong>7</strong>. We choose to test results using <strong>k=3</strong> and <strong>k=5</strong> in the following partitioning schemes.</p>
 <div class="figure"><span id="fig:unnamed-chunk-16"></span>
-<img src="fig/unnamed-chunk-16-1.svg" alt="PAM Clustering of GLSS6 Households (Euclidean Distance)" width="2100" />
+<img src="fig/unnamed-chunk-16-1.svg" alt="PAM Clustering of GLSS6 Households (Euclidean Distance)" width="1540" />
 <p class="caption">
 Fig. 6.1: PAM Clustering of GLSS6 Households (Euclidean Distance)
 </p>
 </div>
 <div class="figure"><span id="fig:unnamed-chunk-17"></span>
-<img src="fig/unnamed-chunk-17-1.png" alt="Clusters of Farm Households (PAM, k=3)" width="2100" />
+<img src="fig/unnamed-chunk-17-1.png" alt="Clusters of Farm Households (PAM, k=3)" width="1540" />
 <p class="caption">
 Fig. 6.2: Clusters of Farm Households (PAM, k=3)
 </p>
@@ -7613,7 +7613,7 @@ Available components:
  [1] &quot;medoids&quot;    &quot;id.med&quot;     &quot;clustering&quot; &quot;objective&quot;  &quot;isolation&quot; 
  [6] &quot;clusinfo&quot;   &quot;silinfo&quot;    &quot;diss&quot;       &quot;call&quot;       &quot;data&quot;      </code></pre>
 <div class="figure"><span id="fig:unnamed-chunk-18"></span>
-<img src="fig/unnamed-chunk-18-1.png" alt="Clusters of Farm Households (PAM, k=5)" width="2100" />
+<img src="fig/unnamed-chunk-18-1.png" alt="Clusters of Farm Households (PAM, k=5)" width="1540" />
 <p class="caption">
 Fig. 6.3: Clusters of Farm Households (PAM, k=5)
 </p>
@@ -7785,13 +7785,13 @@ All
 </table>
 <p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting k=3 clusters.</p>
 <div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="fig/unnamed-chunk-19-1.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="2100" />
+<img src="fig/unnamed-chunk-19-1.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="1540" />
 <p class="caption">
 Fig. 6.4: Distribution of Household Characteristics across 3 Clusters (PAM)
 </p>
 </div>
 <div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="fig/unnamed-chunk-19-2.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="2100" />
+<img src="fig/unnamed-chunk-19-2.png" alt="Distribution of Household Characteristics across 3 Clusters (PAM)" width="1540" />
 <p class="caption">
 Fig. 6.4: Distribution of Household Characteristics across 3 Clusters (PAM)
 </p>
@@ -7950,38 +7950,38 @@ All
 </tbody>
 </table>
 <div class="figure"><span id="fig:gha-clust-hca"></span>
-<img src="fig/gha-clust-hca-1.png" alt="Results from Agg. an Div. Hierarchical Clustering (k=4)" width="2100" />
+<img src="fig/gha-clust-hca-1.png" alt="Results from Agg. an Div. Hierarchical Clustering (k=4)" width="1540" />
 <p class="caption">
 Fig. 6.5: Results from Agg. an Div. Hierarchical Clustering (k=4)
 </p>
 </div>
 <div class="figure"><span id="fig:gha-clust-hca"></span>
-<img src="fig/gha-clust-hca-2.png" alt="Results from Agg. an Div. Hierarchical Clustering (k=4)" width="2100" />
+<img src="fig/gha-clust-hca-2.png" alt="Results from Agg. an Div. Hierarchical Clustering (k=4)" width="1540" />
 <p class="caption">
 Fig. 6.5: Results from Agg. an Div. Hierarchical Clustering (k=4)
 </p>
 </div>
 <p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting tree branches.</p>
 <div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="fig/unnamed-chunk-20-1.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)" width="2100" />
+<img src="fig/unnamed-chunk-20-1.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)" width="1540" />
 <p class="caption">
 Fig. 6.6: Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)
 </p>
 </div>
 <div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="fig/unnamed-chunk-20-2.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)" width="2100" />
+<img src="fig/unnamed-chunk-20-2.png" alt="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)" width="1540" />
 <p class="caption">
 Fig. 6.6: Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)
 </p>
 </div>
 <div class="figure"><span id="fig:unnamed-chunk-21"></span>
-<img src="fig/unnamed-chunk-21-1.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)" width="2100" />
+<img src="fig/unnamed-chunk-21-1.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)" width="1540" />
 <p class="caption">
 Fig. 6.7: Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)
 </p>
 </div>
 <div class="figure"><span id="fig:unnamed-chunk-21"></span>
-<img src="fig/unnamed-chunk-21-2.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)" width="2100" />
+<img src="fig/unnamed-chunk-21-2.png" alt="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)" width="1540" />
 <p class="caption">
 Fig. 6.7: Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)
 </p>

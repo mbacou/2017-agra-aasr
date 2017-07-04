@@ -1551,9 +1551,13 @@ html(tabular(Heading("Income Diversification")*naggross_clas*(mean+CI)~Heading("
 
 tmp <- svyCrossTab(list(
   ~hhsize_imp, 
+  ~agehead,
   ~I(100*femhead),
   ~I(100*widowhead),
   ~hhlabor,
+  ~educhead,
+  ~educave15_60,
+  ~educhigh,
   ~I(100*ownhome), ~I(100*cellphone), ~I(100*telephone), ~I(100*electricity), 
   ~distwater, ~distroad, ~distpost, ~distbank, ~disthealth  
   ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
