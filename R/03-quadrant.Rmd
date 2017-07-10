@@ -634,6 +634,41 @@ gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
 
 ```
 
+```{r gha-ndvi, eval=FALSE}
+
+# 2017.07.06 Received CELL5M MODIS NDVI and cropland from Jawoo
+ndvi <- fread("~/Maps/cell5m/ndvi/cell5m_ndvi_gnet_descaled.csv")
+ndvi[, c(2:3, 5:41) := lapply(.SD, as.numeric), .SDcols=c(2:3, 5:41)]
+ndvi[, CELL5M := as.integer(CELL5M)]
+ndvi[, .N, by=ISO3]
+#    ISO3     N
+# 1:  ETH 13295
+# 2:  NGA 10724
+# 3:  GHA  2751
+# 4:  TZA 10405
+# Get complete CELL5M grid from `qd.quad.dt`
+setkey(qd.quad.dt, CELL5M)
+setkey(ndvi, CELL5M)
+ndvi <- ndvi[qd.quad.dt, `:=`(CELL5M=i.CELL5M, X=i.X, Y=i.Y)]
+ndvi[, NDVI := rowMeans(.SD, na.rm=T), .SDcols=6:41]
+setorder(ndvi, X, Y)
+tmp <- SpatialPixelsDataFrame(ndvi[, .(X,Y)], ndvi[, .SD, .SDcols=5:42],
+  proj4string=CRS("+init=epsg:4326"))
+tmp <- brick(tmp)
+
+png("./out/MB/MODIS_NDVI_2001-2013.png", width=7, height=3.6, units="in", res=220, pointsize=8, family="Roboto Condensed")
+spplot(tmp[["NDVI"]], col.regions=pal.ndvi(255),
+  xlab="Long-term NDVI 2001-2013 (mean of dekadal means, 2001-2013). Source: MODIS.")
+dev.off()
+
+png("./out/MB/WorldGrids_CRP_ENS.png", width=7, height=3.6, units="in", res=220, pointsize=8, family="Roboto Condensed")
+spplot(tmp[["CRP_ENS"]], col.regions=pal.ndvi_anom(255),
+  xlab="Cropland (ensemble probability). Source: WorldGrids.")
+dev.off()
+
+```
+
+
 ```{r gha-9class, eval=FALSE}
 
 # Peter chose to re-combine the 9 classes developed in Section 3 into 5 categories
@@ -646,7 +681,6 @@ gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
 # - pre-commercial
 # - specialized
 # - diversified commercial
-
 
 ##########################################
 # Income diversification dummy `noaggross_2clas` (2-class)

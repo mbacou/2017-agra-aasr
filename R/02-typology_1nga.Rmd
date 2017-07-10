@@ -56,8 +56,7 @@ svyCrossTab <- function(formula, by, design, quantiles=c(.25,.5,.75)) {
   x <- x[y]
  
   # Add optional labels
-  if(!is.null(names(formula))) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2],
-    var := names(formula)[i]]
+  if(!is.null(names(formula))) for (i in seq_along(var)) x[var==as.character(formula[[i]])[2], var := names(formula)[i]]
   
   var.levels <- sapply(formula, function(x) as.character(x)[2])
   var.levels <- str_replace(var.levels, fixed("I("), fixed("("))
