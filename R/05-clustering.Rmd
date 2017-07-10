@@ -13,6 +13,7 @@
 library(cluster)
 library(mclust)
 library(factoextra)
+library(cowplot)
 #library(ggradar)
 
 load("../tmp/2017-agra-aasr_GHA_cluster.RData")
@@ -257,45 +258,36 @@ We use a non-hierarchical **PAM** (Partitioning around Medoids) clustering appro
 
 <u>Note on violin plots</u>: all distributional plots below show **median** line in **red**, **mean** in **green**, and the **blue** region is the inferred **95% confidence interval** of the mean. At present pirate plots cannot be drawn for an entire population (using weights), simple boxplots are used instead showing median and IQ range.
 
-Below are pair-wise scatter plots across all covariates (cultivated area, sales, and income variables) colored by region.
-
-```{r, dev="png", fig.width=7, fig.height=7}
-
-# Pair-wise plots across regions
-clPairs(train[, .SD, .SDcols=X], train$region, 16, add.alpha(viridis(10), .5), CEX=.8)
-
-```
-
-
 ### Aproach #1 -- PAM Partitioning
 
-With the selected variables (standardized) the optimal number of clusters (based on average silhouette width) is **3** or **7**. We choose to test results using **k=3** and **k=5** in the following partitioning schemes.
+With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is **3** or **6/7**. We choose to test results using **k=3** and **k=5** in the following partitioning schemes.
 
 ```{r, fig.cap="PAM Clustering of GLSS6 Households (using Euclidean Distance)"}
 
-par(mfrow=c(1,2))
-mod.pam.nb + 
-  geom_vline(aes(xintercept=3), color="grey50", linetype="dashed") +
-  geom_vline(aes(xintercept=5), color="grey50", linetype="dashed") +
-  theme_bw(base_size=10) + theme(panel.grid=element_line(linetype="dotted"))
-mod.pam.nb.wss + 
-  geom_vline(aes(xintercept=3), color="grey50", linetype="dashed") +
-  geom_vline(aes(xintercept=5), color="grey50", linetype="dashed") +
-  theme_bw(base_size=10) + theme(panel.grid=element_line(linetype="dotted"))
+plot_grid(
+  mod.pam.nb + 
+    geom_vline(aes(xintercept=3), color="grey50", linetype="dashed") +
+    geom_vline(aes(xintercept=5), color="grey50", linetype="dashed") +
+    theme_bw(base_size=10) + theme(panel.grid=element_line(linetype="dotted")),
+  mod.pam.nb.wss + 
+    geom_vline(aes(xintercept=3), color="grey50", linetype="dashed") +
+    geom_vline(aes(xintercept=5), color="grey50", linetype="dashed") +
+    theme_bw(base_size=10) + theme(panel.grid=element_line(linetype="dotted"))
+)
 
 ```
 
 ```{r, fig.cap="Clusters of Farm Households (PAM, k=3)", dev="png"}
 
 # Plot clusters
-fviz_cluster(mod.pam3, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3), main="PAM, k=3")
+fviz_cluster(mod.pam3, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3), main="PAM Clusters, k=3")
 
 ```
 
 ```{r, fig.cap="Clusters of Farm Households (PAM, k=5)", dev="png"}
 
 # Plot clusters
-fviz_cluster(mod.pam5, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(5), main="PAM, k=5")
+fviz_cluster(mod.pam5, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(5), main="PAM Clusters, k=5")
 
 ```
 
@@ -308,21 +300,31 @@ html(tabular((`PAM k=3`=Factor(clust_pam3))+1~((`PAM k=5`=Factor(clust_pam5))+1)
 
 ```
 
+Cluster medoids (centers) are listed below for k=3 and k=5.
 
 ```{r gha-clust-medoids}
 
 kable(mod.pam3$medoids, caption="Cluster medoids (k=3)", 
-  format.args=list(big.mark=",", digits=2))
+  format.args=list(big.mark=",", digits=1))
 kable(mod.pam5$medoids, caption="Cluster medoids (k=5)",
   format.args=list(big.mark=",", digits=1))
 
 ```
 
-Below are descriptive characteristics for the **sample** of farm households across the resulting **k=5** clusters. Population statistics across clusters are at the bottom of this page.
+Pair-wise scatter plots across all covariates (cultivated area, sales, and income variables) colored by cluster (k=5).
+
+```{r, dev="png", fig.width=7, fig.height=7}
+
+# Pair-wise plots across clusters
+clPairs(train[, .SD, .SDcols=X], train$clust_pam5, 16, add.alpha(viridis(5), .5), CEX=.8)
+
+```
+
+The violin plots below show the distribution of all 6 covariates in the **sample** of farm households across the resulting **k=5** clusters. Actual population statistics across clusters are at the bottom of this page.
 
 ```{r, fig.cap="Distribution of Household Characteristics across 5 Clusters (PAM)", dev="png"}
 
-par(mfrow=c(1,3))
+par(mfrow=c(1,2))
 for (i in X[1:3]) pplot(as.formula(paste0(i, "~clust_pam5")), train, alpha=.02, ylab=NA, xlab=i,
   note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
 
@@ -335,6 +337,8 @@ for (i in X[5:6]) pplot(as.formula(paste0(i, "~clust_pam5")), train, alpha=.02, 
 ```
 
 ### Aproach #2 -- Hierarchical Clustering
+
+[in progress]
 
 This method is sensitive to the choice of dissimilarity measure (distance matrix). **Euclidean** distance is often preferred, however a **correlation-based** distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. In the following we retained a XXX distance measure.
 
@@ -386,13 +390,9 @@ for (i in X) pplot(as.formula(paste0(i, "~clust_div")), train, alpha=.02, ylab=N
 ```
 
 
-### Approach #3 Model-Based Clustering
-
-This approach does not yield interesting results. Not shown here for now.
-
 ### Key Results
 
-Below are population summaries for the selected cluster scheme.
+Below are population summaries for the selected k=5 cluster scheme.
 
 
 ```{r gha-clust-radar, eval=F}
@@ -432,11 +432,12 @@ ggradar(tmp)
 
 Tables of summary statistics for the entire population. Proportions compared to manually-derived 5-class farm types.
 
-```{r gha-clust-fig, fig.cap="Est. Proportions of Farm Holdings across Clusters and Farm Types (k=5, all farm households)", fig.height=4}
+```{r gha-clust-fig, fig.cap="Est. Proportions of Farm Holdings across Clusters and Farm Types (k=5, all farm households)"}
 
+par(mar=c(2.2,0,0,0))
 plot(svytable(~clust_pam5+class5, gha.svy.farm[["gha6"]]), 
   main=NA, las=2, cex.axis=1, col=viridis(5),
-  ylab=NA, xlab="5-class Farm Types across Clusters (k=5, below 4 ha)")
+  ylab=NA, xlab="Farm Types across Clusters (k=5, farms below 4 ha)")
 
 ```
 
@@ -451,12 +452,12 @@ tmp[, CI := paste(`2.5 %`, `97.5 %`, sep=" - ")]
 tmp[, clust_pam5 := paste0("clust", 1:5)]
 
 table_options(HTMLcaption="(#tab:gha-clust-tab1) Est. Proportions of Farm Holdings across Clusters (k=5, 2012/13, percent)")
-html(tabular(Heading("Cluster")*Factor(clust_pam5)*(mean+CI)~Heading("Proportions")*identity,
+html(tabular((`Cluster`=Factor(clust_pam5))*(mean+CI)~Heading("Proportions")*identity,
   data=tmp), rmarkdown=T)
 
 ```
 
-Mean and median household characteristics (farms below 4 ha) across the resulting quadrants are estimated in the tables below.
+Mean and median household characteristics across clusters are estimated in the tables below.
 
 ```{r gha-clust-tab3, results="asis"}
 
@@ -474,7 +475,7 @@ tmp <- svyCrossTab(list(
   ), ~factor(clust_pam5, labels=paste0("clust", 1:5)), gha.svy.farm[["gha6"]], quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:gha-clust-tab3) Est. Demographic Characteristics of Farm Holdings across Clusters (2012/13, percent/km)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 ```
@@ -495,7 +496,7 @@ tmp <- svyCrossTab(list(
   ), ~factor(clust_pam5, labels=paste0("clust", 1:5)), gha.svy.farm[["gha6"]], quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:gha-clust-tab2) Estimated Mean and Median Characteristics across Clusters")
-html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=0, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 ```

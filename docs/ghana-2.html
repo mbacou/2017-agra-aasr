@@ -119,8 +119,7 @@
 <li class="chapter" data-level="6.2" data-path="ghana-2.html"><a href="ghana-2.html"><i class="fa fa-check"></i><b>6.2</b> Ghana</a><ul>
 <li class="chapter" data-level="6.2.1" data-path="ghana-2.html"><a href="ghana-2.html#aproach-1-pam-partitioning"><i class="fa fa-check"></i><b>6.2.1</b> Aproach #1 – PAM Partitioning</a></li>
 <li class="chapter" data-level="6.2.2" data-path="ghana-2.html"><a href="ghana-2.html#aproach-2-hierarchical-clustering"><i class="fa fa-check"></i><b>6.2.2</b> Aproach #2 – Hierarchical Clustering</a></li>
-<li class="chapter" data-level="6.2.3" data-path="ghana-2.html"><a href="ghana-2.html#approach-3-model-based-clustering"><i class="fa fa-check"></i><b>6.2.3</b> Approach #3 Model-Based Clustering</a></li>
-<li class="chapter" data-level="6.2.4" data-path="ghana-2.html"><a href="ghana-2.html#key-results-2"><i class="fa fa-check"></i><b>6.2.4</b> Key Results</a></li>
+<li class="chapter" data-level="6.2.3" data-path="ghana-2.html"><a href="ghana-2.html#key-results-2"><i class="fa fa-check"></i><b>6.2.3</b> Key Results</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -155,31 +154,23 @@
 </ul>
 <p><u>Note on <strong>k-mean</strong> and <strong>pam</strong> techniques</u>: the use of <em>means</em> in <em>k-means</em> implies that clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. PAM (also known as k-medoids clustering) can provide a more robust algorithm in some instances.</p>
 <p><u>Note on violin plots</u>: all distributional plots below show <strong>median</strong> line in <strong>red</strong>, <strong>mean</strong> in <strong>green</strong>, and the <strong>blue</strong> region is the inferred <strong>95% confidence interval</strong> of the mean. At present pirate plots cannot be drawn for an entire population (using weights), simple boxplots are used instead showing median and IQ range.</p>
-<p>Below are pair-wise scatter plots across all covariates (cultivated area, sales, and income variables) colored by region.</p>
-<p><img src="fig/unnamed-chunk-18-1.png" width="1540" /></p>
 <div id="aproach-1-pam-partitioning" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> Aproach #1 – PAM Partitioning</h3>
-<p>With the selected variables (standardized) the optimal number of clusters (based on average silhouette width) is <strong>3</strong> or <strong>7</strong>. We choose to test results using <strong>k=3</strong> and <strong>k=5</strong> in the following partitioning schemes.</p>
-<div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="fig/unnamed-chunk-19-1.svg" alt="PAM Clustering of GLSS6 Households (using Euclidean Distance)" width="1540" />
+<p>With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is <strong>3</strong> or <strong>6/7</strong>. We choose to test results using <strong>k=3</strong> and <strong>k=5</strong> in the following partitioning schemes.</p>
+<div class="figure"><span id="fig:unnamed-chunk-18"></span>
+<img src="fig/unnamed-chunk-18-1.svg" alt="PAM Clustering of GLSS6 Households (using Euclidean Distance)" width="1540" />
 <p class="caption">
 Fig. 6.1: PAM Clustering of GLSS6 Households (using Euclidean Distance)
 </p>
 </div>
 <div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="fig/unnamed-chunk-19-2.svg" alt="PAM Clustering of GLSS6 Households (using Euclidean Distance)" width="1540" />
-<p class="caption">
-Fig. 6.1: PAM Clustering of GLSS6 Households (using Euclidean Distance)
-</p>
-</div>
-<div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="fig/unnamed-chunk-20-1.png" alt="Clusters of Farm Households (PAM, k=3)" width="1540" />
+<img src="fig/unnamed-chunk-19-1.png" alt="Clusters of Farm Households (PAM, k=3)" width="1540" />
 <p class="caption">
 Fig. 6.2: Clusters of Farm Households (PAM, k=3)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-21"></span>
-<img src="fig/unnamed-chunk-21-1.png" alt="Clusters of Farm Households (PAM, k=5)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-20"></span>
+<img src="fig/unnamed-chunk-20-1.png" alt="Clusters of Farm Households (PAM, k=5)" width="1540" />
 <p class="caption">
 Fig. 6.3: Clusters of Farm Households (PAM, k=5)
 </p>
@@ -319,6 +310,7 @@ All
 </tr>
 </tbody>
 </table>
+<p>Cluster medoids (centers) are listed below for k=3 and k=5.</p>
 <table>
 <caption><span id="tab:gha-clust-medoids">Tab. 6.2: </span>Cluster medoids (k=3)</caption>
 <thead>
@@ -333,25 +325,25 @@ All
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">1.8</td>
-<td align="right">0.39</td>
-<td align="right">0.078</td>
+<td align="right">2</td>
+<td align="right">0.4</td>
+<td align="right">0.08</td>
 <td align="right">1,159</td>
 <td align="right">200</td>
 <td align="right">849</td>
 </tr>
 <tr class="even">
-<td align="right">1.2</td>
-<td align="right">0.26</td>
-<td align="right">0.970</td>
+<td align="right">1</td>
+<td align="right">0.3</td>
+<td align="right">0.97</td>
 <td align="right">15,345</td>
 <td align="right">120</td>
 <td align="right">458</td>
 </tr>
 <tr class="odd">
-<td align="right">4.0</td>
-<td align="right">0.69</td>
-<td align="right">0.191</td>
+<td align="right">4</td>
+<td align="right">0.7</td>
+<td align="right">0.19</td>
 <td align="right">4,297</td>
 <td align="right">2,263</td>
 <td align="right">3,322</td>
@@ -413,7 +405,9 @@ All
 </tr>
 </tbody>
 </table>
-<p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting <strong>k=5</strong> clusters. Population statistics across clusters are at the bottom of this page.</p>
+<p>Pair-wise scatter plots across all covariates (cultivated area, sales, and income variables) colored by cluster (k=5).</p>
+<p><img src="fig/unnamed-chunk-21-1.png" width="1540" /></p>
+<p>The violin plots below show the distribution of all 6 covariates in the <strong>sample</strong> of farm households across the resulting <strong>k=5</strong> clusters. Actual population statistics across clusters are at the bottom of this page.</p>
 <div class="figure"><span id="fig:unnamed-chunk-22"></span>
 <img src="fig/unnamed-chunk-22-1.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
 <p class="caption">
@@ -426,9 +420,16 @@ Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
 Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
 </p>
 </div>
+<div class="figure"><span id="fig:unnamed-chunk-22"></span>
+<img src="fig/unnamed-chunk-22-3.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
+<p class="caption">
+Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
+</p>
+</div>
 </div>
 <div id="aproach-2-hierarchical-clustering" class="section level3">
 <h3><span class="header-section-number">6.2.2</span> Aproach #2 – Hierarchical Clustering</h3>
+<p>[in progress]</p>
 <p>This method is sensitive to the choice of dissimilarity measure (distance matrix). <strong>Euclidean</strong> distance is often preferred, however a <strong>correlation-based</strong> distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. In the following we retained a XXX distance measure.</p>
 <p>Further there are multiple generic types of hierarchical clustering algorithms:</p>
 <ul>
@@ -441,13 +442,9 @@ Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
 <p>We contrast the 3 approaches, cutting the resulting trees at 5 stems.</p>
 <p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting tree branches.</p>
 </div>
-<div id="approach-3-model-based-clustering" class="section level3">
-<h3><span class="header-section-number">6.2.3</span> Approach #3 Model-Based Clustering</h3>
-<p>This approach does not yield interesting results. Not shown here for now.</p>
-</div>
 <div id="key-results-2" class="section level3">
-<h3><span class="header-section-number">6.2.4</span> Key Results</h3>
-<p>Below are population summaries for the selected cluster scheme.</p>
+<h3><span class="header-section-number">6.2.3</span> Key Results</h3>
+<p>Below are population summaries for the selected k=5 cluster scheme.</p>
 <p>Tables of summary statistics for the entire population. Proportions compared to manually-derived 5-class farm types.</p>
 <div class="figure"><span id="fig:gha-clust-fig"></span>
 <img src="fig/gha-clust-fig-1.svg" alt="Est. Proportions of Farm Holdings across Clusters and Farm Types (k=5, all farm households)" width="1540" />
@@ -462,7 +459,7 @@ Fig. 6.5: Est. Proportions of Farm Holdings across Clusters and Farm Types (k=5,
 <thead>
 <tr class="center">
 <th>
-clust_pam5
+Cluster
 </th>
 <th>
 </th>
@@ -584,7 +581,7 @@ CI
 </tr>
 </tbody>
 </table>
-<p>Mean and median household characteristics (farms below 4 ha) across the resulting quadrants are estimated in the tables below.</p>
+<p>Mean and median household characteristics across clusters are estimated in the tables below.</p>
 <table class="Rtable">
 <caption>
 <span id="tab:gha-clust-tab3">Tab. 6.4: </span> Est. Demographic Characteristics of Farm Holdings across Clusters (2012/13, percent/km)
@@ -695,44 +692,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 2.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 2.1
-</td>
-<td>
- 0.3
-</td>
-<td>
- 3.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 4.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 4.0
-</td>
-<td>
- 0.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -764,44 +723,6 @@ Q50
 </td>
 <td>
  0.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 6.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 6.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 6.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 7.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 7.0
-</td>
-<td>
- 0.1
 </td>
 </tr>
 <tr class="center">
@@ -847,44 +768,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
-35.0
-</td>
-<td>
- 0.5
-</td>
-<td>
-35.0
-</td>
-<td>
- 0.8
-</td>
-<td>
-35.0
-</td>
-<td>
- 0.8
-</td>
-<td>
-38.0
-</td>
-<td>
- 0.5
-</td>
-<td>
-37.0
-</td>
-<td>
- 0.8
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -916,44 +799,6 @@ Q50
 </td>
 <td>
  1.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
-59.0
-</td>
-<td>
- 0.9
-</td>
-<td>
-60.0
-</td>
-<td>
- 1.0
-</td>
-<td>
-60.0
-</td>
-<td>
- 1.0
-</td>
-<td>
-59.0
-</td>
-<td>
- 1.0
-</td>
-<td>
-56.0
-</td>
-<td>
- 1.3
 </td>
 </tr>
 <tr class="center">
@@ -999,44 +844,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -1053,44 +860,6 @@ Q50
 </td>
 <td>
  0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
 </td>
 <td>
  0.0
@@ -1151,83 +920,7 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
 </th>
 <td>
  0.0
@@ -1303,44 +996,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 1.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 1.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 1.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 2.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 2.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -1369,44 +1024,6 @@ Q50
 </td>
 <td>
  2.0
-</td>
-<td>
- 0.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 3.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 3.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 3.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 4.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 3.0
 </td>
 <td>
  0.3
@@ -1455,44 +1072,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 2.0
-</td>
-<td>
- 1.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -1524,44 +1103,6 @@ Q50
 </td>
 <td>
  0.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 8.0
-</td>
-<td>
- 0.5
-</td>
-<td>
- 6.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 9.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 9.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 9.0
-</td>
-<td>
- 0.0
 </td>
 </tr>
 <tr class="center">
@@ -1607,44 +1148,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 2.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 0.5
-</td>
-<td>
- 0.3
-</td>
-<td>
- 3.0
-</td>
-<td>
- 0.2
-</td>
-<td>
- 2.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 4.0
-</td>
-<td>
- 0.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -1676,44 +1179,6 @@ Q50
 </td>
 <td>
  0.1
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 6.5
-</td>
-<td>
- 0.2
-</td>
-<td>
- 6.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 7.3
-</td>
-<td>
- 0.1
-</td>
-<td>
- 6.8
-</td>
-<td>
- 0.2
-</td>
-<td>
- 7.0
-</td>
-<td>
- 0.2
 </td>
 </tr>
 <tr class="center">
@@ -1759,44 +1224,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 4.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 3.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 6.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 5.0
-</td>
-<td>
- 0.5
-</td>
-<td>
- 6.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -1828,44 +1255,6 @@ Q50
 </td>
 <td>
  0.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 9.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 8.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 9.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 9.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 9.0
-</td>
-<td>
- 0.0
 </td>
 </tr>
 <tr class="center">
@@ -1911,83 +1300,7 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-25.5
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-25.5
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
-</th>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
 </th>
 <td>
 100.0
@@ -2063,83 +1376,7 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
 </th>
 <td>
  0.0
@@ -2215,83 +1452,7 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
 </th>
 <td>
  0.0
@@ -2367,44 +1528,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -2427,44 +1550,6 @@ Q50
 </td>
 <td>
  0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
-</td>
-<td>
- 0.0
-</td>
-<td>
-100.0
 </td>
 <td>
  0.0
@@ -2519,44 +1604,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.1
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.1
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.1
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -2585,44 +1632,6 @@ Q50
 </td>
 <td>
  0.1
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 0.3
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.4
-</td>
-<td>
- 0.1
-</td>
-<td>
- 0.2
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 0.1
-</td>
-<td>
- 0.2
 </td>
 <td>
  0.0
@@ -2671,44 +1680,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -2722,44 +1693,6 @@ Q50
 </td>
 <td>
  0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.0
-</td>
-<td>
- 0.2
 </td>
 <td>
  0.0
@@ -2823,44 +1756,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 6.0
-</td>
-<td>
- 0.8
-</td>
-<td>
- 6.0
-</td>
-<td>
- 0.5
-</td>
-<td>
- 5.0
-</td>
-<td>
- 0.5
-</td>
-<td>
- 8.0
-</td>
-<td>
- 0.8
-</td>
-<td>
- 5.0
-</td>
-<td>
- 0.8
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -2892,44 +1787,6 @@ Q50
 </td>
 <td>
  1.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
-22.0
-</td>
-<td>
- 1.8
-</td>
-<td>
-22.0
-</td>
-<td>
- 2.6
-</td>
-<td>
-17.0
-</td>
-<td>
- 1.3
-</td>
-<td>
-25.0
-</td>
-<td>
- 2.6
-</td>
-<td>
-18.0
-</td>
-<td>
- 2.3
 </td>
 </tr>
 <tr class="center">
@@ -2975,44 +1832,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 5.0
-</td>
-<td>
- 0.5
-</td>
-<td>
- 5.0
-</td>
-<td>
- 0.3
-</td>
-<td>
- 3.0
-</td>
-<td>
- 0.8
-</td>
-<td>
- 7.0
-</td>
-<td>
- 0.8
-</td>
-<td>
- 5.0
-</td>
-<td>
- 0.5
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -3044,44 +1863,6 @@ Q50
 </td>
 <td>
  1.3
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
-18.0
-</td>
-<td>
- 1.0
-</td>
-<td>
-19.0
-</td>
-<td>
- 1.8
-</td>
-<td>
-14.0
-</td>
-<td>
- 0.8
-</td>
-<td>
-20.1
-</td>
-<td>
- 1.8
-</td>
-<td>
-15.0
-</td>
-<td>
- 1.0
 </td>
 </tr>
 <tr class="center">
@@ -3127,44 +1908,6 @@ Mean
  
 </th>
 <th class="left">
-Q25
-</th>
-<td>
- 9.0
-</td>
-<td>
- 0.5
-</td>
-<td>
- 7.0
-</td>
-<td>
- 0.8
-</td>
-<td>
- 5.0
-</td>
-<td>
- 0.5
-</td>
-<td>
- 9.0
-</td>
-<td>
- 1.0
-</td>
-<td>
- 5.0
-</td>
-<td>
- 1.0
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
 Q50
 </th>
 <td>
@@ -3196,44 +1939,6 @@ Q50
 </td>
 <td>
  1.5
-</td>
-</tr>
-<tr class="center">
-<th class="left">
- 
-</th>
-<th class="left">
-Q75
-</th>
-<td>
-30.0
-</td>
-<td>
- 2.0
-</td>
-<td>
-27.0
-</td>
-<td>
- 2.3
-</td>
-<td>
-22.0
-</td>
-<td>
- 1.8
-</td>
-<td>
-32.0
-</td>
-<td>
- 1.8
-</td>
-<td>
-25.0
-</td>
-<td>
- 3.1
 </td>
 </tr>
 </tbody>
@@ -3313,34 +2018,34 @@ croparea_imp
 Mean
 </th>
 <td>
-      2.1
+      2
 </td>
 <td>
-      0.1
+      0
 </td>
 <td>
-      1.4
+      1
 </td>
 <td>
-      0.1
+      0
 </td>
 <td>
-      1.3
+      1
 </td>
 <td>
-      0.1
+      0
 </td>
 <td>
-      5.3
+      5
 </td>
 <td>
-      0.2
+      0
 </td>
 <td>
-      2.6
+      3
 </td>
 <td>
-      0.2
+      0
 </td>
 </tr>
 <tr class="center">
@@ -3351,34 +2056,34 @@ Mean
 Q50
 </th>
 <td>
-      1.6
+      2
 </td>
 <td>
-      0.1
+      0
 </td>
 <td>
-      0.9
+      1
 </td>
 <td>
-      0.1
+      0
 </td>
 <td>
-      0.8
+      1
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      4.2
+      4
 </td>
 <td>
-      0.2
+      0
 </td>
 <td>
-      2.0
+      2
 </td>
 <td>
-      0.1
+      0
 </td>
 </tr>
 <tr class="center">
@@ -3389,34 +2094,34 @@ aggross
 Mean
 </th>
 <td>
-  1,365.9
+  1,366
 </td>
 <td>
-     67.4
+     67
 </td>
 <td>
-    785.9
+    786
 </td>
 <td>
-     38.2
+     38
 </td>
 <td>
-    523.5
+    524
 </td>
 <td>
-     32.8
+     33
 </td>
 <td>
-  4,543.1
+  4,543
 </td>
 <td>
-    149.4
+    149
 </td>
 <td>
-  1,834.0
+  1,834
 </td>
 <td>
-    208.6
+    209
 </td>
 </tr>
 <tr class="center">
@@ -3427,34 +2132,34 @@ Mean
 Q50
 </th>
 <td>
-  1,092.5
+  1,093
 </td>
 <td>
-     33.3
+     33
 </td>
 <td>
-    498.7
+    499
 </td>
 <td>
-     37.0
+     37
 </td>
 <td>
-    286.8
+    287
 </td>
 <td>
-     27.4
+     27
 </td>
 <td>
-  3,892.4
+  3,892
 </td>
 <td>
-    104.4
+    104
 </td>
 <td>
-  1,086.1
+  1,086
 </td>
 <td>
-    128.6
+    129
 </td>
 </tr>
 <tr class="center">
@@ -3465,34 +2170,34 @@ totgross
 Mean
 </th>
 <td>
-  3,236.9
+  3,237
 </td>
 <td>
-    171.5
+    172
 </td>
 <td>
-    865.0
+    865
 </td>
 <td>
-     43.0
+     43
 </td>
 <td>
- 13,281.2
+ 13,281
 </td>
 <td>
-    623.9
+    624
 </td>
 <td>
-  9,507.5
+  9,507
 </td>
 <td>
-    535.5
+    536
 </td>
 <td>
-122,867.9
+122,868
 </td>
 <td>
-  5,202.8
+  5,203
 </td>
 </tr>
 <tr class="center">
@@ -3503,34 +2208,34 @@ Mean
 Q50
 </th>
 <td>
-  1,499.3
+  1,499
 </td>
 <td>
-     68.3
+     68
 </td>
 <td>
-    544.0
+    544
 </td>
 <td>
-     36.8
+     37
 </td>
 <td>
-  7,790.2
+  7,790
 </td>
 <td>
-    761.4
+    761
 </td>
 <td>
-  4,918.2
+  4,918
 </td>
 <td>
-    158.3
+    158
 </td>
 <td>
- 96,659.0
+ 96,659
 </td>
 <td>
-  4,116.9
+  4,117
 </td>
 </tr>
 <tr class="center">
@@ -3541,34 +2246,34 @@ Q50
 Mean
 </th>
 <td>
-     23.5
+     24
 </td>
 <td>
-      1.4
+      1
 </td>
 <td>
-      6.6
+      7
 </td>
 <td>
-      0.5
+      1
 </td>
 <td>
-     91.2
+     91
 </td>
 <td>
-      0.4
+      0
 </td>
 <td>
-     21.1
+     21
 </td>
 <td>
-      1.3
+      1
 </td>
 <td>
-     98.2
+     98
 </td>
 <td>
-      0.2
+      0
 </td>
 </tr>
 <tr class="center">
@@ -3579,34 +2284,34 @@ Mean
 Q50
 </th>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.8
+      1
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-     96.2
+     96
 </td>
 <td>
-      0.3
+      0
 </td>
 <td>
-      1.9
+      2
 </td>
 <td>
-      0.8
+      1
 </td>
 <td>
-     99.0
+     99
 </td>
 <td>
-      0.1
+      0
 </td>
 </tr>
 <tr class="center">
@@ -3617,34 +2322,34 @@ cropvalue
 Mean
 </th>
 <td>
-  1,018.2
+  1,018
 </td>
 <td>
-     29.3
+     29
 </td>
 <td>
-    651.8
+    652
 </td>
 <td>
-     31.6
+     32
 </td>
 <td>
-    458.5
+    458
 </td>
 <td>
-     30.5
+     30
 </td>
 <td>
-  4,231.5
+  4,232
 </td>
 <td>
-    140.1
+    140
 </td>
 <td>
-  1,357.5
+  1,358
 </td>
 <td>
-    111.6
+    112
 </td>
 </tr>
 <tr class="center">
@@ -3655,34 +2360,34 @@ Mean
 Q50
 </th>
 <td>
-    929.2
+    929
 </td>
 <td>
-     36.7
+     37
 </td>
 <td>
-    427.2
+    427
 </td>
 <td>
-     29.6
+     30
 </td>
 <td>
-    254.2
+    254
 </td>
 <td>
-     23.4
+     23
 </td>
 <td>
-  3,649.5
+  3,650
 </td>
 <td>
-     84.2
+     84
 </td>
 <td>
-    830.9
+    831
 </td>
 <td>
-    129.8
+    130
 </td>
 </tr>
 <tr class="center">
@@ -3693,34 +2398,34 @@ cropsales
 Mean
 </th>
 <td>
-    619.7
+    620
 </td>
 <td>
-     18.9
+     19
 </td>
 <td>
-     65.5
+     66
 </td>
 <td>
-      4.2
+      4
 </td>
 <td>
-    109.5
+    110
 </td>
 <td>
-      7.8
+      8
 </td>
 <td>
-  2,837.8
+  2,838
 </td>
 <td>
-     86.0
+     86
 </td>
 <td>
-    801.8
+    802
 </td>
 <td>
-     74.6
+     75
 </td>
 </tr>
 <tr class="center">
@@ -3731,34 +2436,34 @@ Mean
 Q50
 </th>
 <td>
-    527.9
+    528
 </td>
 <td>
-     30.3
+     30
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      1.3
+      1
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      3.8
+      4
 </td>
 <td>
-  2,448.0
+  2,448
 </td>
 <td>
-     75.8
+     76
 </td>
 <td>
-    301.3
+    301
 </td>
 <td>
-     64.6
+     65
 </td>
 </tr>
 <tr class="center">
@@ -3769,34 +2474,34 @@ Q50
 Mean
 </th>
 <td>
-     69.0
+     69
 </td>
 <td>
-      0.9
+      1
 </td>
 <td>
-     11.3
+     11
 </td>
 <td>
-      0.6
+      1
 </td>
 <td>
-     21.4
+     21
 </td>
 <td>
-      1.1
+      1
 </td>
 <td>
-     70.5
+     70
 </td>
 <td>
-      1.4
+      1
 </td>
 <td>
-     51.5
+     52
 </td>
 <td>
-      2.1
+      2
 </td>
 </tr>
 <tr class="center">
@@ -3807,34 +2512,34 @@ Mean
 Q50
 </th>
 <td>
-     69.0
+     69
 </td>
 <td>
-      1.3
+      1
 </td>
 <td>
-      6.2
+      6
 </td>
 <td>
-      1.4
+      1
 </td>
 <td>
-     10.2
+     10
 </td>
 <td>
-      2.9
+      3
 </td>
 <td>
-     75.7
+     76
 </td>
 <td>
-      2.3
+      2
 </td>
 <td>
-     57.1
+     57
 </td>
 <td>
-      4.0
+      4
 </td>
 </tr>
 <tr class="center">
@@ -3845,34 +2550,34 @@ totlvstprod
 Mean
 </th>
 <td>
-    280.4
+    280
 </td>
 <td>
-     57.8
+     58
 </td>
 <td>
-     33.9
+     34
 </td>
 <td>
-      3.0
+      3
 </td>
 <td>
-     43.5
+     43
 </td>
 <td>
-      4.0
+      4
 </td>
 <td>
-    232.8
+    233
 </td>
 <td>
-     38.5
+     38
 </td>
 <td>
-    413.7
+    414
 </td>
 <td>
-    164.7
+    165
 </td>
 </tr>
 <tr class="center">
@@ -3883,34 +2588,34 @@ Mean
 Q50
 </th>
 <td>
-     10.0
+     10
 </td>
 <td>
-      4.7
+      5
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-     25.0
+     25
 </td>
 <td>
-      6.8
+      7
 </td>
 <td>
-      2.8
+      3
 </td>
 <td>
-      4.2
+      4
 </td>
 </tr>
 <tr class="center">
@@ -3921,34 +2626,34 @@ totlivsold
 Mean
 </th>
 <td>
-    266.2
+    266
 </td>
 <td>
-     57.2
+     57
 </td>
 <td>
-     21.8
+     22
 </td>
 <td>
-      2.4
+      2
 </td>
 <td>
-     34.1
+     34
 </td>
 <td>
-      3.4
+      3
 </td>
 <td>
-    212.0
+    212
 </td>
 <td>
-     38.0
+     38
 </td>
 <td>
-    398.6
+    399
 </td>
 <td>
-    164.6
+    165
 </td>
 </tr>
 <tr class="center">
@@ -3959,34 +2664,34 @@ Mean
 Q50
 </th>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      2.6
+      3
 </td>
 <td>
-      0.0
+      0
 </td>
 <td>
-      0.0
+      0
 </td>
 </tr>
 </tbody>
