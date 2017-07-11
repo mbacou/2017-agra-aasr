@@ -1563,7 +1563,7 @@ tmp <- svyCrossTab(list(
   ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:tab2) Est. Demographic Characteristics of Farm Holdings below 4 ha across Categories (2012/13, percent/km)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 tmp <- svyCrossTab(list(
@@ -1574,7 +1574,7 @@ tmp <- svyCrossTab(list(
   ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha across Categories (2012/13, ha)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 # Income
@@ -1590,7 +1590,7 @@ tmp <- svyCrossTab(list(
   ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (2012/13, Percent/Cedis)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 # Livestock
@@ -1600,7 +1600,7 @@ tmp <- svyCrossTab(list(
   ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:tab5) Est. Small and Large Livestock Holdings for Farms below 4 ha across Categories (2012/13, '000 TLU)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 # Input uses
@@ -1610,7 +1610,7 @@ tmp <- svyCrossTab(list(
   ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
 
 table_options(HTMLcaption="(#tab:tab6) Est. Agricultural Input Use in Farms below 4 ha across Categories (2012/13, percent of farms)")
-html(tabular(Variable*(Mean+Q25+Q50+Q75)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 ```

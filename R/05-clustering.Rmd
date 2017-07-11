@@ -248,11 +248,11 @@ We use a non-hierarchical **PAM** (Partitioning around Medoids) clustering appro
 
 - `croparea_imp` cultivated area (in fact operated area) in ha (imputed)
 - `cropsales` value of sales from crops and crop byproducts (Cedis)
-- `aggross` gross farm income (Cedis)
 - `totgross` gross household income (Cedis)
 - `totcropprod` value of crop production (Cedis)
 - `naggross_sh` non-farm income as share of total gross income
 - `cropsales_sh` crop sales as share of total crop production (in fact share of all ag products sold)
+- `aggross` gross farm income (Cedis) -- not included in covariates
 
 <u>Note on **k-mean** and **pam** techniques</u>: the use of *means* in *k-means* implies that clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. PAM (also known as k-medoids clustering) can provide a more robust algorithm in some instances.
 
@@ -435,8 +435,8 @@ Tables of summary statistics for the entire population. Proportions compared to 
 ```{r gha-clust-fig, fig.cap="Est. Proportions of Farm Holdings across Clusters and Farm Types (k=5, all farm households)"}
 
 par(mar=c(2.2,0,0,0))
-plot(svytable(~clust_pam5+class5, gha.svy.farm[["gha6"]]), 
-  main=NA, las=2, cex.axis=1, col=viridis(5),
+plot(svytable(~class5+clust_pam5, gha.svy.farm[["gha6"]]), 
+  main=NA, las=1, cex.axis=1, col=viridis(5),
   ylab=NA, xlab="Farm Types across Clusters (k=5, farms below 4 ha)")
 
 ```
@@ -452,7 +452,7 @@ tmp[, CI := paste(`2.5 %`, `97.5 %`, sep=" - ")]
 tmp[, clust_pam5 := paste0("clust", 1:5)]
 
 table_options(HTMLcaption="(#tab:gha-clust-tab1) Est. Proportions of Farm Holdings across Clusters (k=5, 2012/13, percent)")
-html(tabular((`Cluster`=Factor(clust_pam5))*(mean+CI)~Heading("Proportions")*identity,
+html(tabular((`Cluster`=Factor(clust_pam5))*(mean+CI)~Heading("Proportion of Farm Households")*identity,
   data=tmp), rmarkdown=T)
 
 ```

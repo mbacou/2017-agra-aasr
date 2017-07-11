@@ -146,11 +146,11 @@
 <ul>
 <li><code>croparea_imp</code> cultivated area (in fact operated area) in ha (imputed)</li>
 <li><code>cropsales</code> value of sales from crops and crop byproducts (Cedis)</li>
-<li><code>aggross</code> gross farm income (Cedis)</li>
 <li><code>totgross</code> gross household income (Cedis)</li>
 <li><code>totcropprod</code> value of crop production (Cedis)</li>
 <li><code>naggross_sh</code> non-farm income as share of total gross income</li>
 <li><code>cropsales_sh</code> crop sales as share of total crop production (in fact share of all ag products sold)</li>
+<li><code>aggross</code> gross farm income (Cedis) – not included in covariates</li>
 </ul>
 <p><u>Note on <strong>k-mean</strong> and <strong>pam</strong> techniques</u>: the use of <em>means</em> in <em>k-means</em> implies that clustering is highly sensitive to outliers. This can severely affects the assignment of observations to clusters. PAM (also known as k-medoids clustering) can provide a more robust algorithm in some instances.</p>
 <p><u>Note on violin plots</u>: all distributional plots below show <strong>median</strong> line in <strong>red</strong>, <strong>mean</strong> in <strong>green</strong>, and the <strong>blue</strong> region is the inferred <strong>95% confidence interval</strong> of the mean. At present pirate plots cannot be drawn for an entire population (using weights), simple boxplots are used instead showing median and IQ range.</p>
@@ -464,7 +464,7 @@ Cluster
 <th>
 </th>
 <th>
-Proportions
+Proportion of Farm Households
 </th>
 </tr>
 </thead>
