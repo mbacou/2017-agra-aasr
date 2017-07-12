@@ -1,7 +1,5 @@
 # Clustering Farm Holdings
 
-[work in progress]
-
 ## Nigeria
 
 [placeholder]
@@ -17,6 +15,9 @@ library(cowplot)
 #library(ggradar)
 
 load("../tmp/2017-agra-aasr_GHA_cluster.RData")
+
+# Training set for plotting
+train <- gha[wave=="wave 6" & croparea_imp>0]
 
 ```
 
@@ -42,25 +43,24 @@ add.alpha <- function(col, alpha=1) {
   apply(sapply(col, col2rgb)/255, 2, function(x) rgb(x[1], x[2], x[3], alpha=alpha))  
 }
 
-
 #####################################################################################
-# Select clustering covariates and training set
-X <- c("croparea_imp", "cropsales_sh", "naggross_sh", "totgross", "cropsales", "totcropprod")
 Y <- c("hhid", "croparea_4ha", "region", "svyL2Cd", "svyL2Nm", "agehead", "distbank")
-
-# Keep all farm households from GLSS6
-train <- gha[wave=="wave 6" & croparea_imp>0, .SD, .SDcols=c(Y, X)]
-train <- na.omit(train)
-
+  
 #####################################################################################
-# PAM Partition Clustering
+# PAM Partition Clustering - 6 covariates
 #####################################################################################
 # Note: for large datasets `pam` can be very slow and `clara` is recommended.
 # Sub-select variables (also always use standardized values)
+# Select clustering covariates and training set
+# Keep all farm households from GLSS6
+X <- c("croparea_imp", "cropsales_sh", "naggross_sh", "totgross", "cropsales", "totcropprod")
+train <- gha[wave=="wave 6" & croparea_imp>0, .SD, .SDcols=c(Y, X)]
+train <- na.omit(train)
 trainX <- data.frame(train)[, X]
 trainX.std <- scale(trainX)
 
 # Original approach (no dissimilarity matrix)
+mod.pam.nb <- fviz_nbclust(trainX, pam, method="silhouette")
 mod.pam.nb <- fviz_nbclust(trainX.std, pam, method="silhouette")
 mod.pam.nb.wss <- fviz_nbclust(trainX.std, pam, method="wss")
 plot(mod.pam.nb) # => suggests 3 and 5,6,7 equally
@@ -107,12 +107,59 @@ mod.pam5$medoids
 # [5,]     2.428114    0.4020385  0.98563815 97159.3889       515   1349.3889
 
 # Plot clusters
-fviz_cluster(mod.pam5, geom="point", 
+fviz_cluster(mod.pam5, geom="point", stand=F,
   ggtheme=theme_bw(base_size=10), palette=viridis(5))
 
 # Save clusters
 train[, clust_pam3 := mod.pam3$clustering]
 train[, clust_pam5 := mod.pam5$clustering]
+
+```
+
+```{r gha-clust2, eval=FALSE}
+
+#####################################################################################
+# PAM - 2 covariates
+#####################################################################################
+# On Peter's suggestion
+X <- c("cropsales_sh", "naggross_sh")
+train <- gha[wave=="wave 6" & croparea_imp>0, .SD, .SDcols=c(Y, X)]
+train <- na.omit(train)
+trainX <- data.frame(train)[, X]
+
+# Original approach (no dissimilarity matrix)
+mod.pam.2var.nb <- fviz_nbclust(trainX, pam, method="silhouette")
+mod.pam.2var.nb.wss <- fviz_nbclust(trainX, pam, method="wss")
+
+plot(mod.pam.2var.nb) # => suggests 4
+plot(mod.pam.2var.nb.wss) # => also 4 or 3
+
+# PAM clusters with 5 groups
+mod.pam5_2var <- pam(trainX, k=5, stand=F, metric="euclidean")
+
+mod.pam5_2var$medoids
+#      cropsales_sh naggross_sh
+# [1,]   0.02463256  0.96299515
+# [2,]   0.82927155  0.02321790
+# [3,]   0.00000000  0.00000000
+# [4,]   0.72440803  0.88793274
+# [5,]   0.44375244  0.02282237
+
+# Plot clusters
+fviz_cluster(mod.pam5_2var, geom="point", stand=F,
+  ggtheme=theme_bw(base_size=10), palette=viridis(5))
+
+# Make pretty labels
+mod.pam5_2var$clustering <- factor(mod.pam5_2var$clustering, 
+  levels=c(3,5,2,1,4),
+  labels=c("subs.", "pre-comm.", "specd. comm.", "trans.", "divf. comm."))
+
+# Save clusters (and merge into `gha` below)
+train[, clust_pam5_2var := mod.pam5_2var$clustering]
+
+```
+
+```{r gha-hclust, eval=FALSE}
 
 #####################################################################################
 # Hierarchical Clustering
@@ -221,6 +268,9 @@ gha[, .N, by=.(svyCode, clust_pam3)]
 # 5: gha-glss6          2 2245
 # 6: gha-glss6          3 1565
 
+# Add Peter's run (note that this is a different `train` dataset)
+gha[train, `:=`(clust_pam5_2var=i.clust_pam5_2var)]
+
 gha[, .N, by=.(svyCode, clust_pam5)]
 #      svyCode clust_pam5    N
 # 1: gha-glss4         NA 5998
@@ -232,14 +282,26 @@ gha[, .N, by=.(svyCode, clust_pam5)]
 # 7: gha-glss6          4 1220
 # 8: gha-glss6          5  434
 
+gha[, .N, by=.(svyCode, clust_pam5_2var)]
+#      svyCode clust_pam5_2var    N
+# 1: gha-glss4              NA 5998
+# 2: gha-glss5              NA 8687
+# 3: gha-glss6              NA 9425
+# 4: gha-glss6          trans. 1577
+# 5: gha-glss6    specd. comm. 1515
+# 6: gha-glss6           subs. 1286
+# 7: gha-glss6     divf. comm. 1383
+# 8: gha-glss6       pre-comm. 1586
+
 gha.svy[["gha6"]] <- svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
     data=gha[survey=="2012/13"])
 gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
 
 # Save cluster results
-save(X, Y, train, 
-  mod.pam3, mod.pam5, mod.pam.nb, mod.pam.nb.wss,
-  add.alpha, gha, gha.svy, gha.svy.farm,
+save(Y, add.alpha, X,
+  mod.pam3, mod.pam5, mod.pam5_2var, 
+  mod.pam.nb, mod.pam.nb.wss, mod.pam.2var.nb, mod.pam.2var.nb.wss,
+  gha, gha.svy, gha.svy.farm,
   file="./tmp/2017-agra-aasr_GHA_cluster.RData")
 
 ```
@@ -260,9 +322,11 @@ We use a non-hierarchical **PAM** (Partitioning around Medoids) clustering appro
 
 ### Aproach #1 -- PAM Partitioning
 
+#### PAM - 6 Covariates
+
 With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is **3** or **6/7**. We choose to test results using **k=3** and **k=5** in the following partitioning schemes.
 
-```{r, fig.cap="PAM Clustering of GLSS6 Households (using Euclidean Distance)"}
+```{r, fig.cap="PAM Clustering of GLSS6 Households (6 covariates, Euclidean Distance)"}
 
 plot_grid(
   mod.pam.nb + 
@@ -277,46 +341,42 @@ plot_grid(
 
 ```
 
-```{r, fig.cap="Clusters of Farm Households (PAM, k=3)", dev="png"}
+```{r, fig.cap="Clusters of Farm Households (PAM, k=3, covariates=6)", dev="png"}
 
 # Plot clusters
-fviz_cluster(mod.pam3, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3), main="PAM Clusters, k=3")
+fviz_cluster(mod.pam3, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(3), main="PAM Clusters, k=3, covariates=6")
 
 ```
 
-```{r, fig.cap="Clusters of Farm Households (PAM, k=5)", dev="png"}
+The second plot shows how farm households are distributed amongst the resulting 5 clusters along our 2 axes of interest (crop sales and non-farm income).
+
+```{r, fig.cap="Clusters of Farm Households (PAM, k=5, covariates=6)", dev="png"}
 
 # Plot clusters
-fviz_cluster(mod.pam5, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(5), main="PAM Clusters, k=5")
+fviz_cluster(mod.pam5, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(5), main="PAM Clusters, k=5", covariates=6)
+
+fviz_cluster(mod.pam5, geom="point", ggtheme=theme_bw(base_size=10), palette=viridis(5), main="PAM Clusters, k=5", covariates=6, 
+  stand=F, choose.vars=c("cropsales_sh", "naggross_sh"))
 
 ```
 
-```{r gha-clust-pam-freq, results="asis"}
+Pair-wise scatter plots across all covariates (cultivated area, sales, and income variables) colored by cluster (k=5). In particular the second plot shows how the resulting 5 clusters are distributed amongst our 2 covariates of interest.
 
-# Compare models
-table_options(HTMLcaption="(#tab:gha-clust-pam) Frequency counts of Observations across PAM clusters (k=3 and k=5)")
-html(tabular((`PAM k=3`=Factor(clust_pam3))+1~((`PAM k=5`=Factor(clust_pam5))+1)*Format(big.mark=","), 
-  data=train), rmarkdown=T)
+```{r, eval=F, fig.cap="Pair-wise scatter plots colored by cluster (2 covariates)", dev="png"}
+
+clPairs(train[, .SD, .SDcols=setdiff(X, c("naggross_sh", "cropsales_sh"))],
+  train$clust_pam5, 16, add.alpha(viridis(5), .5), CEX=.8)
 
 ```
 
 Cluster medoids (centers) are listed below for k=3 and k=5.
 
-```{r gha-clust-medoids}
+```{r}
 
 kable(mod.pam3$medoids, caption="Cluster medoids (k=3)", 
   format.args=list(big.mark=",", digits=1))
 kable(mod.pam5$medoids, caption="Cluster medoids (k=5)",
   format.args=list(big.mark=",", digits=1))
-
-```
-
-Pair-wise scatter plots across all covariates (cultivated area, sales, and income variables) colored by cluster (k=5).
-
-```{r, dev="png", fig.width=7, fig.height=7}
-
-# Pair-wise plots across clusters
-clPairs(train[, .SD, .SDcols=X], train$clust_pam5, 16, add.alpha(viridis(5), .5), CEX=.8)
 
 ```
 
@@ -336,9 +396,41 @@ for (i in X[5:6]) pplot(as.formula(paste0(i, "~clust_pam5")), train, alpha=.02, 
 
 ```
 
+#### PAM: 2 covariates
+
+In the next scheme we only retain 2 covariates `naggross_sh` (share of non-farm income) and `cropsales_sh` (share of crop sales). 
+
+```{r, fig.cap="PAM Clustering of GLSS6 Households (2 covariates, Euclidean Distance)"}
+
+plot_grid(
+  mod.pam.2var.nb + 
+    geom_vline(aes(xintercept=5), color="grey50", linetype="dashed") +
+    theme_bw(base_size=10) + theme(panel.grid=element_line(linetype="dotted")),
+  mod.pam.2var.nb.wss + 
+    geom_vline(aes(xintercept=5), color="grey50", linetype="dashed") +
+    theme_bw(base_size=10) + theme(panel.grid=element_line(linetype="dotted"))
+)
+
+```
+
+```{r, fig.cap="Clusters of Farm Households (PAM, k=5, covariates=2)", dev="png", fig.height=5, fig.width=5}
+
+# Plot clusters (make it publication-ready)
+fviz_cluster(mod.pam5_2var, stand=F, geom="point", 
+  xlab="Crop Sales (share)", ylab="Non-Farm Income (share)",
+  ggtheme=theme_bw(base_size=10), palette=viridis(5), 
+  main="Farm Households (Ghana 2012/13, pam k=5)")
+
+# ggsave("./out/MB/2017-agra-aasr-glss6_clust_pam5_2var.png",
+#   units="in", width=6, height=5, family="Roboto Condensed")
+
+```
+
+Actual population statistics across these 5 clusters are at the bottom of this page.
+
 ### Aproach #2 -- Hierarchical Clustering
 
-[in progress]
+[in progress, not used]
 
 This method is sensitive to the choice of dissimilarity measure (distance matrix). **Euclidean** distance is often preferred, however a **correlation-based** distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. In the following we retained a XXX distance measure.
 
@@ -391,6 +483,8 @@ for (i in X) pplot(as.formula(paste0(i, "~clust_div")), train, alpha=.02, ylab=N
 
 
 ### Key Results
+
+#### PAM - 6 Covariates
 
 Below are population summaries for the selected k=5 cluster scheme.
 
@@ -497,6 +591,97 @@ tmp <- svyCrossTab(list(
 
 table_options(HTMLcaption="(#tab:gha-clust-tab2) Estimated Mean and Median Characteristics across Clusters")
 html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=0, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+```
+
+#### PAM - 2 Covariates
+
+Below are population summaries for the selected k=5 cluster scheme (with only 2 covariates). First we show are farm types are distributed along farm sizes (below/above 4 ha).
+
+```{r, fig.cap=""}
+
+par(mar=c(3,.25,.25,.25))
+plot(svytable(~croparea_4ha+clust_pam5_2var, gha.svy.farm[["gha6"]]), 
+  main=NA, las=1, cex.axis=1, col=viridis(5),
+  ylab=NA, xlab="Farm Types (below/above 4 ha)")
+
+```
+
+```{r gha-clust2-tab1, results="asis"}
+
+tmp <- svymean(~~I(interaction(clust_pam5_2var, croparea_4ha)), gha.svy.farm[["gha6"]], na.rm=T)
+tmp.cv <- confint(tmp)
+tmp <- cbind(as.data.table(tmp*100), as.data.table(tmp.cv*100))
+tmp[`2.5 %`<0, `2.5 %` := 0]
+tmp <- tmp[, lapply(.SD, function(x) format(x, digits=0, nsmall=1, scientific=F))]
+tmp[, CI := paste(`2.5 %`, `97.5 %`, sep=" - ")]
+tmp[, clust_pam5_2var := levels(gha$clust_pam5_2var)]
+tmp[, clust_pam5_2var := factor(clust_pam5_2var, levels(gha$clust_pam5_2var))]
+
+tmp[, `:=`(
+  clust_pam5_2var = factor(rep(levels(gha$clust_pam5_2var), each=1, 2),
+    levels=levels(gha$clust_pam5_2var)),
+  croparea_4ha = factor(rep(levels(gha$croparea_4ha), each=5, 1), 
+    levels=levels(gha$croparea_4ha))
+)]
+
+table_options(HTMLcaption="(#tab:gha-clust2-tab1) Est. Proportions of Farm Holdings across Clusters (k=5, 2012/13, percent)")
+html(tabular((`Cluster`=clust_pam5_2var)*(mean+CI)~Heading("Proportion of Farm Households")*croparea_4ha*Heading()*identity,
+  data=tmp), rmarkdown=T)
+
+```
+
+Mean and median household characteristics across farm types are estimated in the tables below.
+
+```{r gha-clust2-tab3, results="asis"}
+
+tmp <- svyCrossTab(list(
+  ~hhsize_imp, 
+  ~agehead,
+  ~I(100*femhead),
+  ~I(100*widowhead),
+  ~hhlabor,
+  ~educhead,
+  ~educave15_60,
+  ~educhigh,  
+  ~I(100*ownhome), ~I(100*cellphone), ~I(100*telephone), ~I(100*electricity), 
+  ~distwater, ~distroad, ~distpost, ~distbank, ~disthealth  
+  ), ~clust_pam5_2var, gha.svy.farm[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:gha-clust2-tab3) Est. Demographic Characteristics of Farm Holdings across Clusters (2012/13, percent/km)")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+```
+
+```{r gha-clust2-tab2, results="asis"}
+
+# Estimate mean/median/quantiles
+tmp <- svyCrossTab(list(
+  ~croparea_imp,
+  ~aggross, 
+  ~totgross, 
+  ~I(100*naggross_sh),   
+  ~cropvalue, 
+  ~cropsales,
+  ~I(100*cropsales_sh),    
+  ~totlvstprod,
+  ~totlivsold
+  ), ~clust_pam5_2var, gha.svy.farm[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:gha-clust2-tab2) Estimated Mean and Median Characteristics across Clusters")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=0, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Input uses
+tmp <- svyCrossTab(list(
+  ~I(100*seeds), ~I(100*fert_any), ~I(100*fert_inorg), ~I(100*fert_org), 
+  ~I(100*herb), ~I(100*pest), ~I(100*irr), ~I(100*fuel), ~I(100*hired_labor)), 
+  ~clust_pam5_2var, gha.svy.farm[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:gha-clust2-tab6) Est. Agricultural Input Use across Farm Types (2012/13, percent of farms)")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
   data=tmp), rmarkdown=T)
 
 ```
