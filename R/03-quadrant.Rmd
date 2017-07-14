@@ -1150,7 +1150,7 @@ svyboxplot(I(100*fuel)~class5, gha.svy.shf[["gha6"]],
 
 # Use GLUES suitability classification and `tt10_100k` (instead of `tt10_50k`)
 
-# Market access 500K
+# Market access 100K
 # Resample time-to-market layers to 1km (from 10km)
 res(qd.tt08)
 # [1] 0.008333333 0.008333333 => aleady at 1km
@@ -1288,15 +1288,15 @@ gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
 
 ```
 
-In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access using **GLUES suitability** product and travel time to nearest **100K** market).
+In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access using **GLUES suitability** product and IFPRI/HarvestChoice travel time to nearest **100K** market).
 
-```{r, fig.cap="GLUES Suitability (Ghana, 2011)"}
+```{r, fig.cap="GLUES Suitability (Ghana, 1980-2011)", out.width="380px"}
 
 include_graphics("fig/glues_suit.png")
 
 ```
 
-Ghana's districts classified across areas of lo/hi ag. potential and lo/hi market access (using below/above **4hrs** travel time to nearest **100K** market).
+The 2 maps below show Ghana's districts (GLSS6) classified across areas of lo/hi ag. potential and lo/hi market access (using below/above **4hrs** travel time to nearest **100K** market).
 
 ```{r, fig.cap="Spatial Quadrant Segmentation", dev="png", fig.width=7.6}
 
