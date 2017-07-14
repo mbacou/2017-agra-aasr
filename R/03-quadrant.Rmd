@@ -1001,15 +1001,9 @@ In this section we combine results from the farm typology developed in [Section 
 ```{r gha-class5-fig, fig.cap="Est. Proportions of Farm Holdings across Combined Categories (farms below 4 ha)"}
 
 # Use `seg_quad_4` and a new 5-class typology `class5`
-par(mfrow=c(1,3), mar=c(5,.25,2,.25))
-plot(svytable(~seg_quad_4+cropsales_clas, gha.svy.shf[["gha6"]]), 
-  main=NA, las=2, cex.axis=1, col=viridis(3),
-  ylab=NA, xlab="Crop Commercialization (below 4 ha)")
-plot(svytable(~seg_quad_4+naggross_2clas, gha.svy.shf[["gha6"]]), 
-  main=NA, las=2, cex.axis=1, col=viridis(3),
-  ylab=NA, xlab="Non-Farm Income low/high (below 4 ha)")
-plot(svytable(~seg_quad_4+class5, gha.svy.shf[["gha6"]]), 
-  main=NA, las=2, cex.axis=1, col=viridis(5),
+par(mar=c(3,.25,1,.25))
+plot(svytable(~class5+seg_quad_4, gha.svy.shf[["gha6"]]), 
+  main=NA, las=1, cex.axis=1, col=viridis(5),
   ylab=NA, xlab="Typology 5-class (below 4 ha)")
 
 ```
@@ -1032,7 +1026,10 @@ tmp[, `:=`(
 
 table_options(HTMLcaption="(#tab:gha-tab-class5) Est. Proportions of Farm Holdings below 4 ha across Development Domains and Farm Types (2012/13, percent)")
 html(tabular(Heading("Development Domain")*seg_quad_4*(mean+CI)~Heading("Farm Type")*class5*Heading()*identity,
-  data=tmp), rmarkdown=T, scroll=T, caption="(#tab:gha-tab-class5) Est. Proportions of Farm Holdings below 4 ha across Development Domains and Farm Types (2012/13, percent)")
+  data=tmp), rmarkdown=T)
+
+# TODO Need a function for column-wise proportions only
+
 
 ```
 
@@ -1146,4 +1143,208 @@ svyboxplot(I(100*fuel)~class5, gha.svy.shf[["gha6"]],
   ylab="Est. Fuel/Maintenance Use (percent)", varwidth=T)
 
 ```
+
+### Revised Development Domains
+
+```{r gha-quad2, eval=FALSE}
+
+# Use GLUES suitability classification and `tt10_100k` (instead of `tt10_50k`)
+
+# Market access 500K
+# Resample time-to-market layers to 1km (from 10km)
+res(qd.tt08)
+# [1] 0.008333333 0.008333333 => aleady at 1km
+
+# Summarize across districts
+tmp1 <- extract(crop(qd.tt08[["tt10_100k"]], g2), g2, mean, na.rm=T, small=T)
+tmp2 <- extract(crop(qd.tt08[["tt10_100k"]], g2), g2, median, na.rm=T, small=T)
+
+# Sumarize GLUES suitability across districts
+glues <- raster("~/Maps/GLUES/overall_cropsuit_i_1981-2010.tif")
+crs(glues)
+NAvalue(glues)
+minValue(glues)
+maxValue(glues)
+tmp3 <- extract(crop(glues, g2), g2, mean, na.rm=T, small=T)
+tmp4 <- extract(crop(glues, g2), g2, median, na.rm=T, small=T)
+
+# Combine all extracts
+g2.dt <- data.table(g2@data,
+  tt500k_mean=tmp1[,1], tt500k_med=tmp2[,1], 
+  suit_glues_mean=tmp3[,1], suit_glues_med=tmp4[,1])
+
+g2.dt <- data.table(g2@data,
+  tt250k_mean=tmp1[,1], tt250k_med=tmp2[,1])
+
+g2.dt <- data.table(g2@data,
+  tt100k_mean=tmp1[,1], tt100k_med=tmp2[,1])
+
+# Convert extracts to factors
+summary(g2.dt$tt100k_mean)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.355   3.708   5.136   6.192   7.354  42.640 
+summary(g2.dt$tt100k_med)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.200   2.900   4.600   5.564   6.500  45.000
+summary(g2.dt$tt250k_mean)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.3997  4.0880  5.5510  6.5250  7.7010 42.7300 
+summary(g2.dt$tt250k_med)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.200   3.400   5.000   5.911   6.800  45.200
+summary(g2.dt$tt500k_mean)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.3997  4.2640  6.4290  7.0550  8.6320 42.7300 
+summary(g2.dt$tt500k_med)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.200   3.600   5.900   6.437   7.700  45.200 
+summary(g2.dt$suit_glues_mean)
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 14.07   36.68   47.55   48.64   61.24   80.97 
+summary(g2.dt$suit_glues_med)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.00   35.00   50.00   49.43   66.00   89.00
+
+# Make lo/hi quadrants (use 4hr cutoff, and 50% suitability)
+g2.dt[, seg_mkt100k := factor(tt100k_mean <= 4, levels=c(F,T), labels=c("mkt-lo", "mkt-hi"))]
+g2.dt[, seg_suit_glues := factor(suit_glues_mean <= 50, levels=c(T,F), labels=c("agpot-lo", "agpot-hi"))]
+g2.dt[, seg_quad_glues_4 := paste(seg_suit_glues, seg_mkt100k, sep=" / ")]
+g2.dt[, seg_quad_glues_4 := factor(seg_quad_glues_4, levels=c(
+  "agpot-lo / mkt-lo", "agpot-lo / mkt-hi",
+  "agpot-hi / mkt-lo", "agpot-hi / mkt-hi"))]
+g2.dt[, .N, by=seg_quad_glues_4]
+#     seg_quad_glues_4   N
+# 1: agpot-hi / mkt-lo 111
+# 2: agpot-lo / mkt-lo  97
+# 3: agpot-lo / mkt-hi  65
+# 4: agpot-hi / mkt-hi  12
+
+# Map it
+g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
+spplot(g2[g2$svyCode=="gha-glss6",], "seg_quad_glues_4", col="grey20", lwd=.2, col.regions=viridis(4))
+
+# Save attributes for re-use
+attr(g2.dt, "var.labels") <- c("ISO3 country code", "survey code", "region code (used in survey)",
+  "region", "district code (used in survey)", "district", "district label",
+  "area (sq. km.)", "longitude of centroid", "latitude of centroid",
+  "shape ID", "agro-ecological zone (reported in survey)", 
+  "travel time to 20K market (hrs, median)", "travel time to 50K market (hrs, median)",
+  "travel time to 20K market (hrs, mean)", "travel time to 50K market (hrs, mean)",
+  "ESA/CCI land cover code", "FAO/GAEZ suitability code", "BMGF/SDI ag. potential class",
+  "low/high market access (50K)", "quadrant class (6-class)", "quadrant class (4-class)",
+  "travel time to 500K market (hrs, mean)", "travel time to 500K market (hrs, median)",
+  "GLUES suitability (percent, mean)", "GLUES suitability (percent, median)", 
+  "low/high market access (500K)", "low/high suitability (GLUES)", 
+  "quadrant class (4-class, GLUES/500K)",
+  "travel time to 100K market (hrs, mean)", "travel time to 100K market (hrs, median)",
+  "low/high market access (100K)")
+write.dta(g2.dt, "./tmp/gha-glss_L2_att.dta", version=12L)
+
+# Merge district classification into hhld records
+setkey(g2.dt, svyCode, svyL1Nm, svyL2Cd)
+setkey(gha, svyCode, region, svyL2Cd)
+gha[g2.dt, `:=`(
+  tt500k_mean = i.tt500k_mean,
+  tt500k_med = i.tt500k_med,
+  tt100k_mean = i.tt100k_mean,
+  tt100k_med = i.tt100k_med,  
+  suit_glues_mean = i.suit_glues_mean,
+  suit_glues_md = i.suit_glues_med,
+  seg_mkt500k = i.seg_mkt500k,
+  seg_suit_glues = i.seg_suit_glues,
+  seg_quad_glues_4 = i.seg_quad_glues_4)]
+
+# Verify
+gha[svyCode=="gha-glss6", summary(seg_quad_glues_4)]
+# agpot-lo / mkt-lo agpot-lo / mkt-hi agpot-hi / mkt-lo agpot-hi / mkt-hi 
+#              4357              4903              6220              1292 
+gha[, .N, by=.(svyCode, seg_quad_glues_4)]
+#      svyCode  seg_quad_glues_4    N
+# 1: gha-glss6 agpot-lo / mkt-lo 4357
+# 2: gha-glss6 agpot-lo / mkt-hi 4903
+# 3: gha-glss6 agpot-hi / mkt-lo 6220
+# 4: gha-glss6 agpot-hi / mkt-hi 1292
+# 5: gha-glss5 agpot-lo / mkt-lo 2439
+# 6: gha-glss5 agpot-lo / mkt-hi 2350
+# 7: gha-glss5 agpot-hi / mkt-lo 3059
+# 8: gha-glss5 agpot-hi / mkt-hi  839
+# 9: gha-glss4                NA 5998
+
+# Update all survey designs
+gha.svy <- list(
+  `gha6` = svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2012/13"]),
+  `gha5` =  svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2005/06"]),  
+  `gha4` = svydesign(~clust+hhid, strata=~rural, w=~weight, nest=T,
+    data=gha[survey=="1998/99"])
+)
+
+# Subset survey sample to farms
+gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
+
+# Subset survey sample to only SHF (note that they exclude farms with no `croparea`)
+gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
+
+```
+
+In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access using **GLUES suitability** product and travel time to nearest **100K** market).
+
+```{r, fig.cap="GLUES Suitability (Ghana, 2011)"}
+
+include_graphics("fig/glues_suit.png")
+
+```
+
+Ghana's districts classified across areas of lo/hi ag. potential and lo/hi market access (using below/above **4hrs** travel time to nearest **100K** market).
+
+```{r, fig.cap="Spatial Quadrant Segmentation", dev="png", fig.width=7.6}
+
+print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_mkt500k", col="grey60", lwd=.2, col.regions=viridis(2),
+  xlab=list("Low/High Market Access\nacross Districts (GLSS6)", cex=.9)),
+  split=c(1,1,2,1), more=T)
+
+print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_quad_glues_4", col="grey60", lwd=.2, col.regions=viridis(4),
+  xlab=list("Quadrant Classification\nacross Districts (GLSS6)", cex=.9)),
+  split=c(2,1,2,1), more=F)
+
+```
+
+
+```{r gha-class5glues-fig, fig.cap="Est. Proportions of Farm Holdings across Farm Types and Quadrants (farms below 4 ha, GLUES crop suitability)"}
+
+# Use `seg_quad_glues_4` and 5-class typology `class5`
+par(mar=c(3,.25,1,.25))
+plot(svytable(~class5+seg_quad_glues_4, gha.svy.shf[["gha6"]]), 
+  main=NA, las=1, cex.axis=1, col=viridis(4),
+  ylab=NA, xlab="Typology 5-class across Quadrants (farms below 4 ha)")
+
+```
+
+```{r gha-class5glues-tab, results="asis"}
+
+tmp <- svymean(~I(interaction(seg_quad_glues_4, class5)), gha.svy.shf[["gha6"]], na.rm=T)
+tmp.cv <- confint(tmp)
+tmp <- cbind(as.data.table(tmp*100), as.data.table(tmp.cv*100))
+tmp[`2.5 %`<0, `2.5 %` := 0]
+tmp <- tmp[, lapply(.SD, function(x) format(x, digits=0, nsmall=1, scientific=F))]
+tmp[, CI := paste(`2.5 %`, `97.5 %`, sep=" - ")]
+
+tmp[, `:=`(
+  seg_quad_glues_4 = factor(rep(levels(gha$seg_quad_glues_4), each=1, 5),
+    levels=levels(gha$seg_quad_glues_4)),
+  class5 = factor(rep(levels(gha$class5), each=4, 1), 
+    levels=levels(gha$class5))
+)]
+
+table_options(HTMLcaption="(#tab:gha-tab2-class5) Est. Proportions of Farm Holdings below 4 ha across Development Domains and Farm Types (2012/13, percent)")
+html(tabular(Heading("Development Domain (GLUES)")*seg_quad_glues_4*(mean+CI)~Heading("Farm Type")*class5*Heading()*identity,
+  data=tmp), rmarkdown=T)
+
+# TODO Need a function for column-wise proportions only
+
+
+```
+
+
 

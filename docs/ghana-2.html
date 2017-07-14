@@ -111,6 +111,7 @@
 <li class="chapter" data-level="4.2.3" data-path="ghana-1.html"><a href="ghana-1.html#classification-of-farm-holdings-across-quadrants"><i class="fa fa-check"></i><b>4.2.3</b> Classification of Farm Holdings across Quadrants</a></li>
 <li class="chapter" data-level="4.2.4" data-path="ghana-1.html"><a href="ghana-1.html#key-results-across-quadrants"><i class="fa fa-check"></i><b>4.2.4</b> Key Results across Quadrants</a></li>
 <li class="chapter" data-level="4.2.5" data-path="ghana-1.html"><a href="ghana-1.html#development-domain-and-farm-types"><i class="fa fa-check"></i><b>4.2.5</b> Development Domain and Farm Types</a></li>
+<li class="chapter" data-level="4.2.6" data-path="ghana-1.html"><a href="ghana-1.html#revised-development-domains"><i class="fa fa-check"></i><b>4.2.6</b> Revised Development Domains</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="trends-in-macro-indicators.html"><a href="trends-in-macro-indicators.html"><i class="fa fa-check"></i><b>5</b> Trends in Macro Indicators</a></li>
@@ -159,27 +160,27 @@
 <div id="pam---6-covariates" class="section level4">
 <h4><span class="header-section-number">6.2.1.1</span> PAM - 6 Covariates</h4>
 <p>With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is <strong>3</strong> or <strong>6/7</strong>. We choose to test results using <strong>k=3</strong> and <strong>k=5</strong> in the following partitioning schemes.</p>
-<div class="figure"><span id="fig:unnamed-chunk-18"></span>
-<img src="fig/unnamed-chunk-18-1.svg" alt="PAM Clustering of GLSS6 Households (6 covariates, Euclidean Distance)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-20"></span>
+<img src="fig/unnamed-chunk-20-1.svg" alt="PAM Clustering of GLSS6 Households (6 covariates, Euclidean Distance)" width="1540" />
 <p class="caption">
 Fig. 6.1: PAM Clustering of GLSS6 Households (6 covariates, Euclidean Distance)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-19"></span>
-<img src="fig/unnamed-chunk-19-1.png" alt="Clusters of Farm Households (PAM, k=3, covariates=6)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-21"></span>
+<img src="fig/unnamed-chunk-21-1.png" alt="Clusters of Farm Households (PAM, k=3, covariates=6)" width="1540" />
 <p class="caption">
 Fig. 6.2: Clusters of Farm Households (PAM, k=3, covariates=6)
 </p>
 </div>
 <p>The second plot shows how farm households are distributed amongst the resulting 5 clusters along our 2 axes of interest (crop sales and non-farm income).</p>
-<div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="fig/unnamed-chunk-20-1.png" alt="Clusters of Farm Households (PAM, k=5, covariates=6)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-22"></span>
+<img src="fig/unnamed-chunk-22-1.png" alt="Clusters of Farm Households (PAM, k=5, covariates=6)" width="1540" />
 <p class="caption">
 Fig. 6.3: Clusters of Farm Households (PAM, k=5, covariates=6)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-20"></span>
-<img src="fig/unnamed-chunk-20-2.png" alt="Clusters of Farm Households (PAM, k=5, covariates=6)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-22"></span>
+<img src="fig/unnamed-chunk-22-2.png" alt="Clusters of Farm Households (PAM, k=5, covariates=6)" width="1540" />
 <p class="caption">
 Fig. 6.3: Clusters of Farm Households (PAM, k=5, covariates=6)
 </p>
@@ -187,7 +188,7 @@ Fig. 6.3: Clusters of Farm Households (PAM, k=5, covariates=6)
 <p>Pair-wise scatter plots across all covariates (cultivated area, sales, and income variables) colored by cluster (k=5). In particular the second plot shows how the resulting 5 clusters are distributed amongst our 2 covariates of interest.</p>
 <p>Cluster medoids (centers) are listed below for k=3 and k=5.</p>
 <table>
-<caption><span id="tab:unnamed-chunk-22">Tab. 6.1: </span>Cluster medoids (k=3)</caption>
+<caption><span id="tab:unnamed-chunk-24">Tab. 6.1: </span>Cluster medoids (k=3)</caption>
 <thead>
 <tr class="header">
 <th align="right">croparea_imp</th>
@@ -226,7 +227,7 @@ Fig. 6.3: Clusters of Farm Households (PAM, k=5, covariates=6)
 </tbody>
 </table>
 <table>
-<caption><span id="tab:unnamed-chunk-22">Tab. 6.1: </span>Cluster medoids (k=5)</caption>
+<caption><span id="tab:unnamed-chunk-24">Tab. 6.1: </span>Cluster medoids (k=5)</caption>
 <thead>
 <tr class="header">
 <th align="right">croparea_imp</th>
@@ -281,20 +282,20 @@ Fig. 6.3: Clusters of Farm Households (PAM, k=5, covariates=6)
 </tbody>
 </table>
 <p>The violin plots below show the distribution of all 6 covariates in the <strong>sample</strong> of farm households across the resulting <strong>k=5</strong> clusters. Actual population statistics across clusters are at the bottom of this page.</p>
-<div class="figure"><span id="fig:unnamed-chunk-23"></span>
-<img src="fig/unnamed-chunk-23-1.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-25"></span>
+<img src="fig/unnamed-chunk-25-1.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
 <p class="caption">
 Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-23"></span>
-<img src="fig/unnamed-chunk-23-2.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-25"></span>
+<img src="fig/unnamed-chunk-25-2.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
 <p class="caption">
 Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-23"></span>
-<img src="fig/unnamed-chunk-23-3.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-25"></span>
+<img src="fig/unnamed-chunk-25-3.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
 <p class="caption">
 Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
 </p>
@@ -303,14 +304,14 @@ Fig. 6.4: Distribution of Household Characteristics across 5 Clusters (PAM)
 <div id="pam-2-covariates" class="section level4">
 <h4><span class="header-section-number">6.2.1.2</span> PAM: 2 covariates</h4>
 <p>In the next scheme we only retain 2 covariates <code>naggross_sh</code> (share of non-farm income) and <code>cropsales_sh</code> (share of crop sales).</p>
-<div class="figure"><span id="fig:unnamed-chunk-24"></span>
-<img src="fig/unnamed-chunk-24-1.svg" alt="PAM Clustering of GLSS6 Households (2 covariates, Euclidean Distance)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-26"></span>
+<img src="fig/unnamed-chunk-26-1.svg" alt="PAM Clustering of GLSS6 Households (2 covariates, Euclidean Distance)" width="1540" />
 <p class="caption">
 Fig. 6.5: PAM Clustering of GLSS6 Households (2 covariates, Euclidean Distance)
 </p>
 </div>
-<div class="figure"><span id="fig:unnamed-chunk-25"></span>
-<img src="fig/unnamed-chunk-25-1.png" alt="Clusters of Farm Households (PAM, k=5, covariates=2)" width="1540" />
+<div class="figure"><span id="fig:unnamed-chunk-27"></span>
+<img src="fig/unnamed-chunk-27-1.png" alt="Clusters of Farm Households (PAM, k=5, covariates=2)" width="1100" />
 <p class="caption">
 Fig. 6.6: Clusters of Farm Households (PAM, k=5, covariates=2)
 </p>
@@ -2593,7 +2594,7 @@ Q50
 <div id="pam---2-covariates" class="section level4">
 <h4><span class="header-section-number">6.2.3.2</span> PAM - 2 Covariates</h4>
 <p>Below are population summaries for the selected k=5 cluster scheme (with only 2 covariates). First we show are farm types are distributed along farm sizes (below/above 4 ha).</p>
-<p><img src="fig/unnamed-chunk-28-1.svg" width="1540" /></p>
+<p><img src="fig/unnamed-chunk-30-1.svg" width="1540" /></p>
 <table class="Rtable">
 <caption>
 <span id="tab:gha-clust2-tab1">Tab. 6.5: </span> Est. Proportions of Farm Holdings across Clusters (k=5, 2012/13, percent)
