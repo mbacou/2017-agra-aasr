@@ -1316,7 +1316,7 @@ gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
 
 In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access using **GLUES suitability** product and IFPRI/HarvestChoice travel time to nearest **100K** market).
 
-```{r, fig.cap="Areas of Low/High Agricultural Suitability (Ghana, 1980-2011)", out.width="380px"}
+```{r gha-glues, fig.cap="Areas of Low/High Agricultural Suitability (Ghana, 1980-2011)", dev="png", fig.width=7.6}
 
 print(spplot(crop(glues, g2), col.regions=c("#ffffff", pal.ndvi_anom(255)),
   xlab=list("Agricultural Suitability (GLUES 1980-2011)", cex=.9)),
@@ -1330,7 +1330,7 @@ print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_suit_glues", col="grey60", lwd=.
 
 The 2 maps below show Ghana's districts (GLSS6) classified across areas of lo/hi ag. potential and lo/hi market access (using below/above **4hrs** travel time to nearest **100K** market).
 
-```{r, fig.cap="Spatial Quadrant Segmentation", dev="png", fig.width=7.6}
+```{r gha-mkt100k-fig, fig.cap="Spatial Quadrant Segmentation", dev="png", fig.width=7.6}
 
 print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_mkt100k", col="grey60", lwd=.2, col.regions=viridis(2),
   xlab=list("Low/High Market Access\nacross Districts (GLSS6, 100K)", cex=.9)),
