@@ -1300,8 +1300,8 @@ The 2 maps below show Ghana's districts (GLSS6) classified across areas of lo/hi
 
 ```{r, fig.cap="Spatial Quadrant Segmentation", dev="png", fig.width=7.6}
 
-print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_mkt500k", col="grey60", lwd=.2, col.regions=viridis(2),
-  xlab=list("Low/High Market Access\nacross Districts (GLSS6)", cex=.9)),
+print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_mkt100k", col="grey60", lwd=.2, col.regions=viridis(2),
+  xlab=list("Low/High Market Access\nacross Districts (GLSS6, 100K)", cex=.9)),
   split=c(1,1,2,1), more=T)
 
 print(spplot(g2[g2$svyCode=="gha-glss6",], "seg_quad_glues_4", col="grey60", lwd=.2, col.regions=viridis(4),
