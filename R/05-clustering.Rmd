@@ -413,7 +413,7 @@ plot_grid(
 
 ```
 
-```{r, fig.cap="Clusters of Farm Households (PAM, k=5, covariates=2)", dev="png", fig.height=5, fig.width=5}
+```{r, fig.cap="Clusters of Farm Households (PAM, k=5, covariates=2)", dev="png", fig.height=4, fig.width=5}
 
 # Plot clusters (make it publication-ready)
 fviz_cluster(mod.pam5_2var, stand=F, geom="point", 

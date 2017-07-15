@@ -284,6 +284,7 @@ res(qd.agpot)
 # [1] 0.08333333 0.08333333
 res(qd.tt20k)
 # [1] 0.08333333 0.08333333
+levels(qd.agpot) # => not classified
 
 # Crop all layers to Ghana
 qd.agpot <- crop(qd.agpot, g2)
@@ -292,7 +293,7 @@ qd.tt50k <- crop(qd.tt50k, g2)
 
 # GAEZ color key from the documentation
 unique(qd.agpot)
-# [1] 1 2 3 4 5 6 9
+# [1] 1 2 3 4 5 6 7 8 9
 qd.agpot.lbl <- c(
   `very high`=1,
   `high`=2,
@@ -356,8 +357,12 @@ pal.ndvi_anom <- colorRampPalette(pal.ndvi_anom)
 #   "land well suited for rainfed crops and pasture possible",
 #   "prime land suited for rainfed crops and pasture possible")
 
-qd.agpot.lbl <- data.table(code=qd.agpot.lbl, label=names(qd.agpot.lbl), col=pal.agpot)
-rm(pal.agpot)
+qd.agpot.lbl <- data.table(ID=1:9, code=names(qd.agpot.lbl), col=pal.agpot)
+colortable(qd.agpot) <- logical(0)
+tm_shape(crop(qd.agpot, g2)) + tm_raster(names(qd.agpot), breaks=1:10,
+  labels=qd.agpot.lbl$code, palette=qd.agpot.lbl$col) +
+  tm_layout(legend.outside=T)
+levels(qd.agpot) <- qd.agpot.lbl
 
 summary(qd.tt20k)
 # Min.                      0.0486763
@@ -371,7 +376,6 @@ summary(qd.tt20k)
 qd.agpot <- disaggregate(qd.agpot, fact=10)
 qd.tt20k <- disaggregate(qd.tt20k, fact=10, method="bilinear")
 qd.tt50k <- disaggregate(qd.tt50k, fact=10, method="bilinear")
-levels(qd.agpot) <- data.frame(ID=1:9, category=qd.agpot.lbl$label) 
 
 # Verify
 # Also load earlier 2008 (instead of 2010) TT rasters
@@ -428,6 +432,15 @@ names(qd.quad.dt)
 # We only need a few fields
 qd.quad.dt <- qd.quad.dt[, .(CELL5M=Cell5M_int, agpot, mktacc, seg=quadrant)]
 
+# Verify classification
+qd.quad.dt[, .(agpot=unique(agpot)), keyby=seg]
+#    seg agpot
+# 1:  NA      
+# 2:   1    lo
+# 3:   2    lo
+# 4:   3    hi
+# 5:   4    hi
+
 # Merge in X,Y
 tmp <- fread("./data/hcapi-X--ssa.csv")
 names(tmp)
@@ -453,7 +466,10 @@ levels(qd.suit)
 # 1  1 unsuitable
 # 2  2         lo
 # 3  3         hi
-spplot(qd.suit)
+spplot(crop(qd.suit, g2), col.regions=pal.ndvi_anom(3)[c(3,1,2)])
+
+# Compare this classified to raw GAEZ
+
 
 # Resample to 1km (note that resampling loses RAT)
 qd.suit <- disaggregate(qd.suit, fact=10)
@@ -789,11 +805,12 @@ include_graphics("./fig/gha-ndvi-eta_2017.06.d2.png")
     
 ```{r gha-suitmap, fig.cap="Mapping Ghana's Agricultural Potential", dev="png"}
 
-print(spplot(qd.agpot, col.regions=qd.agpot.lbl$col, 
+print(spplot(crop(qd.agpot, g2), at=0:9, col.regions=qd.agpot.lbl$col, 
+  colorkey=list(labels=list(labels=qd.agpot.lbl$code, at=0:9+.5)),
   xlab=list("Crop Suitability for Low-Input Rainfed Cereals\n(FAO/IIASA/GAEZ 2007)", cex=.8)), 
   split=c(1,1,2,1), more=T)
 
-print(spplot(qd.suit, col.regions=c(qd.agpot.lbl[c(2,6), col], "grey"), 
+print(spplot(crop(qd.suit, g2), col.regions=c(qd.agpot.lbl[c(2,6), col], "grey"), 
   xlab=list("Low/High Agricultural Potential\n(BMGF/SDI 2016)", cex=.8)),
   split=c(2,1,2,1), more=F)
 
@@ -1314,7 +1331,7 @@ gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
 
 ```
 
-In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access using **GLUES suitability** product and IFPRI/HarvestChoice travel time to nearest **100K** market).
+In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access using **[GLUES suitability](http://geoportal-glues.ufz.de/stories/globalsuitability.html)** product and IFPRI/HarvestChoice travel time to nearest **100K** market).
 
 ```{r gha-glues, fig.cap="Areas of Low/High Agricultural Suitability (Ghana, 1980-2011)", dev="png", fig.width=7.6}
 
