@@ -799,7 +799,7 @@ include_graphics("./fig/gha-lc-maps.png")
 
 ```{r, fig.cap="Sources of hi-res Climatic Constraints for Ghana (e.g. FEWSNET/MODISC6)"}
 
-include_graphics("./fig/gha-ndvi-eta_2017.06.d2.png")
+include_graphics("./fig/gha-ndvi-eta_2017.03.d1.png")
 
 ```
     
