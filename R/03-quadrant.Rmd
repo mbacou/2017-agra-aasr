@@ -995,7 +995,7 @@ svyboxplot(I(100*fuel)~seg_quad_4, gha.svy.shf[["gha6"]],
 
 ### Development Domain and Farm Types
 
-In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (agricultural suitability and market access).
+In this section we combine results from the farm typology developed in [Section 3](./typology-of-farm-holdings.html) with the spatial dimensions outlined above (FAO/GAEZ agricultural suitability and market access using IFPRI/HarvestChoice travel time to nearest **50K** market).
 
 
 ```{r gha-class5-fig, fig.cap="Est. Proportions of Farm Holdings across Combined Categories (farms below 4 ha)"}
@@ -1003,7 +1003,7 @@ In this section we combine results from the farm typology developed in [Section 
 # Use `seg_quad_4` and a new 5-class typology `class5`
 par(mar=c(3,.25,1,.25))
 plot(svytable(~class5+seg_quad_4, gha.svy.shf[["gha6"]]), 
-  main=NA, las=1, cex.axis=1, col=viridis(5),
+  main=NA, las=1, cex.axis=1, col=viridis(4),
   ylab=NA, xlab="Typology 5-class (below 4 ha)")
 
 ```
