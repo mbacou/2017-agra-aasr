@@ -143,7 +143,7 @@
             <section class="normal" id="section-">
 <div id="ghana-2" class="section level2">
 <h2><span class="header-section-number">6.2</span> Ghana</h2>
-<p>We use a non-hierarchical <strong>PAM</strong> (Partitioning around Medoids) clustering approach using the set of 7 variables listed below and data from Ghana GLSS6 initially (all farm households). The selected variables are defined as:</p>
+<p>We use a non-hierarchical <strong>PAM</strong> (Partitioning around Medoids) clustering approach on the set of 7 variables listed below and data from Ghana GLSS6 initially (all farm households). The selected variables are defined as:</p>
 <ul>
 <li><code>croparea_imp</code> cultivated area (in fact operated area) in ha (imputed)</li>
 <li><code>cropsales</code> value of sales from crops and crop byproducts (Cedis)</li>
@@ -159,7 +159,7 @@
 <h3><span class="header-section-number">6.2.1</span> Aproach #1 – PAM Partitioning</h3>
 <div id="pam---6-covariates" class="section level4">
 <h4><span class="header-section-number">6.2.1.1</span> PAM - 6 Covariates</h4>
-<p>With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is <strong>3</strong> or <strong>6/7</strong>. We choose to test results using <strong>k=3</strong> and <strong>k=5</strong> in the following partitioning schemes.</p>
+<p>With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is <strong>3</strong> or <strong>6/7</strong>. We choose to test results using <strong>k=3</strong> and <strong>k=5</strong> in the following run.</p>
 <div class="figure"><span id="fig:unnamed-chunk-18"></span>
 <img src="fig/unnamed-chunk-18-1.svg" alt="PAM Clustering of GLSS6 Households (6 covariates, Euclidean Distance)" width="1540" />
 <p class="caption">
@@ -281,7 +281,7 @@ Fig. 6.3: Clusters of Farm Households (PAM, k=5, covariates=6)
 </tr>
 </tbody>
 </table>
-<p>The violin plots below show the distribution of all 6 covariates in the <strong>sample</strong> of farm households across the resulting <strong>k=5</strong> clusters. Actual population statistics across clusters are at the bottom of this page.</p>
+<p>The violin plots below show the distribution of all 6 covariates in the <strong>sample</strong> of farm households across the resulting <strong>k=5</strong> clusters. Actual population estimates are provided under section <a href="ghana-2.html#pam---6-covariates-1">Key Results</a>.</p>
 <div class="figure"><span id="fig:unnamed-chunk-23"></span>
 <img src="fig/unnamed-chunk-23-1.png" alt="Distribution of Household Characteristics across 5 Clusters (PAM)" width="1540" />
 <p class="caption">
@@ -316,20 +316,19 @@ Fig. 6.5: PAM Clustering of GLSS6 Households (2 covariates, Euclidean Distance)
 Fig. 6.6: Clusters of Farm Households (PAM, k=5, covariates=2)
 </p>
 </div>
-<p>Actual population statistics across these 5 clusters are at the bottom of this page.</p>
+<p>Actual population statistics across the modeled 5 clusters are under section <a href="ghana-2.html#pam---2-covariates">Key Results</a>.</p>
 </div>
 </div>
 <div id="aproach-2-hierarchical-clustering" class="section level3">
 <h3><span class="header-section-number">6.2.2</span> Aproach #2 – Hierarchical Clustering</h3>
 <p>[in progress, not used]</p>
-<p>This method is sensitive to the choice of dissimilarity measure (distance matrix). <strong>Euclidean</strong> distance is often preferred, however a <strong>correlation-based</strong> distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. In the following we retained a XXX distance measure.</p>
-<p>Further there are multiple generic types of hierarchical clustering algorithms:</p>
+<p>This method is sensitive to the choice of dissimilarity measure (distance matrix). <strong>Euclidean</strong> distance is often preferred, however a <strong>correlation-based</strong> distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. Further there are multiple generic types of hierarchical clustering algorithms:</p>
 <ul>
 <li><strong>Agglomerative</strong> – “bottom up” approach: each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy (uses R <code>agnes()</code>).<br />
 </li>
 <li><strong>Divisive</strong> – “top down” approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy (uses R <code>diana()</code>).<br />
 </li>
-<li><em>HKmean</em> – a hybrid hierarchical k-means clustering for optimizing clustering outputs (uses R <code>hkmean()</code>).</li>
+<li><strong>HKmean</strong> – a hybrid hierarchical k-means clustering for optimizing clustering outputs (uses R <code>hkmean()</code>).</li>
 </ul>
 <p>We contrast the 3 approaches, cutting the resulting trees at 5 stems.</p>
 <p>Below are descriptive characteristics for the <strong>sample</strong> of farm households across the resulting tree branches.</p>
@@ -2593,7 +2592,7 @@ Q50
 </div>
 <div id="pam---2-covariates" class="section level4">
 <h4><span class="header-section-number">6.2.3.2</span> PAM - 2 Covariates</h4>
-<p>Below are population summaries for the selected k=5 cluster scheme (with only 2 covariates). First we show are farm types are distributed along farm sizes (below/above 4 ha).</p>
+<p>Below are population summaries for the selected k=5 cluster scheme (with only 2 covariates). First we show how farm types are distributed across small/large farm sizes (below/above 4 ha).</p>
 <p><img src="fig/unnamed-chunk-28-1.svg" width="1540" /></p>
 <table class="Rtable">
 <caption>
@@ -2613,7 +2612,7 @@ Proportion of Farm Households
 </tr>
 <tr class="center">
 <th>
-Cluster
+Farm Type (cluster)
 </th>
 <th>
 </th>
@@ -2768,7 +2767,7 @@ CI
 </tr>
 </tbody>
 </table>
-<p>Mean and median household characteristics across farm types are estimated in the tables below.</p>
+<p>Mean and median household characteristics across farm types are estimated below.</p>
 <table class="Rtable">
 <caption>
 <span id="tab:gha-clust2-tab3">Tab. 6.6: </span> Est. Demographic Characteristics of Farm Holdings across Clusters (2012/13, percent/km)

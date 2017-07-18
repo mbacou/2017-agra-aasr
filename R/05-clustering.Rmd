@@ -51,9 +51,9 @@ Y <- c("hhid", "croparea_4ha", "region", "svyL2Cd", "svyL2Nm", "agehead", "distb
 #####################################################################################
 # Note: for large datasets `pam` can be very slow and `clara` is recommended.
 # Sub-select variables (also always use standardized values)
-# Select clustering covariates and training set
-# Keep all farm households from GLSS6
+# Select clustering covariates
 X <- c("croparea_imp", "cropsales_sh", "naggross_sh", "totgross", "cropsales", "totcropprod")
+# Select training set, keep all farm households from GLSS6
 train <- gha[wave=="wave 6" & croparea_imp>0, .SD, .SDcols=c(Y, X)]
 train <- na.omit(train)
 trainX <- data.frame(train)[, X]
@@ -66,7 +66,7 @@ mod.pam.nb.wss <- fviz_nbclust(trainX.std, pam, method="wss")
 plot(mod.pam.nb) # => suggests 3 and 5,6,7 equally
 plot(mod.pam.nb.wss) # => elbows at 3 and 5
 
-# Test Nb of clusters, using 2 distance matrices (Pearson collinearity)
+# Test Nb of clusters, using 3 distance measures (incl. Pearson collinearity)
 # The Minkowski distance is a metric in a normed vector space which can be considered
 # as a generalization of both the Euclidean distance and the Manhattan distance.
 distE <- dist(trainX.std, method="euclidean")
@@ -246,6 +246,46 @@ table(fit.3$classification)
 
 ```
 
+```{r gha-fpc, eval=FALSE}
+
+library(fpc)
+
+X <- c("cropsales_sh", "naggross_sh")
+trainX <- data.frame(train)[, X]
+
+# eps is reachability distance. Increase eps to include more points to clusters
+# x is a matrix with 2 columns
+bClus <- dbscan(trainX, 0.1) 
+plot(bClus, trainX)
+# => not working on these 2 vars
+mod.pamk <- pamk(trainX, krange=2:7)
+plotcluster(mod.pamk, train$hhid)
+cluster.varstats
+
+# Determine which cluster the observations within x2 belongs to
+predict(dbClus, trainX)
+
+# Try Mean Shift clustering
+# https://cran.r-project.org/web/packages/MeanShift/vignettes/MeanShift-clustering.html
+library(MeanShift)
+
+# Select training set, keep all farm households from GLSS6
+X <- c("croparea_imp", "cropsales_sh", "naggross_sh", "totgross", "cropsales", "totcropprod")
+train <- gha[wave=="wave 6" & croparea_imp>0, .SD, .SDcols=c(Y, X)]
+train <- na.omit(train)
+trainX <- data.frame(train)[, X]
+trainX.std <- scale(trainX)
+
+h.cand <- quantile(dist(trainX), seq(.05, .40, .05))
+model.ms <- lapply(h.cand, function(x) msClustering(trainX, h=x))
+# Plot and vary h bandwidth
+plot(trainX[,2], trainX[,3], col=viridis(7)[model.ms[[3]]$labels],
+  main="Mean shift labels", cex=0.65, pch=16 )
+plot(model.ms[[7]]$components[, "mode1"], model.ms[[3]]$components[, "mode2"], col=viridis(7)[model.ms[[2]]$labels],
+  main="Mean shift labels", cex=0.65, pch=16 )
+
+
+```
 
 ```{r gha-clust-save, eval=FALSE}
 
@@ -259,18 +299,6 @@ gha[, `:=`(
   clust_pam3=NULL, clust_pam5=NULL)]
 
 gha[train, `:=`(clust_pam3=i.clust_pam3, clust_pam5=clust_pam5)]
-gha[, .N, by=.(svyCode, clust_pam3)]
-#      svyCode clust_pam3    N
-# 1: gha-glss4         NA 5998
-# 2: gha-glss5         NA 8687
-# 3: gha-glss6         NA 9578
-# 4: gha-glss6          1 3384
-# 5: gha-glss6          2 2245
-# 6: gha-glss6          3 1565
-
-# Add Peter's run (note that this is a different `train` dataset)
-gha[train, `:=`(clust_pam5_2var=i.clust_pam5_2var)]
-
 gha[, .N, by=.(svyCode, clust_pam5)]
 #      svyCode clust_pam5    N
 # 1: gha-glss4         NA 5998
@@ -281,6 +309,10 @@ gha[, .N, by=.(svyCode, clust_pam5)]
 # 6: gha-glss6          3 1593
 # 7: gha-glss6          4 1220
 # 8: gha-glss6          5  434
+
+# Add Peter's run (note that this is a different `train` dataset)
+gha[, `:=`(clust_pam5_2var=NULL)]
+gha[train, `:=`(clust_pam5_2var=i.clust_pam5_2var)]
 
 gha[, .N, by=.(svyCode, clust_pam5_2var)]
 #      svyCode clust_pam5_2var    N
@@ -297,8 +329,8 @@ gha.svy[["gha6"]] <- svydesign(~clust+hhid, strata=~region+rural, w=~weight, nes
     data=gha[survey=="2012/13"])
 gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
 
-# Save cluster results
-save(Y, add.alpha, X,
+# Save model results
+save(add.alpha, X,
   mod.pam3, mod.pam5, mod.pam5_2var, 
   mod.pam.nb, mod.pam.nb.wss, mod.pam.2var.nb, mod.pam.2var.nb.wss,
   gha, gha.svy, gha.svy.farm,
@@ -306,7 +338,7 @@ save(Y, add.alpha, X,
 
 ```
 
-We use a non-hierarchical **PAM** (Partitioning around Medoids) clustering approach using the set of 7 variables listed below and data from Ghana GLSS6 initially (all farm households). The selected variables are defined as:
+We use a non-hierarchical **PAM** (Partitioning around Medoids) clustering approach on the set of 7 variables listed below and data from Ghana GLSS6 initially (all farm households). The selected variables are defined as:
 
 - `croparea_imp` cultivated area (in fact operated area) in ha (imputed)
 - `cropsales` value of sales from crops and crop byproducts (Cedis)
@@ -324,7 +356,7 @@ We use a non-hierarchical **PAM** (Partitioning around Medoids) clustering appro
 
 #### PAM - 6 Covariates
 
-With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is **3** or **6/7**. We choose to test results using **k=3** and **k=5** in the following partitioning schemes.
+With the selected variables (standardized) the optimal number of clusters (based on average silhouette width and total within sum of square) is **3** or **6/7**. We choose to test results using **k=3** and **k=5** in the following run.
 
 ```{r, fig.cap="PAM Clustering of GLSS6 Households (6 covariates, Euclidean Distance)"}
 
@@ -348,7 +380,7 @@ fviz_cluster(mod.pam3, geom="point", ggtheme=theme_bw(base_size=10), palette=vir
 
 ```
 
-The second plot shows how farm households are distributed amongst the resulting 5 clusters along our 2 axes of interest (crop sales and non-farm income).
+The second plot shows how farm households are distributed amongst the resulting 5 clusters along our 2 axes of interest (crop sales and non-farm income). 
 
 ```{r, fig.cap="Clusters of Farm Households (PAM, k=5, covariates=6)", dev="png"}
 
@@ -380,7 +412,7 @@ kable(mod.pam5$medoids, caption="Cluster medoids (k=5)",
 
 ```
 
-The violin plots below show the distribution of all 6 covariates in the **sample** of farm households across the resulting **k=5** clusters. Actual population statistics across clusters are at the bottom of this page.
+The violin plots below show the distribution of all 6 covariates in the **sample** of farm households across the resulting **k=5** clusters. Actual population estimates are provided under section [Key Results](#pam---6-covariates-1).
 
 ```{r, fig.cap="Distribution of Household Characteristics across 5 Clusters (PAM)", dev="png"}
 
@@ -426,38 +458,36 @@ fviz_cluster(mod.pam5_2var, stand=F, geom="point",
 
 ```
 
-Actual population statistics across these 5 clusters are at the bottom of this page.
+Actual population statistics across the modeled 5 clusters are under section [Key Results](#pam---2-covariates).
 
 ### Aproach #2 -- Hierarchical Clustering
 
 [in progress, not used]
 
-This method is sensitive to the choice of dissimilarity measure (distance matrix). **Euclidean** distance is often preferred, however a **correlation-based** distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. In the following we retained a XXX distance measure.
-
-Further there are multiple generic types of hierarchical clustering algorithms:
+This method is sensitive to the choice of dissimilarity measure (distance matrix). **Euclidean** distance is often preferred, however a **correlation-based** distance (with similar observations sharing features that are more highly correlated) may be used to identify household profiles/preferences. Further there are multiple generic types of hierarchical clustering algorithms:
 
 - **Agglomerative** -- "bottom up" approach: each observation starts in its own cluster, and pairs of clusters are merged as one moves up the hierarchy (uses R `agnes()`).  
 - **Divisive** -- "top down" approach: all observations start in one cluster, and splits are performed recursively as one moves down the hierarchy (uses R `diana()`).  
-- *HKmean* -- a hybrid hierarchical k-means clustering for optimizing clustering outputs (uses R `hkmean()`).
+- **HKmean** -- a hybrid hierarchical k-means clustering for optimizing clustering outputs (uses R `hkmean()`).
 
 We contrast the 3 approaches, cutting the resulting trees at 5 stems.
 
-```{r gha-clust-hca-freq, eval=F, results="asis"}
+```{r gha-hclust-freq, eval=F, results="asis"}
 
 # Cut tree into 4 groups and compare models
 table_options(HTMLcaption="(#tab:gha-clust-hca) Frequency counts of Observations in Agg. and Div. Clusters (k=4)")
 html(tabular((`Agglomerative Clusters`=Factor(clust_agg))+1~((`Divisive Clusters`=Factor(clust_div))+1)*Format(big.mark=",")*Heading(), 
-  data=train), rmarkdown=T)
+  data=gha[svyCode=="gha-glss6"]), rmarkdown=T)
 
 ```
 
-```{r gha-clust-hca, eval=F, dev="png", fig.cap="Results from Agg. an Div. Hierarchical Clustering (k=4)"}
+```{r gha-hclust-plot, eval=F, dev="png", fig.cap="Results from Agg. an Div. Hierarchical Clustering (k=4)"}
 
-fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_agg),
+fviz_cluster(mod.hclust.agg,
   ggtheme=theme_bw(base_size=10), palette=viridis(4),
   main="AGNES, k=4")
 
-fviz_cluster(list(data=data.frame(train)[, X], cluster=train$clust_div),
+fviz_cluster(mod.hclust.div,
   ggtheme=theme_bw(base_size=10), palette=viridis(4),
   main="DIANA, k=4")
 
@@ -468,16 +498,18 @@ Below are descriptive characteristics for the **sample** of farm households acro
 ```{r, eval=F, fig.cap="Distribution of Household Characteristics across 4 Clusters (AGNES, k=4)", dev="png"}
 
 par(mfrow=c(1,3))
-for (i in X) pplot(as.formula(paste0(i, "~clust_agg")), train, alpha=.02, ylab=NA, xlab=i,
-  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
+for (i in X) pplot(as.formula(paste0(i, "~clust_agg")), gha[svyCode=="glss6"], 
+  alpha=.02, ylab=NA, xlab=i,
+  note=gha[svyCode=="glss6", lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
 
 ```
 
 ```{r, eval=F, fig.cap="Distribution of Household Characteristics across 4 Clusters (DIANA, k=4)", dev="png"}
 
 par(mfrow=c(1,3))
-for (i in X) pplot(as.formula(paste0(i, "~clust_div")), train, alpha=.02, ylab=NA, xlab=i,
-  note=train[, lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
+for (i in X) pplot(as.formula(paste0(i, "~clust_div")), gha[svyCode=="glss6"], 
+  alpha=.02, ylab=NA, xlab=i,
+  note=gha[svyCode=="glss6", lapply(.SD, function(x) 100*sum(is.na(x)|x==0)/.N), .SDcols=i])
 
 ```
 
@@ -597,7 +629,7 @@ html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*
 
 #### PAM - 2 Covariates
 
-Below are population summaries for the selected k=5 cluster scheme (with only 2 covariates). First we show are farm types are distributed along farm sizes (below/above 4 ha).
+Below are population summaries for the selected k=5 cluster scheme (with only 2 covariates). First we show how farm types are distributed across small/large farm sizes (below/above 4 ha).
 
 ```{r, fig.cap=""}
 
@@ -627,12 +659,12 @@ tmp[, `:=`(
 )]
 
 table_options(HTMLcaption="(#tab:gha-clust2-tab1) Est. Proportions of Farm Holdings across Clusters (k=5, 2012/13, percent)")
-html(tabular((`Cluster`=clust_pam5_2var)*(mean+CI)~Heading("Proportion of Farm Households")*croparea_4ha*Heading()*identity,
+html(tabular((`Farm Type (cluster)`=clust_pam5_2var)*(mean+CI)~Heading("Proportion of Farm Households")*croparea_4ha*Heading()*identity,
   data=tmp), rmarkdown=T)
 
 ```
 
-Mean and median household characteristics across farm types are estimated in the tables below.
+Mean and median household characteristics across farm types are estimated below.
 
 ```{r gha-clust2-tab3, results="asis"}
 
