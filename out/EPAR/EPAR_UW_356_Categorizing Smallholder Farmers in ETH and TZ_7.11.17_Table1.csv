@@ -1,0 +1,17 @@
+Country,Wave,Area Cultivated,Segment,Ag Potential,Market Access,Indicator,Count,Mean,Std. Dev,Min.,Max.,Median
+Tanzania,3,3) 0 < ha <= 4,1 (Lo-Lo),Low,Low,Proportion of Crop Production Value Sold,571,0.3384069,0.3354896,0,3.240964,0.2748499
+Tanzania,3,3) 0 < ha <= 4,1 (Lo-Lo),Low,Low,Non-Farm Share of HH Income,571,0.5430854,0.4024442,0,1,0.6616161
+Tanzania,3,3) 0 < ha <= 4,2 (Lo-Hi),Low,High,Proportion of Crop Production Value Sold,404,0.3216184,0.325362,0,1.127168,0.211326
+Tanzania,3,3) 0 < ha <= 4,2 (Lo-Hi),Low,High,Non-Farm Share of HH Income,404,0.5305094,0.4074175,0,1,0.6153846
+Tanzania,3,3) 0 < ha <= 4,3 (Hi-Lo),High,Low,Proportion of Crop Production Value Sold,770,0.3527692,0.3351208,0,4.444445,0.2875854
+Tanzania,3,3) 0 < ha <= 4,3 (Hi-Lo),High,Low,Non-Farm Share of HH Income,770,0.5211917,0.4100922,0,1,0.6119403
+Tanzania,3,3) 0 < ha <= 4,4 (Hi-Hi),High,High,Proportion of Crop Production Value Sold,647,0.2859716,0.3103538,0,1.042857,0.1834862
+Tanzania,3,3) 0 < ha <= 4,4 (Hi-Hi),High,High,Non-Farm Share of HH Income,647,0.6500401,0.3843273,0,1,0.8369565
+Ethiopia,2,3) 0 < ha <= 4,1 (Lo-Lo),Low,Low,Proportion of Crop Production Value Sold,1591,0.191611,0.2380352,0,1,0.0971751
+Ethiopia,2,3) 0 < ha <= 4,1 (Lo-Lo),Low,Low,Non-Farm Share of HH Income,1591,0.3772974,0.4185169,0,1,0.1314459
+Ethiopia,2,3) 0 < ha <= 4,2 (Lo-Hi),Low,High,Proportion of Crop Production Value Sold,608,0.1571906,0.1871979,0,1,0.0856256
+Ethiopia,2,3) 0 < ha <= 4,2 (Lo-Hi),Low,High,Non-Farm Share of HH Income,608,0.4016682,0.4256553,0,1,0.1621622
+Ethiopia,2,3) 0 < ha <= 4,3 (Hi-Lo),High,Low,Proportion of Crop Production Value Sold,548,0.2142527,0.2487616,0,1,0.1280967
+Ethiopia,2,3) 0 < ha <= 4,3 (Hi-Lo),High,Low,Non-Farm Share of HH Income,548,0.4358114,0.4188601,0,1,0.3192848
+Ethiopia,2,3) 0 < ha <= 4,4 (Hi-Hi),High,High,Proportion of Crop Production Value Sold,240,0.155001,0.1660988,0,1,0.1331003
+Ethiopia,2,3) 0 < ha <= 4,4 (Hi-Hi),High,High,Non-Farm Share of HH Income,240,0.3734348,0.3997191,0,1,0.1830986

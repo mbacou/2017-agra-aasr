@@ -1,0 +1,73 @@
+Country,Wave,Farmer Segment,Proportion of Crop Production Value Sold,Non-Farm Share of HH Income,Number of HHs
+Tanzania,3 (2012-13),1 (Lo-Lo),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,25
+Tanzania,3 (2012-13),1 (Lo-Lo),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,5
+Tanzania,3 (2012-13),1 (Lo-Lo),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,101
+Tanzania,3 (2012-13),1 (Lo-Lo),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,109
+Tanzania,3 (2012-13),1 (Lo-Lo),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,36
+Tanzania,3 (2012-13),1 (Lo-Lo),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,120
+Tanzania,3 (2012-13),1 (Lo-Lo),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,76
+Tanzania,3 (2012-13),1 (Lo-Lo),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,47
+Tanzania,3 (2012-13),1 (Lo-Lo),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,52
+Tanzania,3 (2012-13),2 (Lo-Hi),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,43
+Tanzania,3 (2012-13),2 (Lo-Hi),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,4
+Tanzania,3 (2012-13),2 (Lo-Hi),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,107
+Tanzania,3 (2012-13),2 (Lo-Hi),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,46
+Tanzania,3 (2012-13),2 (Lo-Hi),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,25
+Tanzania,3 (2012-13),2 (Lo-Hi),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,59
+Tanzania,3 (2012-13),2 (Lo-Hi),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,57
+Tanzania,3 (2012-13),2 (Lo-Hi),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,22
+Tanzania,3 (2012-13),2 (Lo-Hi),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,41
+Tanzania,3 (2012-13),3 (Hi-Lo),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,41
+Tanzania,3 (2012-13),3 (Hi-Lo),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,8
+Tanzania,3 (2012-13),3 (Hi-Lo),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,171
+Tanzania,3 (2012-13),3 (Hi-Lo),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,121
+Tanzania,3 (2012-13),3 (Hi-Lo),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,42
+Tanzania,3 (2012-13),3 (Hi-Lo),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,130
+Tanzania,3 (2012-13),3 (Hi-Lo),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,146
+Tanzania,3 (2012-13),3 (Hi-Lo),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,49
+Tanzania,3 (2012-13),3 (Hi-Lo),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,62
+Tanzania,3 (2012-13),4 (Hi-Hi),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,32
+Tanzania,3 (2012-13),4 (Hi-Hi),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,4
+Tanzania,3 (2012-13),4 (Hi-Hi),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,221
+Tanzania,3 (2012-13),4 (Hi-Hi),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,66
+Tanzania,3 (2012-13),4 (Hi-Hi),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,44
+Tanzania,3 (2012-13),4 (Hi-Hi),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,119
+Tanzania,3 (2012-13),4 (Hi-Hi),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,61
+Tanzania,3 (2012-13),4 (Hi-Hi),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,38
+Tanzania,3 (2012-13),4 (Hi-Hi),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,62
+Ethiopia,2 (2013-14),1 (Lo-Lo),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,291
+Ethiopia,2 (2013-14),1 (Lo-Lo),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,58
+Ethiopia,2 (2013-14),1 (Lo-Lo),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,304
+Ethiopia,2 (2013-14),1 (Lo-Lo),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,430
+Ethiopia,2 (2013-14),1 (Lo-Lo),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,98
+Ethiopia,2 (2013-14),1 (Lo-Lo),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,222
+Ethiopia,2 (2013-14),1 (Lo-Lo),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,107
+Ethiopia,2 (2013-14),1 (Lo-Lo),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,23
+Ethiopia,2 (2013-14),1 (Lo-Lo),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,58
+Ethiopia,2 (2013-14),2 (Lo-Hi),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,89
+Ethiopia,2 (2013-14),2 (Lo-Hi),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,22
+Ethiopia,2 (2013-14),2 (Lo-Hi),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,187
+Ethiopia,2 (2013-14),2 (Lo-Hi),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,125
+Ethiopia,2 (2013-14),2 (Lo-Hi),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,36
+Ethiopia,2 (2013-14),2 (Lo-Hi),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,88
+Ethiopia,2 (2013-14),2 (Lo-Hi),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,35
+Ethiopia,2 (2013-14),2 (Lo-Hi),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,3
+Ethiopia,2 (2013-14),2 (Lo-Hi),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,23
+Ethiopia,2 (2013-14),3 (Hi-Lo),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,82
+Ethiopia,2 (2013-14),3 (Hi-Lo),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,16
+Ethiopia,2 (2013-14),3 (Hi-Lo),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,119
+Ethiopia,2 (2013-14),3 (Hi-Lo),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,152
+Ethiopia,2 (2013-14),3 (Hi-Lo),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,35
+Ethiopia,2 (2013-14),3 (Hi-Lo),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,73
+Ethiopia,2 (2013-14),3 (Hi-Lo),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,39
+Ethiopia,2 (2013-14),3 (Hi-Lo),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,10
+Ethiopia,2 (2013-14),3 (Hi-Lo),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,22
+Ethiopia,2 (2013-14),4 (Hi-Hi),a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,21
+Ethiopia,2 (2013-14),4 (Hi-Hi),a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,7
+Ethiopia,2 (2013-14),4 (Hi-Hi),a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,55
+Ethiopia,2 (2013-14),4 (Hi-Hi),b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,64
+Ethiopia,2 (2013-14),4 (Hi-Hi),b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,17
+Ethiopia,2 (2013-14),4 (Hi-Hi),b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,28
+Ethiopia,2 (2013-14),4 (Hi-Hi),c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,31
+Ethiopia,2 (2013-14),4 (Hi-Hi),c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,3
+Ethiopia,2 (2013-14),4 (Hi-Hi),c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,14

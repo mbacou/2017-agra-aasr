@@ -1,0 +1,289 @@
+Country,Wave,Proportion of Crop Production Value Sold,Non-Farm Share of HH Income,Indicator,Count,Mean,Std. Dev,Min.,Max.,Median
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household is Female,141,0.3209591,0.4685094,0,1,0
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household Age,141,53.25253,16.67202,19,108,51
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Female HH Members,141,3.047078,1.880011,0,8,3
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Male HH Members,141,2.913357,1.968196,0,8,3
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of HH Members Between Age 15-64,141,2.895717,1.632533,0,7,3
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household is Rural,141,0.9386321,0.2408596,0,1,1
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Landholding (ha),141,3.101388,3.953,0.0809371,22.7838,1.821085
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Area Planted (ha),141,1.170346,0.9400039,0.0202343,3.763577,0.8943553
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Cattle Currently Owned,141,5.971323,10.35817,0,38,0
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Poultry Currently Owned,141,7.778621,11.70342,0,50,2
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Other Livestock Currently Owned,141,6.231614,9.290869,0,37,0
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household Owns Land/Mobile Phone,141,0.4548717,0.4997345,0,1,0
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Distance to Nearest Ag. Market (km),141,86.98884,47.83094,2.1,226.1,87.3
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Household Income in Last Year (TSH),141,306402.5,651158.4,0,3996500,7000
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),141,123532.8,356715,0,2611549,2907.122
+Tanzania,3,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),141,10853.21,41520.73,0,269569.5,0
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household is Female,21,0.4577239,0.5105128,0,1,0
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household Age,21,48.19575,15.30055,27,78,41
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Female HH Members,21,3.228235,1.25895,1,6,3
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Male HH Members,21,3.125696,2.641325,0,11,2
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of HH Members Between Age 15-64,21,2.473958,1.510504,0,6,2
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household is Rural,21,0.7938284,0.4145457,0,1,1
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Landholding (ha),21,3.283125,4.101563,0.477529,16.6083,1.829179
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Area Planted (ha),21,0.9253649,0.8820925,0.0607028,2.885409,0.477529
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Cattle Currently Owned,21,3.038495,6.865617,0,29,0
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Poultry Currently Owned,21,11.67325,13.88831,0,50,7
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Other Livestock Currently Owned,21,8.085442,11.88637,0,37,4
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household Owns Land/Mobile Phone,21,0.7280011,0.4559784,0,1,1
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Distance to Nearest Ag. Market (km),21,75.46899,41.64934,1.7,158.9,64.8
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Household Income in Last Year (TSH),21,1650288,2926698,7000,1.36E+07,325000
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),21,357211.2,548686.5,5148.029,2611549,83839.32
+Tanzania,3,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),21,18688.81,82372.79,0,411842.3,0
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household is Female,600,0.311501,0.4634935,0,1,0
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household Age,600,49.17726,16.77665,19,100,48
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Female HH Members,600,2.717739,1.62491,0,13,2
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Male HH Members,600,2.435056,1.668634,0,10,2
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of HH Members Between Age 15-64,600,2.545747,1.565229,0,13,2
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household is Rural,583,0.7860003,0.4104788,0,1,1
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Landholding (ha),600,1.952126,2.666175,0.0080937,28.73268,1.214057
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Area Planted (ha),600,0.8720715,0.7828546,0.0030351,3.897123,0.6070285
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Cattle Currently Owned,600,1.032427,3.805588,0,38,0
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Poultry Currently Owned,600,4.564511,7.256762,0,50,0
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Other Livestock Currently Owned,600,2.120578,5.606974,0,37,0
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household Owns Land/Mobile Phone,600,0.6173954,0.4864285,0,1,1
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Distance to Nearest Ag. Market (km),600,67.59605,49.22757,0.7,250.8,64.6
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Household Income in Last Year (TSH),600,3573469,8774245,4000,6.68E+07,738000
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),600,27557.15,104800.1,0,1765038,0
+Tanzania,3,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),600,30514.87,115900.8,0,800621.4,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Head of Household is Female,342,0.2268655,0.4194185,0,1,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Head of Household Age,342,49.87127,15.78025,22,90,49
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Number of Female HH Members,342,2.672282,1.601973,0,10,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Number of Male HH Members,342,2.57722,1.695073,0,9,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Number of HH Members Between Age 15-64,342,2.621112,1.486846,0,8,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Household is Rural,340,0.9443317,0.2296179,0,1,1
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Total Landholding (ha),342,3.402331,3.16746,0.169968,28.12565,2.581894
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Total Area Planted (ha),342,1.535157,1.044295,0.0121406,3.986153,1.329392
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Count of Cattle Currently Owned,342,2.285014,5.98831,0,38,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Count of Poultry Currently Owned,342,7.81676,9.737143,0,50,5
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Count of Other Livestock Currently Owned,342,3.376685,6.470803,0,37,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Household Owns Land/Mobile Phone,342,0.5160521,0.5004745,0,1,1
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Distance to Nearest Ag. Market (km),342,72.87383,46.24062,1.6,250.7,66
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Total Household Income in Last Year (TSH),342,505452.9,904963.3,3500,6455400,215500
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),342,176488.8,326873.7,1279.97,2611549,88251.92
+Tanzania,3,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),342,29124.95,102005.4,0,800621.4,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household is Female,147,0.2241436,0.4184428,0,1,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household Age,147,47.95283,16.25865,20,92,44
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Female HH Members,147,2.557906,1.574823,0,7,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Male HH Members,147,2.42668,1.55733,0,7,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of HH Members Between Age 15-64,147,2.409482,1.302245,0,6,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household is Rural,145,0.8646196,0.3433153,0,1,1
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Landholding (ha),147,2.992284,2.803687,0.1214057,17.29626,2.197443
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Area Planted (ha),147,1.479797,1.048706,0.084984,3.874865,1.101757
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Cattle Currently Owned,147,1.613876,4.883827,0,32,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Poultry Currently Owned,147,7.048835,8.498516,0,45,4
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Other Livestock Currently Owned,147,3.06905,6.634024,0,37,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household Owns Land/Mobile Phone,147,0.6143771,0.4884062,0,1,1
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Distance to Nearest Ag. Market (km),147,67.11835,49.3291,2.8,257.1,59
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Household Income in Last Year (TSH),147,719318.4,1162495,30000,1.12E+07,380000
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),147,161044.7,195421.5,2574.014,2611549,86455.44
+Tanzania,3,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),147,28400.86,104633,0,741316.1,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Head of Household is Female,429,0.3399663,0.4742504,0,1,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Head of Household Age,429,48.624,15.57236,21,92,46
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Number of Female HH Members,429,2.690311,1.474728,0,11,3
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Number of Male HH Members,429,2.458914,1.608403,0,12,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Number of HH Members Between Age 15-64,429,2.63542,1.49651,0,11,2
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Household is Rural,422,0.8457552,0.361612,0,1,1
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Total Landholding (ha),429,2.591281,2.541643,0.0404686,16.53546,1.71182
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Total Area Planted (ha),429,1.134422,0.9432641,0.0232694,3.929498,0.8498399
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Count of Cattle Currently Owned,429,0.9529601,3.761431,0,38,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Count of Poultry Currently Owned,429,5.796159,8.64199,0,50,1
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Count of Other Livestock Currently Owned,429,2.112352,4.855539,0,37,0
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Household Owns Land/Mobile Phone,429,0.6115132,0.4879753,0,1,1
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Distance to Nearest Ag. Market (km),429,72.14371,52.30969,0.7,252.2,64.8
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Total Household Income in Last Year (TSH),429,3178917,7431254,22000,6.68E+07,1020000
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),429,108797.6,183837.6,1357.722,1482632,49421.07
+Tanzania,3,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),429,19446.39,73829.32,0,800621.4,0
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household is Female,341,0.1740604,0.3797186,0,1,0
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household Age,341,46.17431,15.76515,19,90,44
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Female HH Members,341,2.550242,1.484369,0,10,2
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Male HH Members,341,2.515859,1.447256,0,10,2
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of HH Members Between Age 15-64,341,2.475997,1.204932,0,9,2
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household is Rural,332,0.9272442,0.2601274,0,1,1
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Landholding (ha),341,3.29014,2.904957,0.056656,18.37273,2.468582
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Area Planted (ha),341,1.476775,1.030832,0.028328,3.982107,1.214057
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Cattle Currently Owned,341,2.073853,5.537821,0,38,0
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Poultry Currently Owned,341,8.1019,10.61649,0,50,4
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Other Livestock Currently Owned,341,2.40044,5.823657,0,37,0
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household Owns Land/Mobile Phone,341,0.5920294,0.4921798,0,1,1
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Distance to Nearest Ag. Market (km),340,79.96609,50.65335,3.2,252.1,74.1
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Household Income in Last Year (TSH),341,1190702,1235041,6000,8123500,755000
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),341,504025.5,581684,21675.91,2611549,278305.6
+Tanzania,3,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),341,75555.07,183694.9,0,800621.4,0
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household is Female,157,0.1957576,0.3980525,0,1,0
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household Age,157,44.70965,16.88325,18,91,42
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Female HH Members,157,2.452702,1.40925,0,8,2
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Male HH Members,157,2.427165,1.457596,0,8,2
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of HH Members Between Age 15-64,157,2.608153,1.283879,0,7,2
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household is Rural,152,0.8654363,0.3423851,0,1,1
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Landholding (ha),157,2.857837,2.53778,0.0809371,15.82321,2.023428
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Area Planted (ha),157,1.271246,0.973874,0.0171991,3.933545,0.9914798
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Cattle Currently Owned,157,1.011826,2.364548,0,16,0
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Poultry Currently Owned,157,6.88269,10.23877,0,50,3
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Other Livestock Currently Owned,157,2.734374,6.967776,0,37,0
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household Owns Land/Mobile Phone,157,0.6795684,0.4681357,0,1,1
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Distance to Nearest Ag. Market (km),156,75.26573,48.60469,2.4,222.7,72
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Household Income in Last Year (TSH),157,2081527,2813110,68800,1.67E+07,1075000
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),157,520545.6,650329.4,17530.12,2611549,273313.5
+Tanzania,3,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),157,100317.9,199745.7,0,800621.4,0
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household is Female,218,0.1487966,0.3567069,0,1,0
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household Age,218,40.88498,12.92897,19,83,39
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Female HH Members,218,2.444248,1.453344,0,12,2
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Male HH Members,218,2.424751,1.507235,0,8,2
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of HH Members Between Age 15-64,218,2.61515,1.313348,0,9,2
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household is Rural,212,0.7862568,0.4109179,0,1,1
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Landholding (ha),218,2.372468,2.659239,0.0242811,21.3674,1.752289
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Area Planted (ha),218,1.171567,0.9532576,0.0080937,3.974013,0.9105427
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Cattle Currently Owned,218,0.5670418,2.873338,0,38,0
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Poultry Currently Owned,218,6.380896,10.13026,0,50,0
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Other Livestock Currently Owned,218,1.469465,5.189854,0,37,0
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household Owns Land/Mobile Phone,218,0.7144103,0.4527344,0,1,1
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Distance to Nearest Ag. Market (km),217,71.78335,50.90654,0.8,253.3,71.8
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Household Income in Last Year (TSH),218,8255444,1.28E+07,68000,6.68E+07,2952000
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),218,379855.4,528830.2,2392.932,2611549,168031.7
+Tanzania,3,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),218,65342.01,159899.4,0,800621.4,0
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household is Female,483,0.2005018,0.4007909,0,1,0
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household Age,482,48.15273,15.30478,22,97,45
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Female HH Members,483,2.802836,1.42602,0,9,3
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Male HH Members,483,2.82543,1.588822,0,10,3
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of HH Members Between Age 15-64,483,2.86184,1.475335,0,8,3
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household is Rural,483,0.9849315,0.1219516,0,1,1
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Landholding (ha),483,1.508573,1.147454,0.001155,7.977245,1.30487
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Area Planted (ha),483,1.072921,0.7716294,0.00014,3.989035,0.9437
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Cattle Currently Owned,483,4.339576,3.716471,0,20,4
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Poultry Currently Owned,483,2.857502,4.539112,0,22,1
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Other Livestock Currently Owned,483,5.123796,7.652293,0,63,3
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household Owns Land/Mobile Phone,483,0.3235941,0.4683322,0,1,0
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Household Income in Last Year (TSH),483,3069.024,4382.779,0,38890,1522
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),483,4387.266,13184.35,0,146087.7,949.7871
+Ethiopia,2,a) <= 5% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),483,904.0997,1194.228,0,8301.498,368.5131
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household is Female,103,0.3443864,0.4774913,0,1,0
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household Age,103,52.55579,20.3563,22,97,49
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Female HH Members,103,2.52983,1.326574,1,6,2
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Male HH Members,103,2.666206,1.754267,0,7,2
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of HH Members Between Age 15-64,103,2.244709,1.493848,0,7,2
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household is Rural,103,0.9775267,0.1489416,0,1,1
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Landholding (ha),103,0.8541827,0.9633516,0.000375,4.924025,0.572645
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Area Planted (ha),103,0.5659633,0.6061822,0.000375,2.775921,0.36723
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Cattle Currently Owned,103,3.700575,3.661593,0,20,3
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Poultry Currently Owned,103,4.049691,5.704195,0,21,2
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Other Livestock Currently Owned,103,4.834554,9.441421,0,63,1
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household Owns Land/Mobile Phone,103,0.2348737,0.4259928,0,1,0
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Household Income in Last Year (TSH),103,5770.251,5057.237,66,31955,4360
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),103,23255.89,67083.43,80.57872,404530.8,4230.359
+Ethiopia,2,a) <= 5% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),103,574.3584,1321.719,0,8301.498,0
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household is Female,665,0.250517,0.4336369,0,1,0
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household Age,665,45.13116,15.22642,8,99,42
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Female HH Members,665,2.864708,1.483486,0,8,3
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Male HH Members,665,2.646341,1.538432,0,8,2
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of HH Members Between Age 15-64,665,2.788915,1.453389,0,8,2
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household is Rural,665,0.8277326,0.3778969,0,1,1
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Landholding (ha),665,1.003211,1.250801,0.00048,7.977245,0.62347
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Area Planted (ha),665,0.6238202,0.7132531,0.000059,3.845803,0.387169
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Cattle Currently Owned,665,3.05569,3.708083,0,20,2
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Poultry Currently Owned,665,3.236406,4.438644,0,21,1
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Other Livestock Currently Owned,665,3.416302,6.441806,0,63,1
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household Owns Land/Mobile Phone,665,0.5246844,0.4997662,0,1,1
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Household Income in Last Year (TSH),665,157310.2,443634.4,20,2568400,21019
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),665,6453.345,27868.83,0,404530.8,289.9268
+Ethiopia,2,a) <= 5% of crop production sold,c) > 2/3  of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),665,983.9581,1770.639,0,8301.498,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Head of Household is Female,771,0.1716901,0.3773556,0,1,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Head of Household Age,768,45.71945,14.73119,0,90,44
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Number of Female HH Members,771,2.895186,1.469506,0,10,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Number of Male HH Members,771,3.167631,1.609285,0,10,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Number of HH Members Between Age 15-64,771,2.972724,1.435158,0,9,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Household is Rural,771,0.9909113,0.094962,0,1,1
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Total Landholding (ha),771,1.736956,1.166618,0.001,7.437275,1.490663
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Total Area Planted (ha),771,1.348439,0.884528,0.001,3.963805,1.208227
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Count of Cattle Currently Owned,771,4.43199,3.356401,0,20,4
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Count of Poultry Currently Owned,771,3.649057,4.82363,0,22,2
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Count of Other Livestock Currently Owned,771,4.354527,6.816126,0,63,2
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Household Owns Land/Mobile Phone,771,0.3641366,0.4814996,0,1,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Total Household Income in Last Year (TSH),771,5994.922,5923.134,50,41850,4060
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),771,5257.756,16119.33,24.26469,404530.8,2733.747
+Ethiopia,2,b) 5% < of crop production sold <= 50%,a) <= 1/3 of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),771,1143.765,1351.667,0,8301.498,767.6319
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household is Female,186,0.1946113,0.3969697,0,1,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household Age,185,46.77354,14.90322,0,90,45
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Female HH Members,186,2.857149,1.528417,0,7,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Male HH Members,186,2.860862,1.4903,0,7,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of HH Members Between Age 15-64,186,2.890844,1.485869,0,7,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household is Rural,186,0.980237,0.1395607,0,1,1
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Landholding (ha),186,1.457264,1.139761,0.014352,6.869989,1.269025
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Area Planted (ha),186,1.138747,0.8822038,0.009336,3.560125,0.889748
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Cattle Currently Owned,186,3.501515,3.181215,0,20,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Poultry Currently Owned,186,2.773614,4.545625,0,22,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Other Livestock Currently Owned,186,3.605983,4.751357,0,24,2
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household Owns Land/Mobile Phone,186,0.3619743,0.4818685,0,1,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Household Income in Last Year (TSH),186,8529.295,8670.948,31,72090,5285
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),186,6153.002,12742.31,38.63703,404530.8,2470.541
+Ethiopia,2,b) 5% < of crop production sold <= 50%,b) 1/3 <  of HH income from non-farm sources <= 2/3,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),186,998.4014,1133.927,0,8301.498,675.3192
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Head of Household is Female,411,0.1883418,0.3914614,0,1,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Head of Household Age,411,45.17883,14.18858,17,93,42
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Number of Female HH Members,411,2.874279,1.298024,0,7,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Number of Male HH Members,411,3.126082,1.62266,0,8,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Number of HH Members Between Age 15-64,411,2.953632,1.365443,0,10,3
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Household is Rural,411,0.9743486,0.1582856,0,1,1
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Total Landholding (ha),411,1.149294,1.038266,0.015145,7.92038,0.946678
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Total Area Planted (ha),411,0.8923596,0.7901046,0.00489,3.859979,0.693878
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Count of Cattle Currently Owned,411,2.902637,2.934405,0,16,2
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Count of Poultry Currently Owned,411,3.748143,5.176715,0,22,2
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Count of Other Livestock Currently Owned,411,3.064429,4.296731,0,63,2
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Household Owns Land/Mobile Phone,411,0.3912172,0.4886176,0,1,0
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Total Household Income in Last Year (TSH),411,118504.2,275389.5,353,2568400,35718.82
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),411,4042.871,9520.987,48.72392,224019.4,2008.62
+Ethiopia,2,b) 5% < of crop production sold <= 50%,c) > 2/3  of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),411,902.7799,1257.82,0,8301.498,352.259
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household is Female,212,0.1211027,0.3270187,0,1,0
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Head of Household Age,212,47.18172,16.92246,21,88,43
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Female HH Members,212,3.044718,1.519869,0,8,3
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of Male HH Members,212,3.180811,1.493426,0,8,3
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Number of HH Members Between Age 15-64,212,2.892843,1.462415,0,9,2
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household is Rural,212,0.992624,0.0857688,0,1,1
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Landholding (ha),212,0.8260057,0.8574641,0.03566,5.36734,0.44335
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Area Planted (ha),212,0.6384137,0.6782194,0.00441,3.96587,0.34515
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Cattle Currently Owned,212,2.774392,2.719003,0,17,2
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Poultry Currently Owned,212,2.401237,4.215946,0,22,0
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Count of Other Livestock Currently Owned,212,1.996659,3.733844,0,55,1
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Household Owns Land/Mobile Phone,212,0.4120579,0.4933704,0,1,0
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Total Household Income in Last Year (TSH),212,7931.396,7393.566,300,34100,4580
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),212,13933.04,13673.29,335.3617,214522.5,11179.38
+Ethiopia,2,c) > 50% of crop production sold,a) <= 1/3 of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),212,513.3309,943.2632,0,8301.498,0
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household is Female,39,0.0881518,0.2872218,0,1,0
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Head of Household Age,39,50.37609,16.33847,20,84,44
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Female HH Members,39,3.571473,1.62636,1,7,3
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of Male HH Members,39,2.854698,1.390924,0,6,3
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Number of HH Members Between Age 15-64,39,3.031818,1.534624,0,7,3
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household is Rural,39,0.9351779,0.2494302,0,1,1
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Landholding (ha),39,0.7730231,0.7231501,0.030011,3.380355,0.58131
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Area Planted (ha),39,0.5731383,0.6263755,0.020609,3.117024,0.352215
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Cattle Currently Owned,39,2.408818,2.859287,0,11,1
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Poultry Currently Owned,39,1.061545,2.535838,0,22,0
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Count of Other Livestock Currently Owned,39,1.438884,3.123691,0,15,0
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Household Owns Land/Mobile Phone,39,0.6099612,0.4941349,0,1,1
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Total Household Income in Last Year (TSH),39,10585.82,7739.032,861,78090,8700
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),39,11731.8,9107.225,420.0742,79745.17,8455.137
+Ethiopia,2,c) > 50% of crop production sold,b) 1/3 <  of HH income from non-farm sources <= 2/3,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),39,349.338,586.8496,0,2293.849,0
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household is Female,117,0.0822721,0.2759606,0,1,0
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Head of Household Age,117,41.84819,12.33879,18,75,41
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Female HH Members,117,2.839993,1.429942,0,8,2
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of Male HH Members,117,3.059888,1.767102,0,8,3
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Number of HH Members Between Age 15-64,117,2.699733,1.137156,1,8,2
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household is Rural,117,0.9898923,0.1004577,0,1,1
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Landholding (ha),117,0.5242322,0.6439011,0.006615,6.345995,0.29195
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Area Planted (ha),117,0.3752318,0.3610917,0.001416,3.012885,0.233735
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Cattle Currently Owned,117,1.883293,1.974477,0,11,2
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Poultry Currently Owned,117,2.924991,4.636497,0,22,1
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Count of Other Livestock Currently Owned,117,1.038658,2.802789,0,58,0
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Household Owns Land/Mobile Phone,117,0.3217076,0.4691407,0,1,0
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Distance to Nearest Ag. Market (km),0,.,.,.,.,.
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Total Household Income in Last Year (TSH),117,165535.1,293062.3,652,2568400,98400
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Farm Productivity: Total Agricultural Income/Total Landholding (TSH/ha),117,15532.31,21602.57,436.4138,165594.8,10691.69
+Ethiopia,2,c) > 50% of crop production sold,c) > 2/3  of HH income from non-farm sources,Value of Inorganic Fertilizer per Hectare Cultivated (TSH/ha),117,175.1295,352.6615,0,5652.666,0

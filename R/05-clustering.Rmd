@@ -12,19 +12,19 @@ library(cluster)
 library(mclust)
 library(factoextra)
 library(cowplot)
+library(viridis)
 #library(ggradar)
 
 load("../tmp/2017-agra-aasr_GHA_cluster.RData")
 
 # Training set for plotting
-train <- gha[wave=="wave 6" & croparea_imp>0]
+train <- gha[wave=="wave 6" & croparea_imp > 0]
 
 ```
 
 ```{r gha-clust, eval=FALSE}
 
 library(data.table)
-library(viridis)
 library(stringr)
 library(survey)
 
@@ -53,14 +53,14 @@ Y <- c("hhid", "croparea_4ha", "region", "svyL2Cd", "svyL2Nm", "agehead", "distb
 # Sub-select variables (also always use standardized values)
 # Select clustering covariates
 X <- c("croparea_imp", "cropsales_sh", "naggross_sh", "totgross", "cropsales", "totcropprod")
+
 # Select training set, keep all farm households from GLSS6
-train <- gha[wave=="wave 6" & croparea_imp>0, .SD, .SDcols=c(Y, X)]
+train <- gha[wave=="wave 6" & croparea_imp > 0, .SD, .SDcols=c(Y, X)]
 train <- na.omit(train)
 trainX <- data.frame(train)[, X]
 trainX.std <- scale(trainX)
 
 # Original approach (no dissimilarity matrix)
-mod.pam.nb <- fviz_nbclust(trainX, pam, method="silhouette")
 mod.pam.nb <- fviz_nbclust(trainX.std, pam, method="silhouette")
 mod.pam.nb.wss <- fviz_nbclust(trainX.std, pam, method="wss")
 plot(mod.pam.nb) # => suggests 3 and 5,6,7 equally
@@ -87,8 +87,8 @@ plot(mod.pam.nbM.wss) # => elbow at 3 and 6
 plot(mod.pam.nbP) # => worse
 # => keep simple Euclidean distance for the rest of the analysis
 
-# PAM clusters with 3, 5, and 7 groups (5 is for Peter)
-# VERY SLOW using eclust(), switched back to pam() on the unscaled training set
+# PAM clusters with 3 and 5 groups (5 is for Peter)
+# VERY SLOW using eclust(), switched back to pam()
 mod.pam3 <- pam(trainX, k=3, stand=T, metric="euclidean")
 mod.pam5 <- pam(trainX, k=5, stand=T, metric="euclidean")
 
@@ -113,6 +113,7 @@ fviz_cluster(mod.pam5, geom="point", stand=F,
 # Save clusters
 train[, clust_pam3 := mod.pam3$clustering]
 train[, clust_pam5 := mod.pam5$clustering]
+# => merge these vars into `gha` using code below
 
 ```
 
@@ -330,7 +331,7 @@ gha.svy[["gha6"]] <- svydesign(~clust+hhid, strata=~region+rural, w=~weight, nes
 gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
 
 # Save model results
-save(add.alpha, X,
+save(add.alpha, X, pplot, svyCrossTab,
   mod.pam3, mod.pam5, mod.pam5_2var, 
   mod.pam.nb, mod.pam.nb.wss, mod.pam.2var.nb, mod.pam.2var.nb.wss,
   gha, gha.svy, gha.svy.farm,
@@ -689,7 +690,7 @@ html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*
 
 ```{r gha-clust2-tab2, results="asis"}
 
-# Estimate mean/median/quantiles
+# Estimate mean/median
 tmp <- svyCrossTab(list(
   ~croparea_imp,
   ~aggross, 

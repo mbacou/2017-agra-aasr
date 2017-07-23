@@ -1,12 +1,124 @@
-
 #####################################################################################
 # 2017.07.12 Reformat results from EPAR
 #####################################################################################
+library(foreign)
+library(data.table)
+library(survey)
+library(tables)
+library(stringr)
 
-tmp <- read.table("clipboard")
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr.RData")
 
+# Copy tables from `./out/EPAR/EPAR_UW_356_Categorizing Smallholder Farmers in ETH and TZ_7.11.17.xlsx`
+epar1 <- fread("./out/EPAR/EPAR_UW_356_Categorizing Smallholder Farmers in ETH and TZ_7.11.17_Table1.csv")
+epar2 <- fread("./out/EPAR/EPAR_UW_356_Categorizing Smallholder Farmers in ETH and TZ_7.11.17_Table2.csv")
+epar3 <- fread("./out/EPAR/EPAR_UW_356_Categorizing Smallholder Farmers in ETH and TZ_7.11.17_Table3.csv")
 
+#####################################################################################
+# 2017.07.23 Export Estimates to Peter's Table Template
+#####################################################################################
+# Export into Peter's table template
+# 0) `class5`
+tmp <- 100*svymean(~class5, gha.svy.shf[["gha6"]], na.rm=T)
+html(t(tmp), file="./out/MB/gha-class5glues.html", rmarkdown=T, rownames=T)
 
+# 1) `seg_quad_4`
+tmp <- data.frame(100*svymean(~seg_quad_4, gha.svy.shf[["gha6"]], na.rm=T))
+html(tmp, file="./out/MB/gha-class5glues.html", rmarkdown=T, rownames=T, append=T)
+
+tmp <- svytotal(~I(interaction(seg_quad_4, class5)), gha.svy.shf[["gha6"]], na.rm=T)
+tmp <- as.data.table(tmp)
+tmp[, `:=`(
+  seg_quad_4 = factor(rep(levels(gha$seg_quad_4), each=1, 5),
+    levels=levels(gha$seg_quad_4)),
+  class5 = factor(rep(levels(gha$class5), each=4, 1),
+    levels=levels(gha$class5))
+)]
+tmp[, pct := 100*total/sum(total, na.rm=T), by=class5]
+html(tabular(Heading("Development Domain (GAEZ)")*(seg_quad_4+1)~Heading("Farm Type")*(class5)*Heading()*(pct*sum)*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
+
+tmp <- 100*svymean(~I(interaction(seg_quad_4, class5)), gha.svy.shf[["gha6"]], na.rm=T)
+tmp <- as.data.table(tmp)
+tmp[, `:=`(
+  seg_quad_4 = factor(rep(levels(gha$seg_quad_4), each=1, 5),
+    levels=levels(gha$seg_quad_4)),
+  class5 = factor(rep(levels(gha$class5), each=4, 1),
+    levels=levels(gha$class5))
+)]
+html(tabular(Heading("Development Domain (GAEZ)")*(seg_quad_4+1)~Heading("Farm Type")*(class5+1)*Heading()*(mean*sum)*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
+
+###############################################
+# 2) `seg_quad_glues_4`
+tmp <- 100*svymean(~seg_quad_glues_4, gha.svy.shf[["gha6"]], na.rm=T)
+html(t(tmp), file="./out/MB/gha-class5glues.html", rmarkdown=T, rownames=T, append=T)
+
+tmp <- svytotal(~I(interaction(seg_quad_glues_4, class5)), gha.svy.shf[["gha6"]], na.rm=T)
+tmp <- as.data.table(tmp)
+tmp[, `:=`(
+  seg_quad_glues_4 = factor(rep(levels(gha$seg_quad_glues_4), each=1, 5),
+    levels=levels(gha$seg_quad_glues_4)),
+  class5 = factor(rep(levels(gha$class5), each=4, 1),
+    levels=levels(gha$class5))
+)]
+tmp[, pct := 100*total/sum(total, na.rm=T), by=class5]
+html(tabular(Heading("Development Domain (GLUES)")*(seg_quad_glues_4+1)~Heading("Farm Type")*(class5)*Heading()*(pct*sum)*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
+
+tmp <- 100*svymean(~I(interaction(seg_quad_glues_4, class5)), gha.svy.shf[["gha6"]], na.rm=T)
+tmp <- as.data.table(tmp)
+tmp[, `:=`(
+  seg_quad_glues_4 = factor(rep(levels(gha$seg_quad_glues_4), each=1, 5),
+    levels=levels(gha$seg_quad_glues_4)),
+  class5 = factor(rep(levels(gha$class5), each=4, 1),
+    levels=levels(gha$class5))
+)]
+
+html(tabular(Heading("Development Domain (GLUES)")*(seg_quad_glues_4+1)~Heading("Farm Type")*(class5+1)*Heading()*(mean*sum)*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
+
+tmp <- svymean(~
+    I(100*naggross_sh) +
+    I(100*cropsales_sh) +
+    totgross +
+    agehead +
+    I(100*femhead) +
+    hhsize_imp +
+    hhlabor +
+    landown +
+    croparea_imp +
+    educhead +
+    educhigh +
+    I(100*cellphone) + I(100*electricity) + distroad +
+    I(100*seeds) + I(100*fert_inorg) + I(100*hired_labor), gha.svy.shf[["gha6"]], na.rm=T)
+html(tmp, rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
+
+tmp <- svyquantile(~totgross, gha.svy.shf[["gha6"]], .5, na.rm=T)
+html(tmp, rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
+
+tmp <- svyCrossTab(list(
+  ~I(100*naggross_sh),
+  ~I(100*cropsales_sh),
+  ~totgross,
+  ~agehead,
+  ~I(100*femhead),
+  ~hhsize_imp,
+  ~hhlabor,
+  ~landown,
+  ~croparea_imp,
+  ~educhead,
+  ~educhigh,
+  ~I(100*cellphone), ~I(100*electricity), ~distroad,
+  ~I(100*seeds), ~I(100*fert_inorg), ~I(100*hired_labor)
+), ~class5, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+html(tabular(Variable*Mean~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
+
+tmp <- svyby(~totgross, ~class5, gha.svy.shf[["gha6"]], svyquantile, .5, ci=T, na.rm=T)
+html(tmp, rmarkdown=T, file="./out/MB/gha-class5glues.html", append=T)
 
 #####################################################################################
 
