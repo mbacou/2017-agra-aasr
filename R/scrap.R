@@ -202,3 +202,36 @@ vWithinSoils <- variogram(zinc~soil, meuse, dX=0.5)
 plot(vWithinSoils)
 
 
+#####################################################################################
+#
+#####################################################################################
+library(ggplot2)
+library(ggthemes)
+
+dataset <- expand.grid(
+  x = seq(0, 1, length = 41),
+  y = seq(0, 1, length = 41),
+  z =factor( c("A", "B"))
+)
+dataset$fit <- with(dataset,
+  ifelse(
+    z == "A",
+    x - 2 * x^2 + 0.5 * x * y + 3 * y - y ^ 2,
+    -x - 1 * x^2 - 2 * x * y - 3 * y + y ^ 2
+  )
+)
+ggplot(dataset, aes(x = x, y = y, fill = fit)) +
+  geom_raster() +
+  facet_wrap(~ z) +
+  scale_fill_gradient2() +
+  theme_par()
+ggplot(dataset, aes(x = x, y = y, z = fit)) +
+  geom_contour(aes(colour = ..level..), binwidth = 0.25) +
+  facet_wrap(~ z) +
+  scale_colour_gradient2()
+ggplot(dataset, aes(x = x, y = y)) +
+  geom_raster(aes(fill = fit)) +
+  geom_contour(aes(z = fit), binwidth = 0.25) +
+  facet_wrap(~ z) +
+  scale_fill_gradient(low = "black", high = "white")
+

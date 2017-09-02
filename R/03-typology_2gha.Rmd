@@ -1,0 +1,1655 @@
+
+## Ghana
+
+```{r, include=FALSE}
+
+load("../tmp/2017-agra-aasr_GHA.RData")
+
+```
+
+```{r gha-glss, eval=FALSE}
+
+library(foreign)
+library(data.table)
+library(survey)
+library(tables)
+library(stringr)
+
+setwd("~/Projects/2017-agra-aasr")
+load("./tmp/2017-agra-aasr_GHA.RData")
+
+#####################################################################################
+# Helper - Pirate Plot Defaults
+pplot <- function(..., note=NULL, alpha=.1) {
+  require(yarrr)
+  pirateplot(..., pal="black", jitter.val=.07,
+    cex.names=.8, cex.axis=.8, gl.lty=3, back.col="white",
+    point.o=min(alpha, .1), point.pch=16, point.cex=.5,
+    bean.f.col="white", bean.lwd=.2,
+    inf.lwd=.2, inf.f.col="blue", inf.f.o=.3,
+    quant=.5, quant.col="limegreen", quant.lwd=1.2, quant.length=.9,
+    avg.line.col="red", avg.line.lwd=1.2)
+  if(!missing(note)) title(main=sprintf("Missing or null: %4.0f%%", note), 
+    adj=.99, col.main="grey10", cex.main=.8, font.main=1, line=.5)
+}
+
+#####################################################################################
+# Pull complete sets from each wave, extract and describe:
+# - crop production
+# - crop sales
+# - off and on-farm income
+# - cultivated area
+# - region, district, ez, loc5, cluster
+# - urban/rural
+# Them combine all 3 waves once results make sense.
+
+# GLSS6
+gha12.hh <- read.dta("~/Projects/hc-data/GHA-GLSS6/raw/PARTA/g6loc_edt.dta")
+gha12.hh.lbl <- data.table(varCode=names(gha12.hh), varLabel=attr(gha12.hh, "var.labels"))
+gha12.hh <- data.table(gha12.hh)
+  
+gha12.inc <- read.dta("~/Projects/hc-data/GHA-GLSS6/raw/AGGREGATES/GHA_2013_INCOME.dta")
+# => seems to already contain all needed income aggregates
+gha12.inc.lbl <- data.table(varCode=names(gha12.inc), varLabel=attr(gha12.inc, "var.labels"))
+gha12.inc <- data.table(gha12.inc)
+
+
+##########################################
+# GLSS5
+# Quick inventory of existing data extracts
+glss5.input <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/GHA_GLSS5-08_inputs.12.dta")
+glss5.bio <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/gha-glss5_L2_bio.dta")
+# => CELL5M and WorldClim bio1-19 vars
+data.table(varCode=names(glss5.input), varLabel=attr(glss5.input, "var.labels"))
+#               varCode                               varLabel
+#  1:              hhid        household identification number
+#  2:             clust                         cluster number
+#  3:            weight Sample weight for glss4 (=1 for glss3)
+#  4:           landcul        Land cultivated by hh, hectares
+#  5: ino_fert_value_hh                      Value of ino_fert
+#  6: org_fert_value_hh                      Value of org_fert
+#  7:     pest_value_hh                          Value of pest
+#  8:     seed_value_hh                          Value of seed
+#  9:       org_fert_hh                Household uses org_fert
+# 10:       ino_fert_hh                Household uses ino_fert
+# 11:           seed_hh                    Household uses seed
+# 12:           pest_hh                    Household uses pest
+
+gha05.hh <- read.dta("~/Projects/hc-data/GHA-GLSS5/temp/gha-glss5_processed.dta")
+# => has a full set of hhlds
+gha05.inc <- read.dta("~/Projects/hc-data/GHA-GLSS5/riga/Ghana05_HH_INCOME.dta")
+# => has RIGA income aggs
+gha05.hh.lbl <- data.table(varCode=names(gha05.hh), varLabel=attr(gha05.hh, "var.labels"))
+gha05.hh <- data.table(gha05.hh)
+gha05.inc.lbl <- data.table(varCode=names(gha05.inc), varLabel=attr(gha05.inc, "var.labels"))
+gha05.inc <- data.table(gha05.inc)
+
+
+##########################################
+# GLSS4
+load("~/Projects/hc-data/GHA-GLSS4/temp/GHA-GLSS4.RData")
+gha97.lbl <- lapply(names(micro), function(x) data.table(varCode=names(micro[[x]]), source=x))
+gha97.lbl <- rbindlist(gha97.lbl)
+gha97.lbl <- unique(gha97.lbl, by="varCode")
+# => we probably need to keep and merge all micro data files from `agg1` to `pov_gh` 
+# since these contain many useful constructed vars. Start with `sec0a` to make sure we have
+# a complete hhld sample (5998).
+gha97.hh <- micro[["sec0a"]]
+tmp <- gha97.lbl[source %like% "agg" | source %like% "exp" | source %like% "pov_gh" | source %like% "inc"][!(source %like% "sub" | source %in% paste0("inc", 1:5) | varCode %in% names(gha97.hh))]
+
+# Verify unique hhld ids across datasets
+uniqueN(gha97.hh, by=c("eanum", "nh"))
+# [1] 5998
+sapply(unique(tmp$source), function(x) uniqueN(micro[[x]], by=c("clust", "nh")))
+# => note that only few tables contain a full sample
+
+# Keep only household-level vars from the raw data
+tmp.dt <- which(sapply(micro, function(x) anyDuplicated(x, by=c("clust", "nh")))==0)
+tmp.dt <- names(tmp.dt)
+tmp <- tmp[source %in% tmp.dt]
+
+gha97.hh[, .(range(eanum), range(nh))]
+#     V1 V2
+# 1:   2  1
+# 2: 999 25
+
+micro$inc16[, .(range(clust), range(nh))]
+#      V1 V2
+# 1: 4002  1
+# 2: 4999 25
+
+# Recode `eanum` in `sec0a` to match codes used in other aggregates datasets
+gha97.hh[, clust := 4000 + eanum]
+uniqueN(gha97.hh, by=c("clust", "nh"))
+# [1] 5998
+
+# Merge all household-level vars into `gha97.hh`
+setkey(gha97.hh, clust, nh)
+for (i in unique(tmp$source)) {
+  setkey(micro[[i]], clust, nh)
+  gha97.hh <- micro[[i]][, .SD, .SDcols=c("clust", "nh", tmp[source==i, varCode])][gha97.hh]
+}
+
+# Keep a few extra constructed vars
+gha97.prod <- prod
+gha97.input <- inputs
+# Also save this subset of RIGA vars
+gha97.inc <- riga[[2]]
+
+# Clean up GLSS4
+rm(i, x, hh, prod, inputs, riga, tmp, tmp.dt, micro)
+
+
+#####################################################################################
+# Income and Sales derived from RIGA Components
+#####################################################################################
+# Another approach is to explore RIGA sales and income aggregates for the last 3
+# rounds of Ghana GLSS. Refer to RIGA documentation for decomposition details.
+# Use the following nomenclature (note some of these vars are still net and may be 
+# negative, e.g. selfemp, and selfimp):
+# - cropsales = totcropsold
+# - cropvalue = totcropprod
+# - cropsales_sh = cropsales/cropvalue (should compare with `shagprodsold`)
+# - agsales = totagsold 
+# - aggross = totagprod + farmrntimp + agr_wge + selfimp1 (farm)
+# - naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr_wge + selfemp (non-farm)
+# - totgross = aggross + naggross
+# - aggross_sh = aggross/totgross
+
+vars.char <- c("totcropprod", "totcropsold", "totagprod", "totagsold", "totlvstprod",
+"totlivsold", "agowncons", "agmisc", "shagprodsold", "shagowncons",
+"shagmisc", "shcropsold", "shlvstsold")
+
+vars.inc <- c("farmrntimp", "agr_wge", "selfimp1", "transfersgrossimp", "otherincimp", 
+  "nonfarmrntimp", "nonagr_wge", "selfemp",
+  "cropincome1grossimp", "cropincome2grossimp", "livestockgrossimp") 
+
+##########################################
+# GLSS6-RIGA
+
+gha12 <- gha12.hh[, .(hhid=HID, nh, clust, region, district, rural=tolower(loc2), year, month, weight)]
+
+### SALES
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS6/riga/Ghana13_HHCHAR_V12.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha12.lbl <- rbind(gha12.hh.lbl, gha12.inc.lbl, tmp.lbl)
+gha12.lbl <- unique(gha12.lbl, by="varCode")
+rm(gha12.hh.lbl, gha12.inc.lbl, tmp.lbl)
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000
+gha12[, range(hhid)]
+# [1] "60001/01" "61200/15"
+
+# Recode `hhid`
+gha12[, hhid := as.integer(str_replace_all(hhid, "/", ""))]
+gha12[, summary(hhid)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000 
+
+# Merge RIGA sales
+setkey(tmp, hh)
+setkey(gha12, hhid)
+gha12 <- tmp[, .SD, .SDcols=-c("district")][gha12]
+setnames(gha12, "hh", "hhid")
+
+### INCOME
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS6/riga/Ghana13_HH_INCOME_V12.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha12.lbl <- rbind(gha12.lbl, tmp.lbl)
+gha12.lbl <- unique(gha12.lbl, by="varCode")
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000
+
+# Merge RIGA incomes
+setkey(tmp, hh)
+setkey(gha12, hhid)
+gha12 <- tmp[, .SD, .SDcols=c("hh", vars.inc)][gha12]
+setnames(gha12, "hh", "hhid")
+
+# Then are we sure that RIGA includes aggregates for urban hhlds?
+gha12[, .(
+  sum(nonagr_wge, na.rm=T),
+  sum(agr_wge, na.rm=T)
+), by=rural]
+#    rural       V1       V2
+# 1: urban 17692329 462277.4
+# 2: rural  6250761 632194.5
+# => looks okay
+
+
+##########################################
+# GLSS5-RIGA
+
+gha05 <- gha05.hh[, .(nh, clust, region, district, rural=tolower(loc2), year, month, weight)]
+anyDuplicated(gha05.hh, by=c("clust", "nh"))
+gha05[, hhid := clust*100+nh]
+anyDuplicated(gha05, by="hhid")
+
+### SALES
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS5/riga/Ghana05_HHCHAR.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha05.lbl <- rbind(gha05.hh.lbl, gha05.inc.lbl, tmp.lbl)
+gha05.lbl <- unique(gha05.lbl, by="varCode")
+rm(gha05.hh.lbl, gha05.inc.lbl, tmp.lbl)
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => 17, `hh` is not unique (!!)
+# Keep records with higher `totagprod`
+setorder(tmp, -totagprod)
+tmp <- unique(tmp, by="hh")
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000 
+gha05[, range(hhid)]
+# [1] 500102 558015
+
+# Merge RIGA sales
+setkey(tmp, hh)
+setkey(gha05, hhid)
+gha05 <- tmp[, .SD, .SDcols=-c("district")][gha05]
+setnames(gha05, "hh", "hhid")
+
+### INCOME
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS5/riga/Ghana05_HH_INCOME.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha05.lbl <- rbind(gha05.lbl, tmp.lbl)
+gha05.lbl <- unique(gha05.lbl, by="varCode")
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000
+
+# Merge RIGA incomes
+setkey(tmp, hh)
+setkey(gha05, hhid)
+gha05 <- tmp[, .SD, .SDcols=c("hh", vars.inc)][gha05]
+setnames(gha05, "hh", "hhid")
+
+# Then are we sure that RIGA includes aggregates for urban hhlds?
+gha05[, .(
+  sum(nonagr_wge, na.rm=T),
+  sum(agr_wge, na.rm=T)
+), by=rural]
+#    rural          V1         V2
+# 1: urban 18692204447  706078685
+# 2: rural  5271284573 1048522438
+# => looks okay
+
+
+##########################################
+# GLSS4-RIGA
+
+gha97 <- gha97.hh[, .(nh, clust, region, district, rural=tolower(loc2), year, month, weight)]
+anyDuplicated(gha97.hh, by=c("clust", "nh"))
+gha97[, summary(clust)]
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4002    4252    4502    4500    4752    4999 
+gha97[, summary(nh)]
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 1.00    6.00   11.00   10.88   16.00   25.00 
+gha97[, hhid := clust*100+nh]
+anyDuplicated(gha97, by="hhid")
+
+### SALES
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS4/riga/Ghana98_HHCHAR.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+writeLines(knitr::kable(gha97.lbl, format="rst"), "~/Projects/hc-data/GHA-GLSS4/temp/GHA-GLSS4_raw.log")
+gha97.lbl <- unique(tmp.lbl, by="varCode")
+rm(gha97.hh.lbl, gha97.inc.lbl, tmp.lbl)
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 400200  425100  449900  450000  475000  499900 
+gha97[, range(hhid)]
+# [1] 400201 499920
+
+# Merge RIGA sales
+setkey(tmp, hh)
+setkey(gha97, hhid)
+gha97 <- tmp[gha97]
+setnames(gha97, "hh", "hhid")
+
+### INCOME
+tmp <- read.dta("~/Projects/hc-data/GHA-GLSS4/riga/Ghana98_HH_INCOME.dta")
+tmp.lbl <- data.table(varCode=names(tmp), varLabel=attr(tmp, "var.labels"))
+gha97.lbl <- rbind(gha97.lbl, tmp.lbl)
+gha97.lbl <- unique(gha97.lbl, by="varCode")
+
+tmp <- data.table(tmp)
+anyDuplicated(tmp, by="hh")
+# => `hh` is unique
+tmp[, summary(hh)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 400200  425100  449900  450000  475000  499900
+
+# Merge RIGA incomes
+setkey(tmp, hh)
+setkey(gha97, hhid)
+gha97 <- tmp[, .SD, .SDcols=c("hh", vars.inc)][gha97]
+setnames(gha97, "hh", "hhid")
+
+# Then are we sure that RIGA includes aggregates for urban hhlds?
+gha97[, .(
+  sum(nonagr_wge, na.rm=T),
+  sum(agr_wge, na.rm=T)
+), by=rural]
+#    rural         V1        V2
+# 1:     2  903291234 126182173
+# 2:     1 1732925339  68048954
+# => looks okay
+
+
+#####################################################################################
+# Combine all waves
+#####################################################################################
+# Var names should match now across waves so we can easily rbind()
+# `gha97` has fewer vars (87 instead of 92), which ones are missing?
+setdiff(names(gha12), names(gha05))
+# [1] "landlend"
+setdiff(names(gha12), names(gha97))
+# [1] "landshare"     "telephone"     "cellphone"     "disthsrschool" "distpubphone"  "TLU_small"    
+# [7] "landlend" 
+
+# Can these missing vars be founs elsewhere?
+# Remove `landlend` it's not labelled
+gha12[, landlend := NULL]
+setnames(gha97, "disthgschool", "disthsrschool")
+setnames(gha97, "TLU_smallan", "TLU_small")
+
+# Add wave info
+gha12[, `:=`(svyCode="gha-glss6", wave=6)]
+gha05[, `:=`(svyCode="gha-glss5", wave=5)]
+gha97[, `:=`(svyCode="gha-glss4", wave=4)]
+
+gha <- rbind(gha12, gha05, gha97, fill=T)
+gha[, distsecschool := NULL]
+setkey(gha12.lbl, varCode)
+gha.lbl <- gha12.lbl[names(gha)]
+gha.lbl[is.na(varLabel)]
+#          varCode varLabel
+# 1:          hhid       NA
+# 2:         rural       NA
+# 3:       svyCode       NA
+# 4:          wave       NA
+gha.lbl[is.na(varLabel), "varLabel"] <- c("unique hhld id", "rural/urban", "survey code", "survey round")
+
+gha[, sum(distsecschool, na.rm=T), by=wave]
+#    wave   V1
+# 1:    6    0
+# 2:    5    0
+# 3:    4 5617
+
+# Clean up
+rm(gha12, gha05, gha97)
+
+# Do we have a consistent var for cultivated area?
+# => no, only `landown`, `landshare` and `landrent` (rented out)
+
+# Import harmonized panel vars from HarvestChoice Resilience Study (to get
+# cultivated area)
+gha.xtra <- read.dta("~/Projects/ssa-geospat/tmp/Combined_4_Mel.12.dta")
+gha.xtra.lbl <- data.table(varCode=names(gha.xtra), varLabel=attr(gha.xtra, "var.labels"))
+gha.xtra <- data.table(gha.xtra)
+gha.xtra <- gha.xtra[ISO3=="GHA"]
+gha.xtra <- gha.xtra[, .SD, .SDcols=1:which(names(gha.xtra)=="privtrans_ppp")]
+
+# Fix a few factor vars
+gha.xtra[, survey := factor(survey, 
+  lev=c("GLSS12", "GLSS05", "GLSS98"), lab=c("2012/13", "2005/06", "1998/99"))]
+gha.xtra[, rural := factor(rural, lev=c(1,0), lab=c("rural", "urban"))]
+
+gha.xtra.lbl[varCode %like% "land"]
+#       varCode                                             varLabel
+# 1:    landown                              Size of land owned (Ha)
+# 2:    landcul                         Size of land cultivated (Ha)
+# 3: landfallow                  hectares land owned and left fallow
+# 4:   landfall                     Size of land left fallowing (Ha)
+# 5:   landpast                   Size of land used for pasture (Ha)
+# 6:    landoth hectares land owned and used for forest or other use
+# 7:   ilandown                     hectares of irrigated land owned
+
+gha.xtra[, 100*sum(landcul>0, na.rm=T)/.N, by=year]
+#    year        V1
+# 1: 2006 60.505031
+# 2: 2005 54.256495
+# 3: 2012 51.680048
+# 4: 2013 52.994258
+# 5: 1998  9.778161
+# 6: 1999  5.977797
+# => does not look good for GLSS4
+
+gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, by=year]
+#    year        V1
+# 1: 2006  37.38410
+# 2: 2005  38.69541
+# 3: 2012 100.00000
+# 4: 2013  98.49355
+# 5: 1998  28.14990
+# 6: 1999  24.50897
+
+gha[, 100*sum(rowSums(.SD[, .(landown, -landrent)], na.rm=T)>0, na.rm=T)/.N, by=year]
+#    year       V1
+# 1: 2012 43.64558
+# 2: 2013 42.24292
+# 3: 2006 50.79583
+# 4: 2005 52.52918
+# 5:   98 26.94873
+# 6:   99 21.75000
+# => best to use this approach for `croparea`
+
+# Recode year
+gha[year==98, year := 1998]
+gha[year==99, year := 1999]
+
+# Recode rural
+gha[rural=="1", rural := "urban"]
+gha[rural=="2", rural := "rural"]
+
+# Add pretty survey labels
+gha[, survey := factor(svyCode, 
+  lev=c("gha-glss6", "gha-glss5", "gha-glss4"), lab=c("2012/13", "2005/06", "1998/99"))]
+
+gha[, summary(weight)]
+#  Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+# 0.127  113.600  338.000  386.100  571.900 3476.000 
+# => OK
+
+
+#####################################################################################
+# GLSS5 and GLSS6 - Input Uses
+#####################################################################################
+# Received from Eduardo on 2017/06/10 at
+# `~/Data/GHA-GLSS6/temp/maggie_reduced_march10_2017.dta`
+tmp <- read.dta("~/Data/GHA-GLSS6/temp/maggie_reduced_march10_2017.12.dta")
+gha.lbl <- rbind(gha.lbl, data.table(
+  varCode=names(tmp),
+  varLabel=attr(tmp, "var.labels"),
+  source="maggie_reduced_march10_2017.dta"), fill=T)
+
+tmp <- data.table(tmp)
+tmp[, .N, keyby=surveyr]
+#    surveyr     N
+# 1:    2005  8687
+# 2:    2013 16772
+
+tmp[surveyr==2013, summary(hhid)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000  
+gha[survey=="2012/13", summary(hhid)]
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 6000000 6030000 6061000 6061000 6091000 6120000 
+# => seems OK to merge
+
+tmp[surveyr==2005, summary(hhid)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000
+gha[survey=="2005/06", summary(hhid)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 500100  514600  529100  529100  543600  558000
+# => OK too
+
+# Merge in all input use vars
+setkey(tmp, hhid)
+setkey(gha, hhid)
+gha <- gha[tmp, `:=`(
+  seeds = i.aseeds,
+  fert_any = i.afertilizer,
+  fert_inorg = i.afertilizer_inorganic,
+  fert_org = i.aorganic_fertilizer,
+  herb = i.aherbicides,
+  pest = i.ainsecticides,
+  irr = i.airrigation,
+  fuel = i.aFuel_and_maintenance,
+  hired_labor = i.ahired_labour)]
+
+# Verify
+gha[, lapply(.SD, mean, na.rm=T), by=svyCode, 
+  .SDcols=c("seeds", "fert_any", "herb", "pest", "irr", "fuel", "hired_labor")]
+#      svyCode      seeds  fert_any      herb      pest         irr      fuel hired_labor
+# 1: gha-glss4        NaN       NaN       NaN       NaN         NaN       NaN         NaN
+# 2: gha-glss5 0.24618659 0.1729020 0.1532458 0.1645974 0.003902093 0.1590990   0.4968074
+# 3: gha-glss6 0.09843787 0.2775459 0.3269735 0.1836394 0.005067970 0.1890055   0.2805867
+
+# Refresh all survey designs below
+
+```
+
+```{r gha-geo, eval=FALSE}
+
+#####################################################################################
+# Geographic Stratification
+#####################################################################################
+# Add and harmonize strata vars across all waves 
+# Forgot to include `ez`, `loc5`, and to recode `region` and `district`
+# We should also make sure that `region` and `district` can be mapped (done for DSG in 2016)
+# Maybe also add XY district centroids, since we have no usable GPS coords.
+rm(list=ls())
+load("./tmp/2017-agra-aasr_GHA_waves.RData")
+load("./tmp/2017-agra-aasr_GHA_merged.RData")
+
+# GLSS4 Recodes
+# --- ez
+# 1 Coastal
+# 2 Forest
+# 3 Savannah
+# --- loc5
+# 1 Accra
+# 2 Other Urban
+# 3 Rural Coastal
+# 4 Rural Forest
+# 5 Rural Savannah
+# --- loc3
+# 1 Accra
+# 2 Other Urban
+# 3 Rural
+# --- region
+# 1 Western
+# 2 Central
+# 3 Greater Accra
+# 4 Eastern
+# 5 Volta
+# 6 Ashanti
+# 7 Brong Ahafo
+# 8 Northern
+# 9 Upper East
+# 10 Upper West
+
+levels(gha$region)
+#  [1] "Western"       "Central"       "Greater Accra" "Volta"         "Eastern"       "Ashanti"      
+#  [7] "Brong Ahafo"   "Northern"      "Upper East"    "Upper West"    "western"       "central"      
+# [13] "greater accra" "volta"         "eastern"       "ashanti"       "brong ahafo"   "northern"     
+# [19] "upper east"    "upper west"    "1"             "2"             "3"             "5"            
+# [25] "4"             "6"             "7"             "8"             "9"             "10" 
+
+levels(gha$region) <- c(
+"Western"       ,"Central"       ,"Greater Accra" ,"Volta"         ,"Eastern"       ,"Ashanti"      
+,"Brong Ahafo"   ,"Northern"      ,"Upper East"    ,"Upper West"    ,"Western"       ,"Central"      
+,"Greater Accra" ,"Volta"         ,"Eastern"       ,"Ashanti"       ,"Brong Ahafo"   ,"Northern"     
+,"Upper East"    ,"Upper West"    ,"Western"       ,"Central"      ,"Greater Accra"  ,"Volta"            
+,"Eastern"       ,"Ashanti"      ,"Brong Ahafo"    ,"Northern"     ,"Upper East"     ,"Upper West")
+
+table(gha$region)
+#  Western       Central Greater Accra         Volta       Eastern       Ashanti   Brong Ahafo 
+#     3191          2991          4040          3114          3358          4615          2956 
+# Northern    Upper East    Upper West 
+#     2857          2167          2168 
+
+# Merge in `ez` and `loc5`
+setkey(gha97.hh, clust, nh)
+setkey(gha, clust, nh)
+gha[gha97.hh, `:=`(ez=as.character(i.ez), loc5=as.character(i.loc5))]
+gha[, table(ez)]
+gha[, table(loc5)]
+  
+gha[ez=="1", ez := "Coastal"]
+gha[ez=="2", ez := "Forest"]
+gha[ez=="3", ez := "Savannah"]
+
+gha[loc5=="1", loc5 := "Accra"]
+gha[loc5=="2", loc5 := "Other Urban"]
+gha[loc5=="3", loc5 := "Rural Coastal"]
+gha[loc5=="4", loc5 := "Rural Forest"]
+gha[loc5=="5", loc5 := "Rural Savannah"]
+
+gha05.hh[, .(aez, ez, loc5, loc7)]
+setkey(gha05.hh, clust, nh)
+setkey(gha, clust, nh)
+gha[gha05.hh, `:=`(ez=i.ez, loc5=i.loc5)]
+gha[, table(ez)]
+gha[, table(loc5)]
+
+# GLSS5 Recodes
+# `loc5` is not found in metadata so assume same as GLSS4
+gha[loc5=="1", loc5 := "Accra"]
+gha[loc5=="2", loc5 := "Other Urban"]
+gha[loc5=="3", loc5 := "Rural Coastal"]
+gha[loc5=="4", loc5 := "Rural Forest"]
+gha[loc5=="5", loc5 := "Rural Savannah"]
+
+gha[, table(loc5)]
+# loc5
+#  Accra    Other Urban  Rural Coastal   Rural Forest Rural Savannah 
+#   1727           4090           1769           4085           3014 
+          
+gha12.hh[, .(ez, loc5, loc7)]
+setkey(gha12.hh, clust, nh)
+setkey(gha, clust, nh)
+gha[gha12.hh, `:=`(ez=i.ez, loc5=i.loc5)]
+gha12.hh[, table(ez)]
+gha[, table(ez)]
+gha[, table(loc5)]
+
+# GLSS6 Recodes
+gha[ez=="savannah", ez := "Savannah"]
+gha[ez=="forest", ez := "Forest"]
+gha[ez=="coastal", ez := "Coastal"]
+
+gha[loc5=="Accra (GAMA)", loc5 := "Accra"]
+gha[loc5=="Other Urban ", loc5 := "Other Urban"]
+
+# Verify
+gha[, sum(is.na(ez)), by=wave]
+#    wave V1
+# 1:    4  0
+# 2:    5  0
+# 3:    6  0
+
+gha[, sum(is.na(loc5)), by=wave]
+#    wave V1
+# 1:    4  0
+# 2:    5  0
+# 3:    6  0
+
+# Convert all to clean factors
+gha[, rural := factor(rural, lev=c("rural", "urban"))]
+gha[, ez := factor(ez, lev=c("Coastal", "Forest", "Savannah", "GAMA"))]
+gha[, region := factor(region, lev=c("Western", "Central", "Greater Accra", "Eastern", 
+  "Volta", "Ashanti", "Brong Ahafo", "Northern", "Upper East", "Upper West"))]
+gha[, svyCode := factor(svyCode, lev=c("gha-glss6", "gha-glss5", "gha-glss4"))]
+gha[, wave := factor(wave, lev=c(6,5,4), lab=c("wave 6", "wave 5", "wave 4"))]
+gha[, year := as.integer(year)]
+gha[, month := as.integer(month)]
+gha[, date := as.Date(paste(year, month, "01", sep="-"))]
+
+##########################################
+# Recode survey districts
+# Merge in labels from Beliyou's `gha.xtra`
+# => Beliyou seems to have dropped the raw ids in `hhid_merge`, not sure I can merge
+# )-: and in Sara's poverty data files I only have GLSS6
+# Load all survey district maps instead (from the work done for HarvestChoice)
+g2 <- shapefile("~/Projects/hc-data/_global_codes/out/r16.12/svyL2Maps_2016.12.shp")
+
+# Keep Ghana
+g2 <- g2[g2$ISO3=="GHA",]
+
+# Verify codification
+g2.dt <- data.table(g2@data)
+g2.dt[, rn := row.names(g2)]
+table(g2.dt$svyCode)
+g2.dt[, svyCode := factor(svyCode, lev=c("gha2005", "gha2012"), lab=c("gha-glss5", "gha-glss6"))]
+# => GLSS4 is missing
+table(g2.dt$svyL1Nm)
+g2.dt[, svyL1Nm := factor(svyL1Nm)]
+levels(g2.dt$svyL1Nm) <- c(
+"Ashanti", "Ashanti", "Brong Ahafo", "Brong Ahafo", "Central", "Central", "Eastern", "Eastern", "Greater Accra", "Greater Accra", "Northern", "Northern", "Upper East", "Upper East", "Upper West", "Upper West", "Volta", "Volta", "Western", "Western")
+
+anyDuplicated(g2.dt, on="svyL2Nm")
+setkey(g2.dt, svyCode, svyL1Nm, svyL2Cd)
+setkey(gha, svyCode, region, district)
+gha[g2.dt, `:=`(svyL2Cd=i.svyL2Cd, svyL2Nm=i.svyL2Nm, prttyNm=i.prttyNm)]
+gha[is.na(svyL2Cd), .N, by=svyCode]
+#      svyCode    N
+# 1: gha-glss4 5998
+# => all merged aside from GLSS4, good!
+
+# Also add XY
+gha[g2.dt, `:=`(X=i.X, Y=i.Y)]
+
+# TODO Generate a GLSS4 district map
+# Might have created one for Beliyou's resilience study?
+rm(list=ls())
+load("~/Projects/ssa-geospat/tmp/resilience.RData")
+unique(g2$svyCode)
+# => no, there's no map for GLSS4
+
+
+
+# Map dominant region and AEZ to make sure everything is correct
+tmp <- gha[, .(ez=modal(ez, na.rm=T)), keyby=.(svyCode, region, svyL2Cd)]
+setkey(g2.dt, svyCode, svyL1Nm, svyL2Cd)
+g2.dt[tmp, ez := i.ez]
+
+# Update complete map with corrected attributes
+g2 <- SpatialPolygonsDataFrame(g2, data.frame(g2.dt), match.ID="rn")
+
+spplot(g2[g2$svyCode=="gha-glss5",], zcol="ez")
+# => 3 districts that look a little dubious
+spplot(g2[g2$svyCode=="gha-glss6",], zcol="ez")
+# => OK
+
+# Save for SpatialDev
+shapefile(g2[g2$svyCode=="gha-glss6",], "~/Data/GHA-GLSS6/maps/gha-glss6-svyMap_L2.shp")
+
+```
+
+
+```{r gha-typo, eval=FALSE}
+
+##################################################################################### 
+# Farm Typology 
+#####################################################################################
+# Search for a sensible cultivated area in the raw data files
+rm(list=ls())
+load("./tmp/2017-agra-aasr_GHA_waves.RData")
+# => does not exist and not in `gha98_usaid.dta` either
+
+# CULTIVATED AREA
+# See discussion below, we settle for using RIGA operated area
+gha[, croparea := NULL]
+gha[, croparea := rowSums(.SD[, .(landown, landshare, -landrent)], na.rm=T)]
+gha[, 100*sum(croparea > 0 & croparea <= 4, na.rm=T)/.N, by=.(wave, rural)]
+#    wave rural        V1
+# 1:    6 urban 15.768972
+# 2:    6 rural 47.389300
+# 3:    5 urban 19.983416
+# 4:    5 rural 53.580588
+# 5:    4 rural 24.848644
+# 6:    4 urban  7.958163
+
+gha[, 100*sum(croparea > 4, na.rm=T)/.N, by=.(wave, rural)]
+#    wave rural        V1
+# 1:    6 urban  3.317663
+# 2:    6 rural 13.841535
+# 3:    5 urban  4.588170
+# 4:    5 rural 17.163149
+# 5:    4 rural  9.818373
+# 6:    4 urban  2.819463
+
+# SHF 4ha dummy `croparea_clas` (3-class)
+gha[, croparea_clas := NULL]
+gha[, max(croparea, na.rm=T)]
+gha[croparea>0, croparea_clas := cut(croparea, c(-1,2,4,110), labels=c("<= 2 ha", "2-4 ha", "> 4 ha"), ordered=T, right=F)]
+summary(gha$croparea_clas)
+# <= 2 ha  2-4 ha  > 4 ha    NA's 
+#    6597    3555    3009   18296 
+
+# There are 5512 hlds with some crop production but no land
+# I'm tempted to impute `croparea` in those cases
+gha[, sum(totcropprod>0, na.rm=T), by=croparea_clas]
+#   croparea_clas   V1
+# 1:            NA 5512
+# 2:       <= 2 ha 4951
+# 3:        2-4 ha 3025
+# 4:        > 4 ha 2558
+
+# What is the median crop production per ha per survey. Use that to impute `croparea`.
+gha[, totcropprod_ha := median(ifelse(totcropprod==0, NA, totcropprod)/croparea, na.rm=T), by=svyCode]
+gha[, croparea_imp := croparea]
+gha[totcropprod>0 & (is.na(croparea) | croparea==0), croparea_imp := totcropprod/totcropprod_ha]
+# => some issues with GLSS4, can't use this approach
+gha[, croparea_q1 := median(ifelse(croparea==0, NA, croparea), na.rm=T), by=.(svyCode, region)]
+gha[totcropprod>0 & (is.na(croparea_imp) | croparea_imp==0), croparea_imp := croparea_q1]
+
+# SHF 4ha dummy `croparea_clas` (3-class) -- imputed
+gha[, croparea_clas := NULL]
+gha[, max(croparea_imp, na.rm=T)]
+gha[croparea_imp>0, croparea_clas := cut(croparea_imp, c(-1,2,4,110), labels=c("<= 2 ha", "2-4 ha", "> 4 ha"), ordered=TRUE, right=FALSE)]
+summary(gha$croparea_clas)
+# <= 2 ha  2-4 ha  > 4 ha    NA's 
+#   10788    4398    3487   12784
+
+# There are still 226 hlds with some `shagprodsold` but no land (in all 3 surveys)
+# I'm tempted to impute `croparea` again
+gha[, sum(shagprodsold>0, na.rm=T), by=croparea_clas]
+#    croparea_clas   V1
+# 1:            NA  226
+# 2:       <= 2 ha 6265
+# 3:        2-4 ha 4136
+# 4:        > 4 ha 2705
+
+# Impute inconsistent `croparea` using median `croparea_imp` per survey and per tercile of
+# `shagprodsold`
+gha[, shagprodsold_na := ifelse(shagprodsold==0, NA, shagprodsold)]
+gha[, shagprodsold_q3 := as.character(cut2(shagprodsold_na, g=3)), by=svyCode]
+gha[, croparea_q1 := median(ifelse(croparea_imp==0, NA, croparea_imp), na.rm=T), by=shagprodsold_q3]
+gha[shagprodsold>0 & (is.na(croparea_imp) | croparea_imp==0), croparea_imp := croparea_q1]
+
+# SHF 4ha dummy `croparea_clas` (3-class) -- imputed
+gha[, croparea_clas := NULL]
+gha[, max(croparea_imp, na.rm=T)]
+gha[croparea_imp>0, croparea_clas := cut(croparea_imp, c(-1,2,4,226), labels=c("<= 2 ha", "2-4 ha", "> 4 ha"), ordered=T, right=F)]
+summary(gha$croparea_clas)
+# <= 2 ha  2-4 ha  > 4 ha    NA's 
+#   10084    5503    3312   12558 
+# => OK
+
+# Clean up intermediary vars
+gha[, `:=`(totcropprod_qtl=NULL, shagprodsold_na=NULL, shagprodsold_q3=NULL, 
+  croparea_q1=NULL, totcropprod_ha=NULL)]
+
+# HHlds with ag share but no/null aggross?
+gha[shagprodsold>0, .N, by=aggross>0]
+#    aggross     N
+# 1:    TRUE 13332
+# => OK
+
+gha[aggross>0, .N, by=shagprodsold>0]
+#    shagprodsold     N
+# 1:         TRUE 13332
+# 2:        FALSE  3433
+
+# Other internal consistency checks
+# HHlds with crop share but no/null croparea?
+gha[, sum(shcropsold>0, na.rm=T), by=croparea_clas]
+#    croparea_clas   V1
+# 1:            NA    0
+# 2:       <= 2 ha 5265
+# 3:        2-4 ha 3804
+# 4:        > 4 ha 2592
+# => OK
+
+pplot(shcropsold~survey, gha)
+pplot(shcropsold~survey+croparea_4ha, gha)
+pplot(shagprodsold~survey+croparea_4ha, gha)
+
+##########################################
+# Construct other missing typology vars, using RIGA components:
+# - cropsales = totcropsold
+# - cropvalue = totcropprod
+# - cropsales_sh = cropsales/cropvalue (but can compare with `shagprodsold`)
+# - agsales = totagsold 
+# - aggross = totagprod + farmrntimp + agr_wge + selfimp1 (farm)
+# - naggross = transfersgrossimp + otherincimp + nonfarmrntimp + nonagr_wge + selfemp (non-farm)
+# - totgross = aggross + naggross
+# - naggross_sh = naggross/totgross
+vars <- c("totcropsold", "totcropprod", "shagprodsold", "totagsold", "totagprod",
+  "farmrntimp", "agr_wge", "selfimp1", 
+  "transfersgrossimp", "otherincimp", "nonfarmrntimp", "nonagr_wge", "selfemp")
+
+# Summarize all these vars across waves
+tmp <- gha[, lapply(.SD, summary), .SDcols=vars, by=wave]
+sapply(gha[, .SD, .SDcols=vars], class)
+# => `selfimp1` and `selfemp` have negative values
+gha.lbl[varCode %in% c("selfimp1", "selfemp"), varLabel]
+# [1] "Net HH Income from Non-Ag Business- Agr, Fishing, Imptd" => ignore completely
+# [2] "Annual net nonfarm self employment income, imputed" => impute negative to NA
+
+##########################################
+# CROP PRODUCTION
+summary(gha$totcropprod)
+# => too many missing!!
+gha[, sum(is.na(totcropprod)), by=svyCode]
+gha[, sum(is.na(shagprodsold)), by=svyCode]
+gha[, median(totcropprod, na.rm=T), by=croparea_clas]
+# => some hhlds have no/missing land but some crop production
+#    croparea_clas        V1
+# 1:            NA  364.9028
+# 2:       <= 2 ha 2663.6998
+# 3:        2-4 ha 3150.7749
+# 4:        > 4 ha 9092.4375
+gha[, cropvalue := totcropprod]
+
+##########################################
+# CROP SALES
+# Options #1
+summary(gha$totcropsold)
+gha[, median(totcropsold, na.rm=T), by=croparea_clas]
+#    croparea_clas   V1
+# 1:            NA    0
+# 2:       <= 2 ha  270
+# 3:        2-4 ha 1240
+# 4:        > 4 ha 3883
+# => seems land consistent
+gha[, cropsales := totcropsold]
+gha[, cropsales_sh := cropsales/cropvalue]
+gha[, summary(cropsales_sh)]
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+# 0.000   0.000   0.254   0.336   0.601   1.000   15411 
+gha[, summary(shagprodsold)]
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+# 0.0000  0.0000  0.0000  0.1998  0.3545  1.0000     310 
+# => probably just more 0
+gha[cropsales_sh>0, .N, by=svyCode]
+gha[shagprodsold>0, .N, by=svyCode]
+# Option #2 more positive obs if using `shagprodsold`
+gha[, cropsales_sh := shagprodsold]
+# Option #3 `shcropsold` (might have been imputed by RIGA)
+#gha[, cropsales_sh := shcropsold]
+
+gha[, 100*sum(aggross>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural        V1
+# 1: 2012/13 urban  1.799866
+# 2: 2012/13 rural 85.804653
+# 3: 2005/06 urban  2.515202
+# 4: 2005/06 rural 87.433419
+# 5: 1998/99 rural 86.733351
+# 6: 1998/99 urban 36.834925
+
+gha[, 100*sum(shcropsold>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural       V1
+# 1: 2012/13 urban  0.00000
+# 2: 2012/13 rural 58.80776
+# 3: 2005/06 urban  0.00000
+# 4: 2005/06 rural 64.54922
+# 5: 1998/99 rural 64.80653
+# 6: 1998/99 urban 20.10005
+
+gha[, 100*sum(shagprodsold>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural       V1
+# 1: 2012/13 urban  0.00000
+# 2: 2012/13 rural 68.53222
+# 3: 2005/06 urban  0.00000
+# 4: 2005/06 rural 73.58453
+# 5: 1998/99 rural 70.65017
+# 6: 1998/99 urban 23.91996
+
+gha[shagprodsold>0, 100*sum(shcropsold>0, na.rm=T)/.N, by=.(survey, rural)]
+#     survey rural       V1
+# 1: 2012/13 rural 85.81039
+# 2: 2005/06 rural 87.72118
+# 3: 1998/99 rural 91.72876
+# 4: 1998/99 urban 84.03042
+
+# TOTAL AG SALES
+summary(gha$totagsold)
+gha[, median(totagsold, na.rm=T), by=croparea_clas]
+#    croparea_clas     V1
+# 1:            NA    0.0
+# 2:       <= 2 ha  622.0
+# 3:        2-4 ha 1723.0
+# 4:        > 4 ha 5069.5
+gha[, agsales := totagsold]
+gha[agsales>0, .N, by=svyCode]
+
+# TODO Check to see if IFPRI constructed sales for urban hhlds
+
+
+
+##########################################
+# GROSS FARM INCOME
+summary(gha$farmrntimp)
+summary(gha$agr_wge)
+summary(gha$selfimp1)
+# => ignore `selfimp1` for now
+gha[, aggross := rowSums(.SD[, .(totagprod, farmrntimp, agr_wge)], na.rm=T)]
+gha[aggross>0, .N, by=svyCode]
+
+# GROSS NON-FARM INCOME
+summary(gha$transfersgrossimp)
+summary(gha$otherincimp)
+summary(gha$nonfarmrntimp)
+summary(gha$nonagr_wge)
+summary(gha$selfemp)
+gha[, summary(ifelse(selfemp < 0, NA, selfemp))]
+# => not too many negatives, only 2,200, and mostly in GLSS5 (??)
+boxplot(selfemp~svyCode, gha)
+gha[, naggross := rowSums(.SD[, .(transfersgrossimp, otherincimp, nonfarmrntimp, nonagr_wge, ifelse(selfemp < 0, NA, selfemp))], na.rm=T)]
+gha[, totgross := rowSums(.SD[, .(aggross, naggross)], na.rm=T)]
+gha[, naggross_sh := naggross/totgross]
+gha[, summary(naggross_sh), by=svyCode]
+
+gha[, sum(cropsales_sh > 0, na.rm=T), by=croparea_clas]
+#    croparea_clas   V1
+# 1:            NA 3792
+# 2:       <= 2 ha 3291
+# 3:        2-4 ha 2494
+# 4:        > 4 ha 2308
+# => imputed:
+#    croparea_clas   V1
+# 1:            NA    0
+# 2:       <= 2 ha 6269
+# 3:        2-4 ha 4358
+# 4:        > 4 ha 2705
+
+gha[, sum(naggross_sh > 0, na.rm=T), by=croparea_clas]
+# => imputed:
+#    croparea_clas    V1
+# 1:            NA 10244
+# 2:       <= 2 ha  6595
+# 3:        2-4 ha  3343
+# 4:        > 4 ha  1990
+
+
+
+##########################################
+# SHF 4ha dummy `croparea_4ha` (2-class)
+gha[, croparea_4ha := NULL]
+gha[croparea_imp>0, croparea_4ha := factor(croparea_imp <= 4, levels=c(T, F), labels=c("<= 4 ha", "> 4 ha"))]
+summary(gha$croparea_4ha)
+# <= 4 ha  > 4 ha    NA's 
+#   15587    3312   12558 
+
+##########################################
+# Crop commercialization dummy `cropsales_clas` (3-class)
+gha[, cropsales_clas := NULL]
+gha[, cropsales_clas := cut(cropsales_sh, c(-1,.05,.5,1.1), labels=c("LoC", "MeC", "HiC"), ordered=T, right=F)]
+summary(gha$cropsales_clas)
+# -- shagprodsold
+#   LoC   MeC   HiC  NA's 
+# 18750  6452  5945   310 
+# -- shcropsold
+#  LoC   MeC   HiC  NA's 
+# 9288  5579  5330 11260 
+# => there's a big difference in the number of NA's
+
+
+##########################################
+# Income diversification dummy `noaggross_clas` (3-class)
+gha[, naggross_clas := NULL]
+gha[, naggross_clas := cut(naggross_sh, c(-1,1/3,2/3,1.1), labels=c("LoD", "MeD", "HiD"), ordered=T, right=F)]
+summary(gha$naggross_clas)
+#   LoD   MeD   HiD  NA's 
+# 10549  1934 16268  2706 
+
+##########################################
+# Classification dummy `` (9-class)
+class9 <- c("LoCLoD", "LoCMeD", "LoCHiD",  "MeCLoD", "MeCMeD", "MeCHiD", 
+  "HiCLoD", "HiCMeD", "HiCHiD")
+gha[, class9 := NULL]
+gha[, class9 := factor(paste0(cropsales_clas, naggross_clas), levels=class9)]
+summary(gha$class9)
+# LoCLoD LoCMeD LoCHiD MeCLoD MeCMeD MeCHiD HiCLoD HiCMeD HiCHiD   NA's 
+#   2400    500  13454   4387    752   1313   3762    682   1501   2706 
+
+
+```
+
+
+```{r gha-est, eval=FALSE}
+
+# - GLSS4: EAs were first stratified into 3 ecological zones (Coastal, Forest,
+# Savannah), and then within each zone further stratification was done into rural or
+# urban areas 
+# - GLSS5: EAs were first stratified into 10 administrative regions;
+# within each region EAs were further sub-divided into rural or urban areas; EAs were
+# also classified into  ecological zones and inclusion of Accra (GAMA) so that the
+# survey results may be presented across 1) Coastal, 2) Forest, and 3) Northern
+# Savannah, and 4) Accra. 
+# - GLSS6: EAs were allocated into 10 regions using
+# probability proportional to population size (PPS), then further divided into urban
+# and rural localities.
+#
+# GLSS4 (from doco): to obtain national estimates, the sample figures have to be
+# grossed up by the appropriate factor. The 5998 households covered in the GLSS 4
+# contained 25,694 individuals and an average household size of 4.3. Using the 1984
+# population figure of 12.1 million (mid-March 1984) and the official growth rate of
+# 2.6 the projected March 1999 population is about 18.3 million. This gives a grossing
+# up multiplier of 712 (18.3 million divided by 25,964). The corresponding multiplier,
+# when the weights are applied, is 708.
+
+# TODO => looks to me like weights need to be scaled (see doco)
+gha[survey=="1998/99", weight := weight*708]
+
+# Define 2-stage stratified survey designs, one for each wave
+gha.svy <- list(
+  `gha6` = svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2012/13"]),
+  `gha5` =  svydesign(~clust+hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha[survey=="2005/06"]),  
+  `gha4` = svydesign(~clust+hhid, strata=~rural, w=~weight, nest=T,
+    data=gha[survey=="1998/99"])
+)
+
+# Same using IFPRI's data (note vars `cluster` and `ez` are missing from this dataset)
+# so measures of errors will be slightly off
+gha.xtra.svy <- list (
+  `gha6` = svydesign(~hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha.xtra[survey=="2012/13"]),  
+  `gha5` = svydesign(~hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha.xtra[survey=="2005/06"]),  
+  `gha4` = svydesign(~hhid, strata=~region+rural, w=~weight, nest=T,
+    data=gha.xtra[survey=="1998/99"])
+)
+
+# Verify sampling designs
+summary(gha.svy[[1]])
+# Stratified 2 - level Cluster Sampling design (with replacement)
+# With (1200, 16772) clusters.
+# svydesign(~clust + hhid, strata = ~region + rural, w = ~weight, 
+#     nest = T, data = gha[survey == "2012/13"])
+# Probabilities:
+#      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+# 0.0002877 0.0021060 0.0030350 0.0043240 0.0048720 0.0315900 
+# First-level Stratum Sizes: 
+#            Western Central Greater Accra Eastern Volta Ashanti Brong Ahafo Northern Upper East Upper West
+# obs           1718    1602          1924    1804  1574    1981        1621     1702       1447       1399
+# design.PSU     120     116           144     128   116     148         116      116        100         96
+# actual.PSU     120     116           144     128   116     148         116      116        100         96
+
+summary(gha.svy[[2]])
+summary(gha.svy[[3]])
+
+# Subset survey sample to farms
+gha.svy.farm <- lapply(gha.svy, subset, !is.na(croparea_clas))
+
+# Subset survey sample to only SHF (note that they exclude farms with no `croparea`)
+gha.svy.shf <- lapply(gha.svy, subset, croparea_4ha=="<= 4 ha")
+
+# Verify sampling design (e.g. total population)
+for (i in gha.svy) print(svytotal(~hhsize_imp, i, na.rm=T)/1E6)
+#             total     SE
+# hhsize_imp 18.215 749774
+#             total     SE
+# hhsize_imp 22.075 410936
+#             total     SE
+# hhsize_imp 26.107 573636
+
+gha[survey=="1998/99", summary(weight)]
+gha[survey=="2005/06", sum(weight), by=rural]
+
+gha[survey=="1998/99", sum(is.na(hhsize))]
+# => a few missing `hhsize` in GLSS4, should impute with region median
+tmp <- gha[, median(hhsize, na.rm=T), keyby=.(survey, region)]
+setkey(gha, survey, region)
+gha[tmp, hhsize_imp := ifelse(is.na(hhsize), V1, hhsize)]
+
+for (i in gha.svy) print(svytotal(~I(!is.na(croparea_clas)), i, na.rm=T)/1E6)
+#                                total     SE
+# I(!is.na(croparea_clas))FALSE 1.4425 121648
+# I(!is.na(croparea_clas))TRUE  2.8032 122597
+#                                total    SE
+# I(!is.na(croparea_clas))FALSE 2.2696 86031
+# I(!is.na(croparea_clas))TRUE  3.2685 89771
+#                                total     SE
+# I(!is.na(croparea_clas))FALSE 3.5728 123995
+# I(!is.na(croparea_clas))TRUE  3.0287  88303
+
+for (i in gha.svy.farm) svymean(~croparea_4ha, gha.svy.farm, na.rm=T)
+#                         mean     SE
+# croparea_4ha<= 4 ha 0.971845 0.0034
+# croparea_4ha> 4 ha  0.028155 0.0034
+
+svytotal(~hhsize, gha.svy.shf, na.rm=T)
+#            total      SE
+# hhsize 106349144 4497228
+
+svymean(~cropsales_sh, gha.svy.farm, na.rm=T)
+#                mean     SE
+# cropsales_sh 0.1141 0.0087
+
+svyby(~cropsales_sh, ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
+#         croparea_4ha cropsales_sh         se
+# <= 4 ha      <= 4 ha    0.1220143 0.00648625
+# > 4 ha        > 4 ha    0.1768049 0.04914111
+
+svyby(~cropsales_sh, ~croparea_4ha, gha.svy.farm, svyquantile, quantiles=.5, ci=T, na.rm=T)*100
+#         croparea_4ha cropsales_sh          se
+# <= 4 ha           NA    0.0771759 0.009096591
+# > 4 ha            NA    0.2983541 0.297538378
+
+svyby(~agsalespc, ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
+#         croparea_4ha agsalespc       se
+# <= 4 ha      <= 4 ha   87756.2 13964.07
+# > 4 ha        > 4 ha  140465.3 44667.0
+
+svymean(~I(naggross_sh*100), subset(gha.svy.farm, !is.na(croparea)), na.rm=T)
+#                         mean     SE
+# I(noaggross_sh * 100) 22.044 0.0127
+# I(noaggross_sh * 100) 17.446 1.1725
+
+svyquantile(~I(naggross_sh*100), gha.svy.farm, .5, na.rm=T)
+#                             0.5
+# I(noaggross_sh * 100) 0.8265929
+
+svyby(~I(naggross_sh*100), ~croparea_4ha, gha.svy.farm, svymean, na.rm=T)
+#         croparea_4ha I(noaggross_sh * 100)       se
+# <= 4 ha      <= 4 ha              17.58628 1.190880
+# > 4 ha        > 4 ha              12.53712 3.285989
+
+svyby(~I(naggross_sh*100), ~croparea_4ha, gha.svy.farm, svyquantile, .5, ci=T, na.rm=T)
+#         croparea_4ha I(noaggross_sh * 100)         se
+# <= 4 ha      <= 4 ha             0.6300151 0.08870994
+# > 4 ha        > 4 ha             0.3270542 0.12108961
+
+```
+
+
+```{r gha-save, eval=FALSE}
+
+#####################################################################################
+# Save constructed vars for all individual waves
+#save.image("./tmp/2017-agra-aasr_GHA_waves.RData")
+
+# Keep only combined datasets
+save(g2, gha, gha.lbl, gha.xtra, gha.xtra.lbl, vars.inc, vars.char, pplot,
+  gha.svy, gha.svy.farm, gha.svy.shf,
+  file="./tmp/2017-agra-aasr_GHA_merged.RData")
+
+# Save workspace
+rm(tmp, tmp.lbl, i, x, tmpha, tmphb, tmpr, tmp1, tmp2, summaryname, 
+  svyCrossTab, svyCrossPlot)
+save.image("./tmp/2017-agra-aasr_GHA.RData")
+
+```
+
+Relevant sources of household-level micro records for Ghana are the **6 rounds of Ghana Living Standards Surveys** in particular:
+
+- 1998/1999 **GLSS4** (EAs were first stratified into 3 ecological zones (Coastal, Forest, Savannah), and then within each zone further stratification was done into rural or urban areas)
+- 2005/2006 **GLSS5** (EAs were first stratified into 10 administrative regions; within each region EAs were further sub-divided into rural or urban areas; EAs were also classified into  ecological zones and inclusion of Accra (GAMA) so that the survey results may be presented across 1) Coastal, 2) Forest, and 3) Northern Savannah, and 4) Accra).
+- 2012/2013 **GLSS6** (EAs were allocated into 10 regions using probability proportional to population size (PPS), then further divided into urban and rural localities).
+
+In contrast to the latest 2 waves GLSS4 is only representative for 3 (ecology) x 2 (rural/urban) zones.
+
+GLSS collect information on the demographic characteristics of the population, their education, health, employment and time use, migration, housing conditions and household agriculture, with a specific focus on **labour force**, with a labour force module expanded in GLSS6 to include a section on child labour.
+
+```{r gha-samples}
+
+tmp <- data.frame(
+  Survey=c("GLSS4", "GLSS5", "GLSS6"),
+  Year=c("1997/98", "2005/06", "2012/13"),
+  Regions=c(10, 10, 10),
+  Districts=c(102, 110, 170),
+  `Sample`=c(5998, 8687, 16772),
+  `Urban`=c(2199, 3618, 7445),
+  `Rural`=c(3799, 5069, 9327))
+
+kable(tmp,
+  justify="ccrrrrrrrr", format.args=list(big.mark=","),
+  caption="Composition of GLSS Survey Samples")
+
+```
+
+RIGA aggregates were used to estimate both crop sales and farm vs. non-farm income. 
+
+### Cultivated Area
+
+RIGA does not provide annual cultivated area, instead we have measures of land owned, land rented out, and land under sharecropping. IFPRI/HarvestChoice produced pseudo-panel variables $landcul$ and $landown$ (but the results look a little dubious for GLSS4, see \@ref(tab:tabcultareahh) below). Using operated area derived from RIGA instead (i.e. $croparea=landown+landshare-landrent$) does yield higher proportions of households for GLSS4 but lower for GLSS6. In general GLSS4 seems to exhibit poorer data quality.
+
+```{r gha-cultarea, results="asis"}
+
+tmpha <- gha.xtra[, 100*sum(landcul>0, na.rm=T)/.N, keyby=.(year, rural)]
+tmphb <- gha.xtra[, 100*sum(landown>0, na.rm=T)/.N, keyby=.(year, rural)]
+tmpr <- gha[, 100*sum(rowSums(.SD[, .(landown, landshare, -landrent)], na.rm=T)>0, na.rm=T)/.N, keyby=.(year, rural)]
+
+tmpha[, Source := "IFPRI (landcult)"]
+tmphb[, Source := "IFPRI (landown)"]
+tmpr[, Source := "RIGA"]
+tmp <- rbind(tmpha, tmphb, tmpr)
+
+table_options(HTMLcaption="(#tab:tabcultareahh) Proportions of sampled households with any cultivated area across survey years (mutliple sources shown)")
+html(tabular((`Year`=Factor(year))~Format(digits=2)*Heading("Percent oh Hhlds with Cultivated Area")*V1*Heading()*Factor(Source)*Heading()*Factor(rural)*Heading()*identity, 
+  data=tmp))
+
+```
+
+```{r gha-bplota, fig.cap="Cultivated Area (ha). Source: IFPRI 2016", fig.height=4.5, dev="png"}
+
+pplot(landcul~survey+rural, gha.xtra,
+  ylim=c(0,7), ylab="Cultivated Area (ha)",
+  note=gha.xtra[, 100*sum(is.na(landcul)|landcul==0)/.N])
+
+```
+
+```{r gha-bplotb, fig.cap="Farm Size (ha). Source: IFPRI 2016", fig.height=4.5, dev="png"}
+
+pplot(landown~survey+rural, gha.xtra,
+  ylim=c(0,7), ylab="Farm Size (ha)",
+  note=gha.xtra[, 100*sum(is.na(landown)|landown==0)/.N])
+
+```
+
+```{r gha-bplotc, fig.cap="Operated Area (ha). Source: FAO/RIGA", fig.height=4.5, dev="png"}
+
+pplot(rowSums(cbind(landown, landshare, -landrent), na.rm=T)~survey+rural, gha,
+  ylim=c(0,7), ylab="Operated Area (ha)",
+  note=gha[, 100*sum(is.na(croparea)|croparea==0)/.N])
+
+```
+
+In the following classification we use **option #3** (FAO/RIGA operated area) across the 3 waves.
+
+```{r gha-areacounts, results="asis"}
+
+table_options(HTMLcaption="(#tab:countsghaa) Count of Observations across Classes of Operated Area")
+html(tabular(Heading()*survey+1~Format(digits=0, big.mark=",")*(Heading()*croparea_clas+Heading("N (sample)")*1),
+  data=gha))
+
+table_options(HTMLcaption="(#tab:countsghab) Proportions of Observations across Classes of Operated Area (percent of full survey sample)")
+html(tabular(Heading()*survey+1~Format(digits=2, nsmall=1, big.mark=",")*Heading()*croparea_clas*Heading()*Percent(Equal(survey)),
+  data=gha))
+
+table_options(HTMLcaption="(#tab:countsghac) Proportions of Observations across Classes of Operated Area (percent of selected farm households)")
+html(tabular(Heading()*survey+1~Format(digits=2, nsmall=1, big.mark=",")*(Heading()*croparea_clas+1)*Heading()*Percent(Equal(survey)),
+  data=gha[!is.na(croparea_clas)]))
+
+```
+
+We further impute cultivated area for households with some amount of crop production and crop sales to ensure internal consistency in the sample (over 5,700 households reported crop sales but no cultivated area). Figure \@ref(fig:gha-bplotareaimputed) below show cultivated area post-imputation.
+
+```{r gha-bplotareaimputed, fig.cap="Cultivated Area (ha) (post-imputation)", fig.height=4.5, dev="png"}
+
+pplot(croparea_imp~survey+rural, ylim=c(0,7.4), gha, 
+  ylab="Operated Area (ha, imputed)",
+  note=gha[, 100*sum(is.na(croparea_imp)|croparea_imp==0)/.N])
+
+```
+
+
+### Crop Commercialization
+
+We evaluate multiple sources (and/or proxies) of aggregate household crop sales (again from FAO/RIGA and separately from IFPRI). Generally RIGA reports *gross* crop production, crop sales, and share of  crop production sold in $totcropprod$, $totcropsold$, and $shcropsold$ respectively. All other relevant variables are listed here:
+
+- $totcropprod$ -- value of total annual crop production
+- $totcropsold$ -- value of total annual crop production sold
+- $totagprod$ -- value of total annual agricultural production
+- $totagsold$ -- value of total annual agricultural production sold
+- $totlvstprod$ -- value of total annual livestock production
+- $totlivsold$ -- value total annual livestock production sold
+- $agowncons$ -- value total annual agricultural production consumed
+- $agmisc$ -- value total annual agricultural production- miscellaneous uses
+- $shagprodsold$ -- share of annual agricultural production sold in total agricultural production
+- $shagowncons$ -- share of annual agricultural production consumed in total agricultural productio
+- $shagmisc$ -- share of annual agricultural production misc in total agricultural production
+- $shcropsold$ -- share of total annual crop production sold in total crop production
+- $shlvstsold$ -- share of total annual livestock production sold in total livestock production
+- $cropincome1gross(imp)$ -- gross crop income (crop1)
+- $cropincome2gross(imp)$ -- gross crop income (crop2)
+- $livestockgross(imp)$ -- gross livestock income
+
+However the quality of these constructed variables for Ghana tends to vary widely across survey years.
+
+```{r gha-bplotsalesa, fig.cap="Sources of Crop Commercialization (FAO/RIGA $totcropsold$)", fig.height=4.5, dev="png"}
+
+pplot(I(100*totcropsold/totcropprod)~survey+rural, gha, alpha=.02,
+  ylab="Share of Crop Production Sold (%) Source: RIGA",
+  note=gha[, 100*sum(is.na(totcropsold/totcropprod)|totcropsold==0)/.N])
+
+```
+
+```{r gha-bplotsalesb, fig.cap="Sources of Crop Commercialization (FAO/RIGA $shcropsold$)", fig.height=4.5, dev="png"}
+
+pplot(I(100*shcropsold)~survey+rural, gha, alpha=.02,
+  ylab="Share of Crop Production Sold (%) Source: RIGA",
+  note=gha[, 100*sum(is.na(shcropsold)|shcropsold==0)/.N])
+
+```
+
+```{r gha-bplotsalesc, fig.cap="Sources of Crop Commercialization (FAO/RIGA $shagprodsold$)", fig.height=4.5, dev="png"}
+
+pplot(I(100*shagprodsold)~survey+rural, gha, alpha=.02,
+  ylab="Share of Ag. Production Sold (%) Source: RIGA",
+  note=gha[, 100*sum(is.na(shagprodsold)|shagprodsold==0)/.N])
+
+```
+
+Looking at the pirate plots above (and tables below), sales from agricultural products for urban households seem to have been excluded from RIGA aggregates (though that's not the case for GLSS4) OR urban households have largely abandoned farming over the past 12 years (also possible).
+
+```{r gha-tblsales, results="asis"}
+
+tmp1 <- gha[, .(
+  `Hhlds with Gross Ag Income` = 100*sum(aggross > 0, na.rm=T)/.N, 
+  `Hhlds with no Revenue from Farming` = 100*sum(aggross==0, na.rm=T)/.N, 
+  `Hhlds with Ag. Sales` = 100*sum(shagprodsold > 0, na.rm=T)/.N, 
+  `HHlds with Crop Sales` = 100*sum(shcropsold > 0, na.rm=T)/.N
+), keyby=.(survey, rural)]
+tmp2 <- gha[shagprodsold>0, .(
+    `Share of Crop Sales in Ag Sales` = 100*sum(shcropsold>0, na.rm=T)/.N
+    ), keyby=.(survey, rural)]
+tmp <- tmp2[tmp1]
+setcolorder(tmp, c(1:2,4:7,3))
+
+table_options(HTMLcaption="(#tab:ghatblsales) Sales of Crops and Agricultural Products (percent of sampled households) Source: FAO/RIGA)")
+html(tabular((`Wave`=survey)~Format(digits=2)*All(tmp)*Heading()*rural*Heading()*identity, 
+  data=tmp))
+
+```
+
+In the rest of the analysis we use FAO/RIGA share of agricultutal products sold $shagprodsold$ as a *proxy* measure of **crop commercialization**.
+
+```{r gha-bplotsales4ha, fig.cap="Crop Commercialization in Farms below/above 4ha of Cultivated Area (FAO/RIGA $shagprodsold$)", fig.height=4.5, dev="png"}
+
+pplot(I(100*shagprodsold)~survey+croparea_clas, gha, alpha=.02,
+  ylab="Crop Commercialization (%) Source: RIGA",
+  note=gha[!is.na(croparea_4ha), 100*sum(is.na(shagprodsold)|shagprodsold==0)/.N])
+
+```
+
+
+### Income Diversification
+
+Non-farm income was derived from gross RIGA components as: 
+
+$$ naggross=transfersgrossimp+otherincimp+nonfarmrntimp+nonagr\_wge+selfemp $$
+
+$selfemp$ was imputed to omit negative values. The final distribution of non-farm income in the survey samples is shown below for both rural and urban households
+
+
+```{r gha-bplotinccropa, fig.cap="Gross Rural Non-Farm Income across Survey Waves (percent, $naggrosssh$) Source: FAO/RIGA", fig.height=4.5, dev="png"}
+
+pplot(I(100*naggross_sh)~survey+croparea_clas, gha[rural=="rural"], alpha=.02,
+  ylab="Gross Non-Farm Income, Rural Hhlds (%)",
+  note=gha[rural=="rural", 100*sum(is.na(naggross_sh)|naggross==0)/.N])
+
+```
+
+```{r gha-bplotinccropb, fig.cap="Gross Urban Non-Farm Income across Survey Waves (percent, $naggrosssh$) Source: FAO/RIGA", fig.height=4.5, dev="png"}
+
+pplot(I(100*naggross_sh)~survey+croparea_clas, gha[rural=="urban"], alpha=.02,
+  ylab="Gross Non-Farm Income, Urban Hhlds (%)",
+  note=gha[rural=="urban", 100*sum(is.na(naggross_sh)|naggross==0)/.N])
+
+```
+
+
+### Classification of Small Farm Holdings
+
+> Within the sub-sample of *farm households* we look at the distribution of households across these three key ("threshold") variables:
+> 
+> * Cultivated/operated area $cropareaimp$ (using breaks at **2 ha** and/or **4 ha** and **excluding farm households with no $cropareaimp$**)
+> * Crop commercialization $cropsales\_sh$ (using breaks at **5%** and **50%** of crop production)
+> * Share of off-farm income in total hhld income $naggross\_sh$ (using breaks at **1/3** and **2/3** of total gross household income)
+
+The tables below show this classification, as proportions of the entire survey samples, and of the selected farm samples.
+
+
+```{r gha-counts-clas, results="asis"}
+
+table_options(HTMLcaption="(#tab:countsa) Count of Observations across Classes of Farm Households")
+html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~Format(digits=0, big.mark=",")*(Heading()*croparea_clas*Heading()*cropsales_clas+1),
+  data=gha))
+
+table_options(HTMLcaption="(#tab:countsb) Proportions of Observations across Classes of Farm Households (percent of full survey sample)")
+html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_clas*Heading()*cropsales_clas+1)*Heading()*Format(digits=0, nsmall=1, big.mark=",")*Percent(Equal(survey)),
+  data=gha))
+
+table_options(HTMLcaption="(#tab:countsc) Proportions of Observations across Classes of Farm Households (percent of selected farm households)")
+html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_clas*Heading()*cropsales_clas+1)*Heading()*Format(digits=0, nsmall=1, big.mark=",")*Percent(Equal(survey)),
+  data=gha[!is.na(croparea_4ha) & !is.na(class9)]))
+
+```
+
+In the next tables we limit categories to farm households **below/above 4ha** (as this approach produces classes with larger counts of observations). 
+
+```{r gha-counts-4ha, results="asis"}
+
+table_options(HTMLcaption="(#tab:countsd) Count of Observations across Classes of Farm Households (farms above/below 4 ha)")
+html(tabular(Heading("Wave")*survey*Heading()*(naggross_clas+(`All`=1))~Format(digits=0, big.mark=",")*(Heading()*croparea_4ha*Heading()*cropsales_clas+1),
+  data=gha))
+
+table_options(HTMLcaption="(#tab:countse) Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of full survey sample)")
+html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_4ha*Heading()*(cropsales_clas+1)+1)*Heading()*Format(digits=0, nsmall=1, big.mark=",")*Percent(Equal(survey)),
+  data=gha))
+
+table_options(HTMLcaption="(#tab:countsf) Proportions of Observations across Classes of Farm Households (farms above/below 4 ha) (percent of selected farm households)")
+html(tabular(Heading(Wave)*survey*(Heading()*naggross_clas+1)~(Heading()*croparea_4ha*Heading()*(cropsales_clas+1)+1)*Heading()*Format(digits=0, nsmall=1, big.mark=",")*Percent(Equal(survey)),
+  data=gha[!is.na(croparea_4ha) & !is.na(class9)]))
+
+```
+
+Using data from the 3 GLSS waves we estimate the proportions of farm households across all categories and the distributions of other key household characteristics (household structure, assets, farm input uses, etc.).
+
+Estimated proportions of farm households across classes and categories are shown in the next graph and table.
+
+### Key Results
+
+```{r, eval=F}
+
+# > Using the **<= 4 ha** smallholding definition above, we estimate as of 2012:
+# > 
+# > * there are **33M** households in Ghana
+# > * **58.8%** (**19.2M**) generate a revenue from farming (wages, rents, crops, livestock, and/or fish)
+# > * **97%** (**16M**) of farm holdings are *small*
+# > * corresponding to a beneficiary population of **107M**
+# > * crop commercialization is low at **12.2%** for smallholdings (below 4 ha) and **17.7%** for larger holdings (over 4 ha) on average. Median rates are much smaller however with **0.07%** for smallholdings and **0.30%** for larger holdings.
+# > * income diversification in farm households is **17%** on average (**18%** for smallholdings and **13%** for larger holdings) (i.e. off-farm income is 17% on average), but medians off-farm incomes are negligible at **0.83%** (**0.63%** for smallholdings and **0.33%** for larger holdings).
+# > 
+  
+```
+
+
+```{r ghafig2a, fig.cap="Est. Proportions of Farm Holdings across Cultivated Area and Categories"}
+
+par(mfrow=c(1,3), mar=c(3,3,0,.25))
+plot(svytable(~croparea_4ha+cropsales_clas, gha.svy[["gha6"]]), main=NA, las=1, col=viridis(3),
+  ylab=NA, xlab="Crop Commercialization 3-class")
+plot(svytable(~croparea_4ha+naggross_clas, gha.svy[["gha6"]]), main=NA, las=1, col=viridis(3),
+  ylab=NA, xlab="Non-Farm Income 3-class")
+plot(svytable(~croparea_4ha+class9, gha.svy[["gha6"]]), main=NA, las=1, col=viridis(9),
+  ylab=NA, xlab="Typology 9-class")
+
+```
+
+
+```{r gha-tab1, results="asis"}
+
+tmp <- svymean(~I(interaction(cropsales_clas, naggross_clas)), gha.svy.shf[["gha6"]], na.rm=T)
+tmp.cv <- confint(tmp)
+tmp <- cbind(as.data.table(tmp*100), as.data.table(tmp.cv*100))
+tmp[`2.5 %`<0, `2.5 %` := 0]
+tmp <- tmp[, lapply(.SD, function(x) format(x, digits=0, nsmall=1, scientific=F))]
+tmp[, CI := paste(`2.5 %`, `97.5 %`, sep=" - ")]
+
+tmp[, `:=`(
+  cropsales_clas = factor(rep(levels(gha$cropsales_clas), each=1, 3), levels=c("LoC", "MeC", "HiC")),
+  naggross_clas = factor(rep(levels(gha$naggross_clas), each=3, 1), levels=c("LoD", "MeD", "HiD"))
+  )]
+
+table_options(HTMLcaption="(#tab:tab1) Est. Proportions of Farm Holdings below 4 ha across Categories (2012/13, percent)")
+html(tabular(Heading("Income Diversification")*naggross_clas*(mean+CI)~Heading("Crop Commercialization")*cropsales_clas*Heading()*identity,
+  data=tmp), rmarkdown=T)
+
+```
+
+```{r gha-tab2, results="asis"}
+
+tmp <- svyCrossTab(list(
+  ~hhsize_imp, 
+  ~agehead,
+  ~I(100*femhead),
+  ~I(100*widowhead),
+  ~hhlabor,
+  ~educhead,
+  ~educave15_60,
+  ~educhigh,
+  ~I(100*ownhome), ~I(100*cellphone), ~I(100*telephone), ~I(100*electricity), 
+  ~distwater, ~distroad, ~distpost, ~distbank, ~disthealth  
+  ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab2) Est. Demographic Characteristics of Farm Holdings below 4 ha across Categories (2012/13, percent/km)")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+tmp <- svyCrossTab(list(
+  ~landown,
+  ~landshare,
+  #~landrent,
+  ~croparea_imp
+  ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab3) Land Assets of Farm Holdings below 4 ha across Categories (2012/13, ha)")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, nsmall=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Income
+tmp <- svyCrossTab(list(
+  ~aggross, 
+  ~totgross, 
+  ~I(100*naggross_sh),   
+  ~cropvalue, 
+  ~cropsales,
+  ~I(100*cropsales_sh),    
+  ~totlvstprod,
+  ~totlivsold
+  ), ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab4) Est. Production, Sales, and Income of Farm Holdings below 4 ha across Categories (2012/13, Percent/Cedis)")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=1, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Livestock
+tmp <- svyCrossTab(list(
+~I(1E3*TLU_horse), ~I(1E3*TLU_cattle), ~I(1E3*TLU_pigs), ~I(1E3*TLU_sheep),
+  ~I(1E3*TLU_small), ~I(1E3*TLU_total)), 
+  ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab5) Est. Small and Large Livestock Holdings for Farms below 4 ha across Categories (2012/13, '000 TLU)")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+# Input uses
+tmp <- svyCrossTab(list(
+  ~I(100*seeds), ~I(100*fert_any), ~I(100*fert_inorg), ~I(100*fert_org), 
+  ~I(100*herb), ~I(100*pest), ~I(100*irr), ~I(100*fuel), ~I(100*hired_labor)), 
+  ~class9, gha.svy.shf[["gha6"]], quantiles=c(.25,.5,.75))
+
+table_options(HTMLcaption="(#tab:tab6) Est. Agricultural Input Use in Farms below 4 ha across Categories (2012/13, percent of farms)")
+html(tabular(Variable*(Mean+Q50)~Heading()*By*Heading()*Stat*Heading()*identity*Format(digits=0, big.mark=",", scientific=F),
+  data=tmp), rmarkdown=T)
+
+```
+
+Below are estimated distributions of key characteristics for farms below 4 ha (GLSS6, 2012/13).
+
+```{r gha-bplot2a, fig.cap="Est. Farm Sizes of Farm Holdings below 4 ha across Categories (2012/13, ha)"}
+
+par(cex=.8)
+svyboxplot(landown~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Land Owned (ha)", ylim=c(0,2), varwidth=T)
+
+```
+
+
+```{r gha-bplot2b, fig.cap="Est. Cultivated Area of Farm Holdings below 4 ha across Categories (2012/13, ha)"}
+
+par(cex=.8)
+svyboxplot(croparea_imp~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Cultivated Area (ha)", ylim=c(0,4), varwidth=T)
+
+```
+
+```{r gha-bplot2c, fig.cap="Est. Gross Farm Income of Farm Holdings below 4 ha across Categories (2012/13, '000 Cedis)"}
+
+par(cex=.8)
+svyboxplot(I(aggross/1000)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Gross Farm Income ('000 Cedis)", ylim=c(0,6), varwidth=T)
+
+```
+
+```{r gha-bplot2d, fig.cap="Est. Farm Holdings below 4 ha with Seed Purchases across Categories (2012/13, '000 Cedis)"}
+
+par(cex=.8)
+svyboxplot(I(100*seeds)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Seed Purchases (percent)", varwidth=T)
+
+```
+
+```{r gha-bplot2e, fig.cap="Est. Farm Holdings below 4 ha using Organic Fertilizer across Categories (2012/13, '000 Cedis)"}
+
+par(cex=.8)
+svyboxplot(I(100*fert_org)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Organic Fertilizer Use (percent)",  varwidth=T)
+
+```
+
+```{r gha-bplot2f, fig.cap="Est. Farm Holdings below 4 ha using Chemical Fertilizer across Categories (2012/13, '000 Cedis)"}
+
+par(cex=.8)
+svyboxplot(I(100*fert_inorg)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Chemical Fertilizer Use (percent)", varwidth=T)
+
+```
+
+```{r gha-bplot2g, fig.cap="Est. Farm Holdings below 4 ha using Fuel and/or Maintenance Services across Categories (2012/13, '000 Cedis)"}
+
+par(cex=.8)
+svyboxplot(I(100*fuel)~class9, gha.svy.shf[["gha6"]],
+  ylab="Est. Fuel/Maintenance Use (percent)", varwidth=T)
+
+```
+
